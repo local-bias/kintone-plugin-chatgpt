@@ -7,7 +7,13 @@ export const createConfig = (): kintone.plugin.Storage => ({
   conditions: [getNewCondition()],
 });
 
-export const getNewCondition = (): kintone.plugin.Condition => ({ fields: [''] });
+export const getNewCondition = (): kintone.plugin.Condition => ({
+  apiToken: '',
+  viewId: '',
+  outputAppId: '',
+  outputUserFieldCode: '',
+  outputContentFieldCode: '',
+});
 
 export const getUpdatedStorage = <T extends keyof kintone.plugin.Condition>(
   storage: kintone.plugin.Storage | null,

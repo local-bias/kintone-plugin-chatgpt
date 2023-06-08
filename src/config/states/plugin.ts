@@ -51,14 +51,14 @@ export const conditionState = selectorFamily<kintone.plugin.Condition | null, nu
     },
 });
 
-export const fieldsState = selector<string[]>({
-  key: `${PREFIX}fieldsState`,
+export const apiTokenState = selector<string>({
+  key: `${PREFIX}apiTokenState`,
   get: ({ get }) => {
     const conditionIndex = get(tabIndexState);
     return getConditionField(get(storageState), {
       conditionIndex,
-      key: 'fields',
-      defaultValue: [''],
+      key: 'apiToken',
+      defaultValue: '',
     });
   },
   set: ({ get, set }, newValue) => {
@@ -66,8 +66,96 @@ export const fieldsState = selector<string[]>({
     set(storageState, (current) =>
       getUpdatedStorage(current, {
         conditionIndex,
-        key: 'fields',
-        value: newValue as string[],
+        key: 'apiToken',
+        value: newValue as string,
+      })
+    );
+  },
+});
+
+export const viewIdState = selector<string>({
+  key: `${PREFIX}viewIdState`,
+  get: ({ get }) => {
+    const conditionIndex = get(tabIndexState);
+    return getConditionField(get(storageState), {
+      conditionIndex,
+      key: 'viewId',
+      defaultValue: '',
+    });
+  },
+  set: ({ get, set }, newValue) => {
+    const conditionIndex = get(tabIndexState);
+    set(storageState, (current) =>
+      getUpdatedStorage(current, {
+        conditionIndex,
+        key: 'viewId',
+        value: newValue as string,
+      })
+    );
+  },
+});
+
+export const outputAppIdState = selector<string>({
+  key: `${PREFIX}outputAppIdState`,
+  get: ({ get }) => {
+    const conditionIndex = get(tabIndexState);
+    return getConditionField(get(storageState), {
+      conditionIndex,
+      key: 'outputAppId',
+      defaultValue: '',
+    });
+  },
+  set: ({ get, set }, newValue) => {
+    const conditionIndex = get(tabIndexState);
+    set(storageState, (current) =>
+      getUpdatedStorage(current, {
+        conditionIndex,
+        key: 'outputAppId',
+        value: newValue as string,
+      })
+    );
+  },
+});
+
+export const outputUserFieldCodeState = selector<string>({
+  key: `${PREFIX}outputUserFieldCodeState`,
+  get: ({ get }) => {
+    const conditionIndex = get(tabIndexState);
+    return getConditionField(get(storageState), {
+      conditionIndex,
+      key: 'outputUserFieldCode',
+      defaultValue: '',
+    });
+  },
+  set: ({ get, set }, newValue) => {
+    const conditionIndex = get(tabIndexState);
+    set(storageState, (current) =>
+      getUpdatedStorage(current, {
+        conditionIndex,
+        key: 'outputUserFieldCode',
+        value: newValue as string,
+      })
+    );
+  },
+});
+
+export const outputContentFieldCodeState = selector<string>({
+  key: `${PREFIX}outputContentFieldCodeState`,
+  get: ({ get }) => {
+    const conditionIndex = get(tabIndexState);
+    return getConditionField(get(storageState), {
+      conditionIndex,
+      key: 'outputContentFieldCode',
+      defaultValue: '',
+    });
+  },
+  set: ({ get, set }, newValue) => {
+    const conditionIndex = get(tabIndexState);
+    set(storageState, (current) =>
+      getUpdatedStorage(current, {
+        conditionIndex,
+        key: 'outputContentFieldCode',
+        value: newValue as string,
       })
     );
   },

@@ -1,4 +1,10 @@
-import { getFieldValueAsString, getFormFields, kintoneAPI } from '@konomi-app/kintone-utilities';
+import {
+  getFieldValueAsString,
+  getFormFields,
+  kintoneAPI,
+  filterFieldProperties,
+} from '@konomi-app/kintone-utilities';
+import { getAppId } from '@lb-ribbit/kintone-xapp';
 
 /** kintoneアプリに初期状態で存在するフィールドタイプ */
 const DEFAULT_DEFINED_FIELDS: kintoneAPI.FieldPropertyType[] = [
@@ -12,24 +18,21 @@ const DEFAULT_DEFINED_FIELDS: kintoneAPI.FieldPropertyType[] = [
 ];
 
 export const getFieldProperties = async (
-  targetApp?: string | number,
-  preview?: boolean
+  params: { app?: string | number; preview?: boolean } = {}
 ): Promise<kintoneAPI.FieldProperties> => {
-  const app = targetApp || kintone.app.getId();
-
+  const { app = getAppId(), preview = false } = params;
   if (!app) {
     throw new Error('アプリのフィールド情報が取得できませんでした');
   }
-
   const { properties } = await getFormFields({ app, preview });
-
   return properties;
 };
 
-export const getUserDefinedFields = async (options?: {
-  preview?: boolean;
-}): Promise<kintoneAPI.FieldProperties> => {
-  const properties = await getFieldProperties();
+export const getUserDefinedFields = async (
+  params: { preview?: boolean } = {}
+): Promise<kintoneAPI.FieldProperties> => {
+  const { preview } = params;
+  const properties = await getFieldProperties({ preview });
   return omitFieldProperties(properties, DEFAULT_DEFINED_FIELDS);
 };
 
@@ -100,27 +103,6 @@ export const controlField = (
       }
     }
   }
-};
-
-/**
- * APIから取得したフィールド情報から、指定した関数の条件に当てはまるフィールドのみを返却します
- *
- * @param properties APIから取得したフィールド情報
- * @param callback 絞り込み条件
- * @returns 条件に当てはまるフィールド
- */
-export const filterFieldProperties = (
-  properties: kintoneAPI.FieldProperties,
-  callback: (field: kintoneAPI.FieldProperty) => boolean
-): kintoneAPI.FieldProperties => {
-  const filtered = Object.entries(properties).filter(([_, value]) => callback(value));
-
-  const reduced = filtered.reduce<kintoneAPI.FieldProperties>(
-    (acc, [key, value]) => ({ ...acc, [key]: value }),
-    {}
-  );
-
-  return reduced;
 };
 
 /**
