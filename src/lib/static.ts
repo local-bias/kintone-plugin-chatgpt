@@ -1,3 +1,4 @@
+import { ChatCompletionRequestMessage } from 'openai';
 import manifest from '../../plugin/manifest.json';
 
 export const OPENAI_ENDPOINT = 'https://api.openai.com/v1/chat/completions';
@@ -12,3 +13,10 @@ export const URL_HOMEPAGE = manifest.homepage_url.ja;
 export const URL_INQUIRY = 'https://form.konomi.app';
 export const URL_PROMOTION = 'https://promotion.konomi.app/kintone-plugin';
 export const URL_BANNER = 'https://promotion.konomi.app/kintone-plugin/sidebar';
+
+type LogDataV1 = {
+  title: string;
+  messages: ChatCompletionRequestMessage[];
+};
+
+type LogData = { version: 1 } & LogDataV1; // | { version: 2 } & LogDataV2 ...
