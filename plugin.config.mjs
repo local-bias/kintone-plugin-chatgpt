@@ -11,13 +11,13 @@ export default {
       version: '1.0.0',
       type: 'APP',
       name: {
-        en: 'kintone-plugin-template',
-        ja: 'プラグインテンプレート',
+        en: 'kintone-plugin-chatgpt',
+        ja: 'ChatGPT',
         zh: '插件模板',
       },
       description: {
         en: 'kintone-plugin-template',
-        ja: 'プラグインの説明をここに記載します',
+        ja: 'ChatGPTから回答を得ることができます。質問した内容をログとしてアプリに記録することができます。',
         zh: '插件模板',
       },
       icon: 'icon.png',
