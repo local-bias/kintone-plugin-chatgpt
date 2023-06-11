@@ -23,10 +23,6 @@ const Component: FCX = ({ className }) => {
         <OutputAppIdForm />
       </div>
       <div>
-        <h3>ユーザー名を記録するフィールドコード</h3>
-        <OutputUserForm />
-      </div>
-      <div>
         <h3>チャット内容を記録するフィールドコード</h3>
         <OutputContentForm />
       </div>

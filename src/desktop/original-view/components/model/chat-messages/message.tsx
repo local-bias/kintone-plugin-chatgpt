@@ -35,6 +35,14 @@ const StyledComponent = styled(Component)`
 
   .content {
     flex: 1;
+    > div {
+      > *:nth-of-type(1) {
+        margin-top: 0;
+      }
+      > *:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 `;
 

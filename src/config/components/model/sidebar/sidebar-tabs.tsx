@@ -18,8 +18,8 @@ const Component: FC = () => {
 
   return (
     <PluginConditionTabs tabIndex={tabIndex} onChange={onTabChange}>
-      {conditions.map((condition, i) => (
-        <Tab label={`設定${i + 1}${condition.fields}`} key={i} />
+      {conditions.map((_, i) => (
+        <Tab label={`設定${i + 1}`} key={i} />
       ))}
     </PluginConditionTabs>
   );

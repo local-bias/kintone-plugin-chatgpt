@@ -1,20 +1,29 @@
 import styled from '@emotion/styled';
-import React, { FC, FCX } from 'react';
+import React, { FC, FCX, PropsWithChildren } from 'react';
 import NewChatButton from './new-chat';
+import Histories from './histories';
 
-const Component: FCX = ({ className }) => (
-  <div className={className}>
-    <NewChatButton />
-  </div>
+const Wrapper: FCX<PropsWithChildren> = ({ className, children }) => (
+  <div className={className}>{children}</div>
 );
 
-const StyledComponent = styled(Component)`
+const StyledWrapper = styled(Wrapper)`
   flex-basis: 260px;
-  background-color: rgb(241, 245, 249);
   position: sticky;
-  top: 0;
-  max-height: calc(100vh - 128px);
-  padding: 16px;
+  top: 48px;
+  max-height: calc(100vh - 48px);
+  background-color: rgb(241, 245, 249);
 `;
+
+const Component: FCX = ({ className }) => (
+  <StyledWrapper>
+    <div className={className}>
+      <NewChatButton />
+      <Histories />
+    </div>
+  </StyledWrapper>
+);
+
+const StyledComponent = styled(Component)``;
 
 export default StyledComponent;

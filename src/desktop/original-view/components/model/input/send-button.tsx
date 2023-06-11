@@ -1,14 +1,19 @@
 import { fetchChatCompletion, getHTMLfromMarkdown } from '@/desktop/original-view/action';
 import {
+  ChatHistory,
   apiErrorMessageState,
+  chatHistoriesState,
   chatMessagesState,
   inputTextState,
   pluginConditionState,
+  selectedHistoryIdState,
   waitingForResponseState,
 } from '@/desktop/original-view/states/states';
 import styled from '@emotion/styled';
+import { addRecord, updateRecord } from '@konomi-app/kintone-utilities';
 import SendIcon from '@mui/icons-material/Send';
 import { Button } from '@mui/material';
+import { produce } from 'immer';
 import { ChatCompletionRequestMessage } from 'openai';
 import React, { FC, FCX } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
@@ -23,7 +28,7 @@ const Component: FCX = ({ className }) => {
         try {
           set(waitingForResponseState, true);
           const condition = await snapshot.getPromise(pluginConditionState);
-          const { apiToken } = condition ?? {};
+          const { apiToken, outputAppId, outputContentFieldCode } = condition ?? {};
           if (!apiToken) {
             return;
           }
@@ -33,12 +38,45 @@ const Component: FCX = ({ className }) => {
           }
           reset(inputTextState);
           reset(apiErrorMessageState);
-          const chatMessages = await snapshot.getPromise(chatMessagesState);
+
+          const selectedHistoryId = await snapshot.getPromise(selectedHistoryIdState);
+          const histories = await snapshot.getPromise(chatHistoriesState);
+          const chatHisory = histories.find((history) => history.id === selectedHistoryId);
+          const chatMessages = chatHisory?.messages ?? [];
+
           const updatedChatMessages: ChatCompletionRequestMessage[] = [
             ...chatMessages,
-            { role: 'user', content: getHTMLfromMarkdown(input) },
+            { role: 'user', content: input },
           ];
-          set(chatMessagesState, updatedChatMessages);
+          let historyId = selectedHistoryId;
+          if (!selectedHistoryId) {
+            if (outputAppId && outputContentFieldCode) {
+              const { id } = await addRecord({
+                app: outputAppId,
+                record: {
+                  [outputContentFieldCode]: { value: JSON.stringify(updatedChatMessages) },
+                },
+              });
+              historyId = id;
+            } else {
+              historyId = new Date().getTime().toString();
+            }
+            set(selectedHistoryIdState, historyId);
+          }
+          set(chatHistoriesState, (histories) =>
+            produce(histories, (draft) => {
+              const history = draft.find((history) => history.id === historyId);
+              if (history) {
+                history.messages = updatedChatMessages;
+              } else {
+                draft.unshift({
+                  id: historyId!,
+                  title: updatedChatMessages[0]?.content ?? historyId!,
+                  messages: updatedChatMessages,
+                });
+              }
+            })
+          );
           const response = await fetchChatCompletion({
             apiKey: apiToken,
             messages: updatedChatMessages,
@@ -46,13 +84,26 @@ const Component: FCX = ({ className }) => {
 
           const assistantMessage = response.choices[0].message;
           if (assistantMessage) {
-            set(chatMessagesState, (messages) => [
-              ...messages,
-              {
-                ...assistantMessage,
-                content: getHTMLfromMarkdown(assistantMessage.content),
-              },
-            ]);
+            const mergedChatMessages = [
+              ...updatedChatMessages,
+              { ...assistantMessage, content: assistantMessage.content },
+            ];
+            if (outputAppId && outputContentFieldCode) {
+              await updateRecord({
+                app: outputAppId,
+                id: historyId!,
+                record: { [outputContentFieldCode]: { value: JSON.stringify(mergedChatMessages) } },
+                debug: process.env.NODE_ENV === 'development',
+              });
+            }
+            set(chatHistoriesState, (histories) =>
+              produce(histories, (draft) => {
+                const history = draft.find((history) => history.id === historyId);
+                if (history) {
+                  history.messages = mergedChatMessages;
+                }
+              })
+            );
           }
         } catch (error: any) {
           if (error instanceof Error) {
