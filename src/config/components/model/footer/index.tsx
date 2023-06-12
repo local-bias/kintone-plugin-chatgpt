@@ -7,7 +7,7 @@ import { useSnackbar } from 'notistack';
 import React, { FC, FCX, useCallback } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 
-import { loadingState, storageState } from '../../../states/plugin';
+import { apiKeyState, loadingState, storageState } from '../../../states/plugin';
 
 import ExportButton from './export-button';
 import ImportButton from './import-button';
@@ -15,7 +15,7 @@ import ResetButton from './reset-button';
 import { PluginFooter } from '@konomi-app/kintone-utility-component';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 import { produce } from 'immer';
-import { VIEW_ROOT_ID } from '@/lib/static';
+import { OPENAI_ENDPOINT_ROOT, VIEW_ROOT_ID } from '@/lib/static';
 
 type Props = {
   onSaveButtonClick: () => void;
@@ -75,6 +75,7 @@ const Container: FC = () => {
         set(loadingState, true);
         try {
           const storage = await snapshot.getPromise(storageState);
+          const apiKey = await snapshot.getPromise(apiKeyState);
           const app = getAppId();
           if (!app) {
             throw new Error('アプリのフィールド情報が取得できませんでした');
@@ -82,12 +83,11 @@ const Container: FC = () => {
           const { views } = await getViews({ app, preview: true });
 
           const newViews = produce(views, (draft) => {
-            for (const condition of storage?.conditions || []) {
-              for (const view of Object.values(draft)) {
-                if (view.id === condition.viewId && view.type === 'CUSTOM') {
-                  view.html = `<div id='${VIEW_ROOT_ID}'></div>`;
-                  view.pager = false;
-                }
+            const viewId = storage?.viewId;
+            for (const view of Object.values(draft)) {
+              if (view.id === viewId && view.type === 'CUSTOM') {
+                view.html = `<div id='${VIEW_ROOT_ID}'></div>`;
+                view.pager = false;
               }
             }
           });
@@ -99,6 +99,14 @@ const Container: FC = () => {
           });
 
           storeStorage(storage!, () => true);
+          kintone.plugin.app.setProxyConfig(
+            OPENAI_ENDPOINT_ROOT,
+            'POST',
+            { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+            {},
+            () => true
+          );
+
           enqueueSnackbar('設定を保存しました', {
             variant: 'success',
             action: (

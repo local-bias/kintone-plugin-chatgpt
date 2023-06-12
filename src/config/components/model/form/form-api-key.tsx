@@ -2,16 +2,16 @@ import { Skeleton, TextField } from '@mui/material';
 import React, { ChangeEventHandler, FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 
-import { apiTokenState } from '../../../states/plugin';
+import { apiKeyState } from '../../../states/plugin';
 import styled from '@emotion/styled';
 
 const Component: FCX = ({ className }) => {
-  const apiToken = useRecoilValue(apiTokenState);
+  const apiToken = useRecoilValue(apiKeyState);
 
   const onFieldChange: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
     ({ set }) =>
       (event) => {
-        set(apiTokenState, event.target.value);
+        set(apiKeyState, event.target.value);
       },
     []
   );

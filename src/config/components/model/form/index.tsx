@@ -1,10 +1,8 @@
 import React, { FCX } from 'react';
 import styled from '@emotion/styled';
-import APITokenForm from './form-api-token';
+import APITokenForm from './form-api-key';
 import ViewIdState from './form-view-id';
-import DeletionButton from './condition-deletion-button';
 import OutputAppIdForm from './form-output-app-id';
-import OutputUserForm from './form-output-user';
 import OutputContentForm from './form-output-content';
 
 const Component: FCX = ({ className }) => {
@@ -26,7 +24,6 @@ const Component: FCX = ({ className }) => {
         <h3>チャット内容を記録するフィールドコード</h3>
         <OutputContentForm />
       </div>
-      <DeletionButton />
     </div>
   );
 };

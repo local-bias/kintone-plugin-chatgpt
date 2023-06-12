@@ -1,7 +1,6 @@
 /* このファイルはビルドの基点になります。 ファイル名、ディレクトリを変更すると、ビルドが正常に動作しない可能性があります */
 
 import { PLUGIN_NAME } from '@/lib/static';
-import event from './event';
 import originalView from './original-view';
 import { KintoneEventListener } from '@konomi-app/kintone-utilities';
 import { pushPluginName } from '@/lib/local-storage';
@@ -19,6 +18,5 @@ import { pushPluginName } from '@/lib/local-storage';
     },
     logDisabled: process.env.NODE_ENV === 'production',
   });
-  event(listener);
   originalView(listener);
 })(kintone.$PLUGIN_ID);

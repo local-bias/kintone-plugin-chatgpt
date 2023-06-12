@@ -4,11 +4,10 @@ import React, { FC, Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';
-import { URL_BANNER, URL_PROMOTION } from '@/lib/static';
+import { OPENAI_ENDPOINT_ROOT, URL_BANNER, URL_PROMOTION } from '@/lib/static';
 import Footer from './components/model/footer';
 import Form from './components/model/form';
-import Sidebar from './components/model/sidebar';
-import { pluginIdState, storageState } from './states/plugin';
+import { apiKeyState, pluginIdState, storageState } from './states/plugin';
 import { createConfig } from '@/lib/plugin';
 import { PluginBanner, PluginContent, PluginLayout } from '@konomi-app/kintone-utility-component';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
@@ -19,13 +18,14 @@ const Component: FC<{ pluginId: string }> = ({ pluginId }) => (
       initializeState={({ set }) => {
         set(pluginIdState, pluginId);
         set(storageState, restoreStorage<kintone.plugin.Storage>(pluginId) ?? createConfig());
+        const proxyConfig = kintone.plugin.app.getProxyConfig(OPENAI_ENDPOINT_ROOT, 'POST');
+        set(apiKeyState, proxyConfig?.headers.Authorization.replace('Bearer ', '') ?? '');
       }}
     >
       <PluginErrorBoundary>
         <SnackbarProvider maxSnack={1}>
           <Suspense fallback={<LoaderWithLabel label='設定情報を取得しています' />}>
-            <PluginLayout>
-              <Sidebar />
+            <PluginLayout singleCondition>
               <PluginContent>
                 <Form />
               </PluginContent>

@@ -9,12 +9,8 @@ export default (listener: KintoneEventListener) => {
     if (!pluginId) {
       return event;
     }
-    const storage = restoreStorage<kintone.plugin.Storage>(pluginId);
-    if (!storage) {
-      return event;
-    }
-    const found = storage.conditions.find((condition) => condition.viewId === String(event.viewId));
-    if (!found) {
+    const config = restoreStorage<kintone.plugin.Storage>(pluginId);
+    if (!config || config?.viewId !== String(event.viewId)) {
       return event;
     }
     const rootElement = document.getElementById(VIEW_ROOT_ID);
@@ -22,7 +18,7 @@ export default (listener: KintoneEventListener) => {
       return event;
     }
     const root = createRoot(rootElement);
-    root.render(<App condition={found} />);
+    root.render(<App pluginId={pluginId} config={config} />);
 
     return event;
   });

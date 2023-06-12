@@ -1,23 +1,19 @@
 import { FC, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  chatHistoriesState,
-  historiesFetchedState,
-  pluginConditionState,
-} from '../../states/states';
+import { chatHistoriesState, historiesFetchedState, pluginConfigState } from '../../states/states';
 import { getAllRecords } from '@konomi-app/kintone-utilities';
 import { ChatCompletionRequestMessage } from 'openai';
 
 const Component: FC = () => {
-  const condition = useRecoilValue(pluginConditionState);
+  const config = useRecoilValue(pluginConfigState);
   const setChatHistoryRecords = useSetRecoilState(chatHistoriesState);
   const setHistoriesFetched = useSetRecoilState(historiesFetchedState);
 
   useEffect(() => {
-    if (!condition) {
+    if (!config) {
       return;
     }
-    const { outputAppId, outputContentFieldCode } = condition;
+    const { outputAppId, outputContentFieldCode } = config;
     if (!outputAppId || !outputContentFieldCode) {
       setHistoriesFetched(true);
       return;
@@ -44,7 +40,7 @@ const Component: FC = () => {
       setChatHistoryRecords((_current) => [..._current, ...histories]);
       setHistoriesFetched(true);
     })();
-  }, [condition]);
+  }, [config]);
 
   return null;
 };

@@ -6,16 +6,13 @@ import {
 } from 'openai';
 import { marked } from 'marked';
 
-export const fetchChatCompletion = async (params: {
-  messages: ChatCompletionRequestMessage[];
-  apiKey: string;
-}) => {
-  const { messages, apiKey } = params;
+marked.use({ mangle: false, headerIds: false });
 
-  const headers = {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${apiKey}`,
-  };
+export const fetchChatCompletion = async (params: {
+  pluginId: string;
+  messages: ChatCompletionRequestMessage[];
+}) => {
+  const { messages, pluginId } = params;
 
   const requestBody: CreateChatCompletionRequest = {
     model: 'gpt-3.5-turbo',
@@ -24,10 +21,11 @@ export const fetchChatCompletion = async (params: {
     messages,
   };
 
-  const [responseBody, responseCode, responseHeader] = await kintone.proxy(
+  const [responseBody, responseCode, responseHeader] = await kintone.plugin.app.proxy(
+    pluginId,
     OPENAI_ENDPOINT,
     'POST',
-    headers,
+    {},
     requestBody
   );
 

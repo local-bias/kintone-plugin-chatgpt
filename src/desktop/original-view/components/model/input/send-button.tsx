@@ -1,11 +1,10 @@
-import { fetchChatCompletion, getHTMLfromMarkdown } from '@/desktop/original-view/action';
+import { fetchChatCompletion } from '@/desktop/original-view/action';
 import {
-  ChatHistory,
   apiErrorMessageState,
   chatHistoriesState,
-  chatMessagesState,
   inputTextState,
-  pluginConditionState,
+  pluginConfigState,
+  pluginIdState,
   selectedHistoryIdState,
   waitingForResponseState,
 } from '@/desktop/original-view/states/states';
@@ -15,7 +14,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { Button } from '@mui/material';
 import { produce } from 'immer';
 import { ChatCompletionRequestMessage } from 'openai';
-import React, { FC, FCX } from 'react';
+import React, { FCX } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 
 const Component: FCX = ({ className }) => {
@@ -27,11 +26,8 @@ const Component: FCX = ({ className }) => {
       async () => {
         try {
           set(waitingForResponseState, true);
-          const condition = await snapshot.getPromise(pluginConditionState);
-          const { apiToken, outputAppId, outputContentFieldCode } = condition ?? {};
-          if (!apiToken) {
-            return;
-          }
+          const config = await snapshot.getPromise(pluginConfigState);
+          const { outputAppId, outputContentFieldCode } = config ?? {};
           const input = await snapshot.getPromise(inputTextState);
           if (input === '') {
             return;
@@ -77,10 +73,8 @@ const Component: FCX = ({ className }) => {
               }
             })
           );
-          const response = await fetchChatCompletion({
-            apiKey: apiToken,
-            messages: updatedChatMessages,
-          });
+          const pluginId = await snapshot.getPromise(pluginIdState);
+          const response = await fetchChatCompletion({ pluginId, messages: updatedChatMessages });
 
           const assistantMessage = response.choices[0].message;
           if (assistantMessage) {

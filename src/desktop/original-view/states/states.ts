@@ -1,13 +1,18 @@
 import { ChatCompletionRequestMessage } from 'openai';
-import { atom, atomFamily, selector } from 'recoil';
+import { atom, selector } from 'recoil';
 import { getHTMLfromMarkdown } from '../action';
 
 export type ChatHistory = { id: string; title: string; messages: ChatCompletionRequestMessage[] };
 
 const PREFIX = 'kintone';
 
-export const pluginConditionState = atom<kintone.plugin.Condition | null>({
-  key: `${PREFIX}pluginConditionState`,
+export const pluginIdState = atom<string>({
+  key: `${PREFIX}pluginIdState`,
+  default: '',
+});
+
+export const pluginConfigState = atom<kintone.plugin.Storage | null>({
+  key: `${PREFIX}pluginConfigState`,
   default: null,
 });
 
