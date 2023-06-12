@@ -42,7 +42,6 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
           </div>
         )}
       </div>
-      <div className='spacer'></div>
     </div>
   );
 };
@@ -67,10 +66,6 @@ const StyledComponent = styled(Component)`
   .message {
     max-width: 900px;
     margin: 0 auto;
-  }
-
-  .spacer {
-    height: 140px;
   }
 `;
 
