@@ -1,4 +1,5 @@
 import {
+  apiErrorMessageState,
   chatHistoriesState,
   historiesFetchedState,
   selectedHistoryIdState,
@@ -11,20 +12,21 @@ import {
   ListItemText,
   Skeleton,
 } from '@mui/material';
-import React, { FC } from 'react';
+import React, { FCX } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import styled from '@emotion/styled';
 
-const Component: FC = () => {
+const Component: FCX = ({ className }) => {
   const historiesFetched = useRecoilValue(historiesFetchedState);
   const histories = useRecoilValue(chatHistoriesState);
   const selectedHistoryId = useRecoilValue(selectedHistoryIdState);
 
   const onHistoryChange = useRecoilCallback(
-    ({ set }) =>
+    ({ reset, set }) =>
       (historyId: string) => {
         set(selectedHistoryIdState, historyId);
+        reset(apiErrorMessageState);
       },
     []
   );
@@ -51,7 +53,7 @@ const Component: FC = () => {
   }
 
   return (
-    <div>
+    <div className={className}>
       <List>
         {histories.map((history, index) => (
           <ListItem
@@ -76,6 +78,17 @@ const Component: FC = () => {
 const StyledComponent = styled(Component)`
   max-height: 600px;
   overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #0004;
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
 `;
 
 export default StyledComponent;
