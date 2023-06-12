@@ -67,7 +67,7 @@ const Component: FCX = ({ className }) => {
               } else {
                 draft.unshift({
                   id: historyId!,
-                  title: updatedChatMessages[0]?.content ?? historyId!,
+                  title: updatedChatMessages[0]?.content.slice(0, 8) ?? historyId!,
                   messages: updatedChatMessages,
                 });
               }
