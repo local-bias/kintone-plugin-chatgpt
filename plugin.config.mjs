@@ -1,6 +1,6 @@
 const hp = 'https://konomi.app/';
 const commonCdn = 'https://cdn.jsdelivr.net/gh/local-bias/kintone-cdn@latest';
-const cdn = 'https://cdn.jsdelivr.net/gh/local-bias/kintone-plugin-template@latest';
+const cdn = 'https://cdn.jsdelivr.net/gh/local-bias/kintone-plugin-chatgpt@latest';
 const localhost = 'https://127.0.0.1:5500';
 
 /** @type {import('./src/types/plugin-config').PluginConfig} */
@@ -11,14 +11,14 @@ export default {
       version: '1.0.0',
       type: 'APP',
       name: {
-        en: 'kintone-plugin-chatgpt',
-        ja: 'ChatGPT',
-        zh: '插件模板',
+        en: 'ChatGPT integration plugin',
+        ja: 'ChatGPT連携プラグイン',
+        zh: 'ChatGPT集成插件',
       },
       description: {
-        en: 'kintone-plugin-template',
+        en: 'You can receive answers from ChatGPT and record the content of your questions as logs in the application.',
         ja: 'ChatGPTから回答を得ることができます。質問した内容をログとしてアプリに記録することができます。',
-        zh: '插件模板',
+        zh: '您可以从ChatGPT获得答案，并将您的问题内容记录为应用程序中的日志。',
       },
       icon: 'icon.png',
       homepage_url: { ja: hp, en: hp },
