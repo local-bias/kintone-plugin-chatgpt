@@ -8,6 +8,7 @@ import { Skeleton } from '@mui/material';
 import React, { FCX, PropsWithChildren } from 'react';
 import { useRecoilValue } from 'recoil';
 import Message from './message';
+import ErrorMessage from './error-message';
 import Empty from './empty';
 
 const Component: FCX<PropsWithChildren> = ({ className }) => {
@@ -37,7 +38,7 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
         )}
         {apiErrorMessage && (
           <div className='message-container'>
-            <Message role='assistant'>{apiErrorMessage}</Message>
+            <ErrorMessage>{apiErrorMessage}</ErrorMessage>
           </div>
         )}
       </div>

@@ -30,6 +30,17 @@ export const fetchChatCompletion = async (params: {
   );
 
   const completionResponse: CreateChatCompletionResponse = JSON.parse(responseBody);
+
+  if (responseCode !== 200) {
+    const errorResponse = completionResponse as any;
+    if (errorResponse?.error?.message) {
+      throw new Error(errorResponse.error.message);
+    }
+    throw new Error(
+      'APIの呼び出しに失敗しました。再度実行しても失敗する場合は、管理者にお問い合わせください。'
+    );
+  }
+
   process.env.NODE_ENV === 'development' &&
     console.log({ completionResponse, responseCode, responseHeader });
 
