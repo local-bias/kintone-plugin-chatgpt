@@ -98,14 +98,16 @@ const Container: FC = () => {
             debug: process.env.NODE_ENV === 'development',
           });
 
-          storeStorage(storage!, () => true);
-          kintone.plugin.app.setProxyConfig(
-            OPENAI_ENDPOINT_ROOT,
-            'POST',
-            { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
-            {},
-            () => true
-          );
+          storeStorage(storage!, () => {
+            kintone.plugin.app.setProxyConfig(
+              OPENAI_ENDPOINT_ROOT,
+              'POST',
+              { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+              {},
+              () => true
+            );
+            return true;
+          });
 
           enqueueSnackbar('設定を保存しました', {
             variant: 'success',
