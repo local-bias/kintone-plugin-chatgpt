@@ -191,9 +191,20 @@ function(e,t){return(0,a.Z)(e,t)}(e,(0,o.Z)({shouldForwardProp:S,label:undefined
         right: 0;
         top: 0;
       }
-    `),Mc,(t.vars||t).palette.action.hover))),Lc=a.forwardRef((function(e,t){const n=(0,Zs.Z)({props:e,name:"MuiSkeleton"}),{animation:r="pulse",className:o,component:a="span",height:i,style:l,variant:s="text",width:u}=n,c=(0,_s.Z)(n,Tc),d=(0,Es.Z)({},n,{animation:r,component:a,variant:s,hasChildren:Boolean(c.children)}),f=(e=>{const{classes:t,variant:n,animation:r,hasChildren:o,width:a,height:i}=e,l={root:["root",n,r,o&&"withChildren",o&&!a&&"fitContent",o&&!i&&"heightAuto"]};return(0,Ts.Z)(l,Cc,t)})(d);return(0,Xs.jsx)(Oc,(0,Es.Z)({as:a,ref:t,className:(0,Rs.Z)(f.root,o),ownerState:d},c,{style:(0,Es.Z)({width:u,height:i},l)}))}));var $c=o(5706);const Fc=(0,ks.Z)((()=>{const e=_l(ys),t=_l(vs),n=_l(bs),r=Rl((({set:e})=>t=>{e(bs,t)}),[]);return e?a.createElement("div",null,a.createElement(Lu,null,t.map(((e,t)=>a.createElement(tc,{key:t,onClick:()=>r(e.id),disablePadding:!0,sx:{backgroundColor:n===e.id?"#1976d222":void 0}},a.createElement(oc,null,a.createElement(sc,null,a.createElement($c.Z,null)),a.createElement(_c,{primary:e.title}))))))):a.createElement("div",null,a.createElement(Lu,null,new Array(3).fill("").map(((e,t)=>a.createElement(tc,{key:t,disablePadding:!0},a.createElement(oc,null,a.createElement(sc,null,a.createElement($c.Z,null)),a.createElement(_c,null,a.createElement(Lc,null))))))))}))`
+    `),Mc,(t.vars||t).palette.action.hover))),Lc=a.forwardRef((function(e,t){const n=(0,Zs.Z)({props:e,name:"MuiSkeleton"}),{animation:r="pulse",className:o,component:a="span",height:i,style:l,variant:s="text",width:u}=n,c=(0,_s.Z)(n,Tc),d=(0,Es.Z)({},n,{animation:r,component:a,variant:s,hasChildren:Boolean(c.children)}),f=(e=>{const{classes:t,variant:n,animation:r,hasChildren:o,width:a,height:i}=e,l={root:["root",n,r,o&&"withChildren",o&&!a&&"fitContent",o&&!i&&"heightAuto"]};return(0,Ts.Z)(l,Cc,t)})(d);return(0,Xs.jsx)(Oc,(0,Es.Z)({as:a,ref:t,className:(0,Rs.Z)(f.root,o),ownerState:d},c,{style:(0,Es.Z)({width:u,height:i},l)}))}));var $c=o(5706);const Fc=(0,ks.Z)((({className:e})=>{const t=_l(ys),n=_l(vs),r=_l(bs),o=Rl((({reset:e,set:t})=>n=>{t(bs,n),e(ws)}),[]);return t?a.createElement("div",{className:e},a.createElement(Lu,null,n.map(((e,t)=>a.createElement(tc,{key:t,onClick:()=>o(e.id),disablePadding:!0,sx:{backgroundColor:r===e.id?"#1976d222":void 0}},a.createElement(oc,null,a.createElement(sc,null,a.createElement($c.Z,null)),a.createElement(_c,{primary:e.title}))))))):a.createElement("div",null,a.createElement(Lu,null,new Array(3).fill("").map(((e,t)=>a.createElement(tc,{key:t,disablePadding:!0},a.createElement(oc,null,a.createElement(sc,null,a.createElement($c.Z,null)),a.createElement(_c,null,a.createElement(Lc,null))))))))}))`
   max-height: 600px;
   overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #0004;
+    border-radius: 4px;
+  }
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
 `,Dc=Fc,Bc=(0,ks.Z)((({className:e,children:t})=>a.createElement("div",{className:e},t)))`
   flex-basis: 260px;
   position: sticky;
@@ -268,7 +279,7 @@ function(e,t){return(0,a.Z)(e,t)}(e,(0,o.Z)({shouldForwardProp:S,label:undefined
   align-items: center;
   gap: 0.5em;
   height: 440px;
-`,Qc=(0,ks.Z)((({className:e})=>{const t=_l(gs),n=_l(ms),r=_l(ws);return a.createElement("div",{className:e},0===t.length&&a.createElement(Gc,null),a.createElement("div",{className:"messages"},t.map(((e,t)=>a.createElement("div",{key:t,className:"message-container"},a.createElement(Wc,{role:e.role},a.createElement("div",{dangerouslySetInnerHTML:{__html:e.content}}))))),n&&a.createElement("div",{className:"message-container"},a.createElement(Wc,{role:"assistant"},a.createElement(Lc,{variant:"text",width:"100%"}),a.createElement(Lc,{variant:"text",width:"100%"}),a.createElement(Lc,{variant:"text",width:200}))),r&&a.createElement("div",{className:"message-container"},a.createElement(qc,null,r))),a.createElement("div",{className:"spacer"}))}))`
+`,Qc=(0,ks.Z)((({className:e})=>{const t=_l(gs),n=_l(ms),r=_l(ws);return a.createElement("div",{className:e},0===t.length&&a.createElement(Gc,null),a.createElement("div",{className:"messages"},t.map(((e,t)=>a.createElement("div",{key:t,className:"message-container"},a.createElement(Wc,{role:e.role},a.createElement("div",{dangerouslySetInnerHTML:{__html:e.content}}))))),n&&a.createElement("div",{className:"message-container"},a.createElement(Wc,{role:"assistant"},a.createElement(Lc,{variant:"text",width:"100%"}),a.createElement(Lc,{variant:"text",width:"100%"}),a.createElement(Lc,{variant:"text",width:200}))),r&&a.createElement("div",{className:"message-container"},a.createElement(qc,null,r))))}))`
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 300px);
@@ -288,10 +299,6 @@ function(e,t){return(0,a.Z)(e,t)}(e,(0,o.Z)({shouldForwardProp:S,label:undefined
   .message {
     max-width: 900px;
     margin: 0 auto;
-  }
-
-  .spacer {
-    height: 140px;
   }
 `,Xc=ks.Z.div`
   z-index: 10;
