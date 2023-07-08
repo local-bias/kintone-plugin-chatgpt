@@ -16,6 +16,7 @@ import { PluginFooter } from '@konomi-app/kintone-utility-component';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 import { produce } from 'immer';
 import { OPENAI_ENDPOINT_ROOT, VIEW_ROOT_ID } from '@/lib/static';
+import { GUEST_SPACE_ID } from '@/lib/global';
 
 type Props = {
   onSaveButtonClick: () => void;
@@ -80,7 +81,12 @@ const Container: FC = () => {
           if (!app) {
             throw new Error('アプリのフィールド情報が取得できませんでした');
           }
-          const { views } = await getViews({ app, preview: true });
+          const { views } = await getViews({
+            app,
+            preview: true,
+            guestSpaceId: GUEST_SPACE_ID,
+            debug: process.env.NODE_ENV === 'development',
+          });
 
           const newViews = produce(views, (draft) => {
             const viewId = storage?.viewId;
@@ -95,6 +101,7 @@ const Container: FC = () => {
           await updateViews({
             app,
             views: newViews,
+            guestSpaceId: GUEST_SPACE_ID,
             debug: process.env.NODE_ENV === 'development',
           });
 

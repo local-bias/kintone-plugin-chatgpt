@@ -8,15 +8,15 @@ import {
 } from '@konomi-app/kintone-utilities';
 import { outputAppIdState } from './plugin';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
+import { GUEST_SPACE_ID } from '@/lib/global';
 
 const PREFIX = 'kintone';
 
 export const allKintoneAppsState = selector({
   key: `${PREFIX}allKintoneAppsState`,
-  get: async ({ get }) => {
-    const guestSpaceId = get(guestSpaceIdState);
+  get: async () => {
     const apps = await getAllApps({
-      guestSpaceId: guestSpaceId ?? undefined,
+      guestSpaceId: GUEST_SPACE_ID,
       debug: process?.env?.NODE_ENV === 'development',
     });
     return apps;
@@ -34,6 +34,7 @@ export const allAppViewsState = selector<Record<string, kintoneAPI.view.Response
     const { views } = await getViews({
       app,
       preview: true,
+      guestSpaceId: GUEST_SPACE_ID,
       debug: process?.env?.NODE_ENV === 'development',
     });
     return views;
@@ -62,11 +63,10 @@ export const outputAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
       return [];
     }
 
-    const guestSpaceId = get(guestSpaceIdState);
     const { properties } = await await getFormFields({
       app: appId,
       preview: true,
-      guestSpaceId: guestSpaceId ?? undefined,
+      guestSpaceId: GUEST_SPACE_ID,
       debug: process.env.NODE_ENV === 'development',
     });
     const filtered = filterFieldProperties(
@@ -96,14 +96,5 @@ export const outputAppTextPropertiesState = selector<kintoneAPI.FieldProperty[]>
         field.type === 'MULTI_LINE_TEXT' ||
         field.type === 'SINGLE_LINE_TEXT'
     );
-  },
-});
-
-export const guestSpaceIdState = selector<string | null>({
-  key: `${PREFIX}guestSpaceIdState`,
-  get: () => {
-    const matchArray = location.pathname.match(/^\/k\/guest\/(\d+)/);
-    const guestSpaceId = matchArray ? matchArray[1] : null;
-    return guestSpaceId;
   },
 });
