@@ -3,13 +3,11 @@ import { KintoneEventListener, restoreStorage } from '@konomi-app/kintone-utilit
 import { createRoot } from 'react-dom/client';
 import App from './app';
 import React from 'react';
+import { PLUGIN_ID } from '@/lib/global';
 
 export default (listener: KintoneEventListener) => {
-  listener.add(['app.record.index.show'], (event, { pluginId }) => {
-    if (!pluginId) {
-      return event;
-    }
-    const config = restoreStorage<kintone.plugin.Storage>(pluginId);
+  listener.add(['app.record.index.show'], (event) => {
+    const config = restoreStorage<kintone.plugin.Storage>(PLUGIN_ID);
     if (!config || config?.viewId !== String(event.viewId)) {
       return event;
     }
@@ -18,7 +16,7 @@ export default (listener: KintoneEventListener) => {
       return event;
     }
     const root = createRoot(rootElement);
-    root.render(<App pluginId={pluginId} config={config} />);
+    root.render(<App config={config} />);
 
     return event;
   });

@@ -5,14 +5,12 @@ import {
   CreateChatCompletionResponse,
 } from 'openai';
 import { marked } from 'marked';
+import { PLUGIN_ID } from '@/lib/global';
 
 marked.use({ mangle: false, headerIds: false });
 
-export const fetchChatCompletion = async (params: {
-  pluginId: string;
-  messages: ChatCompletionRequestMessage[];
-}) => {
-  const { messages, pluginId } = params;
+export const fetchChatCompletion = async (params: { messages: ChatCompletionRequestMessage[] }) => {
+  const { messages } = params;
 
   const requestBody: CreateChatCompletionRequest = {
     model: 'gpt-3.5-turbo',
@@ -22,7 +20,7 @@ export const fetchChatCompletion = async (params: {
   };
 
   const [responseBody, responseCode, responseHeader] = await kintone.plugin.app.proxy(
-    pluginId,
+    PLUGIN_ID,
     OPENAI_ENDPOINT,
     'POST',
     {},

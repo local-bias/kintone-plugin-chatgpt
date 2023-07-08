@@ -1,4 +1,3 @@
-import { restoreStorage } from '@konomi-app/kintone-utilities';
 import { SnackbarProvider } from 'notistack';
 import React, { FC, Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
@@ -7,17 +6,14 @@ import { PluginErrorBoundary } from '@/lib/components/error-boundary';
 import { OPENAI_ENDPOINT_ROOT, URL_BANNER, URL_PROMOTION } from '@/lib/static';
 import Footer from './components/model/footer';
 import Form from './components/model/form';
-import { apiKeyState, pluginIdState, storageState } from './states/plugin';
-import { createConfig } from '@/lib/plugin';
+import { apiKeyState } from './states/plugin';
 import { PluginBanner, PluginContent, PluginLayout } from '@konomi-app/kintone-utility-component';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 
-const Component: FC<{ pluginId: string }> = ({ pluginId }) => (
+const Component: FC = () => (
   <Suspense fallback={<LoaderWithLabel label='画面の描画を待機しています' />}>
     <RecoilRoot
       initializeState={({ set }) => {
-        set(pluginIdState, pluginId);
-        set(storageState, restoreStorage<kintone.plugin.Storage>(pluginId) ?? createConfig());
         const proxyConfig = kintone.plugin.app.getProxyConfig(OPENAI_ENDPOINT_ROOT, 'POST');
         set(apiKeyState, proxyConfig?.headers.Authorization.replace('Bearer ', '') ?? '');
       }}

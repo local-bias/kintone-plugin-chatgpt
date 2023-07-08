@@ -6,11 +6,6 @@ export type ChatHistory = { id: string; title: string; messages: ChatCompletionR
 
 const PREFIX = 'kintone';
 
-export const pluginIdState = atom<string>({
-  key: `${PREFIX}pluginIdState`,
-  default: '',
-});
-
 export const pluginConfigState = atom<kintone.plugin.Storage | null>({
   key: `${PREFIX}pluginConfigState`,
   default: null,
@@ -42,7 +37,7 @@ export const chatMessagesState = selector<ChatCompletionRequestMessage[]>({
 
     return selectedHistory.messages.map((message) => ({
       ...message,
-      content: getHTMLfromMarkdown(message.content),
+      content: getHTMLfromMarkdown(message.content ?? ''),
     }));
   },
 });

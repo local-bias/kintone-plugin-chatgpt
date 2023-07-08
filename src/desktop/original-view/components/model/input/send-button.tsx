@@ -4,7 +4,6 @@ import {
   chatHistoriesState,
   inputTextState,
   pluginConfigState,
-  pluginIdState,
   selectedHistoryIdState,
   waitingForResponseState,
 } from '@/desktop/original-view/states/states';
@@ -73,8 +72,7 @@ const Component: FCX = ({ className }) => {
               }
             })
           );
-          const pluginId = await snapshot.getPromise(pluginIdState);
-          const response = await fetchChatCompletion({ pluginId, messages: updatedChatMessages });
+          const response = await fetchChatCompletion({ messages: updatedChatMessages });
 
           const assistantMessage = response.choices[0].message;
           if (assistantMessage) {
