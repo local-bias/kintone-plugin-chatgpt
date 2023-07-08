@@ -31,7 +31,7 @@ const Input: FC = () => {
 const Component: FCX = ({ className }) => {
   return (
     <div {...{ className }}>
-      <Suspense fallback={<Skeleton width={350} height={56} />}>
+      <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
         <Input />
       </Suspense>
       <small>選択できる一覧の表示形式は「カスタマイズ」のみです</small>

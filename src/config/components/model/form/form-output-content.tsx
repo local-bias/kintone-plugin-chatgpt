@@ -24,7 +24,7 @@ const Component: FCX = () => {
 
 const Container: FC = () => {
   return (
-    <Suspense fallback={<Skeleton width={350} height={56} />}>
+    <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
       <Component />
     </Suspense>
   );
