@@ -4,6 +4,7 @@ declare namespace kintone {
     type Storage = {
       viewId: string;
       outputAppId: string;
+      outputAppSpaceId?: string;
       outputContentFieldCode: string;
     };
   }

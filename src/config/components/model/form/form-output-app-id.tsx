@@ -1,5 +1,6 @@
 import { allKintoneAppsState } from '@/config/states/kintone';
-import { outputAppIdState } from '@/config/states/plugin';
+import { outputAppIdState, outputAppSpaceIdState } from '@/config/states/plugin';
+import { App } from '@kintone/rest-api-client/lib/src/client/types';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
@@ -10,8 +11,12 @@ const Component: FCX = () => {
 
   const onAppChange = useRecoilCallback(
     ({ set }) =>
-      (value: string) => {
-        set(outputAppIdState, value);
+      (app: App | null) => {
+        if (!app) {
+          return;
+        }
+        set(outputAppIdState, app.appId);
+        set(outputAppSpaceIdState, app.spaceId ?? undefined);
       },
     []
   );
@@ -23,7 +28,7 @@ const Component: FCX = () => {
       options={allApps}
       isOptionEqualToValue={(option, v) => option.appId === v.appId}
       getOptionLabel={(app) => `${app.name}(id: ${app.appId})`}
-      onChange={(_, app) => onAppChange(app?.appId ?? '')}
+      onChange={(_, app) => onAppChange(app)}
       renderInput={(params) => (
         <TextField {...params} label='アプリID' variant='outlined' color='primary' />
       )}
@@ -33,7 +38,7 @@ const Component: FCX = () => {
 
 const Container: FC = () => {
   return (
-    <Suspense fallback={<Skeleton width={350} height={56} />}>
+    <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
       <Component />
     </Suspense>
   );

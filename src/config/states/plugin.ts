@@ -51,6 +51,21 @@ export const outputAppIdState = selector<string>({
   },
 });
 
+export const outputAppSpaceIdState = selector<string | undefined>({
+  key: `${PREFIX}outputAppSpaceIdState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage.outputAppSpaceId;
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft.outputAppSpaceId = newValue as string | undefined;
+      })
+    );
+  },
+});
+
 export const outputContentFieldCodeState = selector<string>({
   key: `${PREFIX}outputContentFieldCodeState`,
   get: ({ get }) => {

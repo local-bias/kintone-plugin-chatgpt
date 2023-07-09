@@ -8,7 +8,7 @@ import {
   waitingForResponseState,
 } from '@/desktop/original-view/states/states';
 import styled from '@emotion/styled';
-import { addRecord, updateRecord } from '@konomi-app/kintone-utilities';
+import { addRecord, updateRecord, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
 import SendIcon from '@mui/icons-material/Send';
 import { Button } from '@mui/material';
 import { produce } from 'immer';
@@ -26,7 +26,7 @@ const Component: FCX = ({ className }) => {
         try {
           set(waitingForResponseState, true);
           const config = await snapshot.getPromise(pluginConfigState);
-          const { outputAppId, outputContentFieldCode } = config ?? {};
+          const { outputAppId, outputAppSpaceId, outputContentFieldCode } = config ?? {};
           const input = await snapshot.getPromise(inputTextState);
           if (input === '') {
             return;
@@ -46,10 +46,14 @@ const Component: FCX = ({ className }) => {
           let historyId = selectedHistoryId;
           if (!selectedHistoryId) {
             if (outputAppId && outputContentFieldCode) {
-              const { id } = await addRecord({
-                app: outputAppId,
-                record: {
-                  [outputContentFieldCode]: { value: JSON.stringify(updatedChatMessages) },
+              const { id } = await withSpaceIdFallback({
+                spaceId: outputAppSpaceId,
+                func: addRecord,
+                funcParams: {
+                  app: outputAppId,
+                  record: {
+                    [outputContentFieldCode]: { value: JSON.stringify(updatedChatMessages) },
+                  },
                 },
               });
               historyId = id;
@@ -66,6 +70,7 @@ const Component: FCX = ({ className }) => {
               } else {
                 draft.unshift({
                   id: historyId!,
+                  /**@ts-ignore */
                   title: updatedChatMessages[0]?.content.slice(0, 8) ?? historyId!,
                   messages: updatedChatMessages,
                 });
@@ -81,11 +86,17 @@ const Component: FCX = ({ className }) => {
               { ...assistantMessage, content: assistantMessage.content },
             ];
             if (outputAppId && outputContentFieldCode) {
-              await updateRecord({
-                app: outputAppId,
-                id: historyId!,
-                record: { [outputContentFieldCode]: { value: JSON.stringify(mergedChatMessages) } },
-                debug: process.env.NODE_ENV === 'development',
+              await withSpaceIdFallback({
+                spaceId: outputAppSpaceId,
+                func: updateRecord,
+                funcParams: {
+                  app: outputAppId,
+                  id: historyId!,
+                  record: {
+                    [outputContentFieldCode]: { value: JSON.stringify(mergedChatMessages) },
+                  },
+                  debug: process.env.NODE_ENV === 'development',
+                },
               });
             }
             set(chatHistoriesState, (histories) =>

@@ -5,8 +5,9 @@ import {
   filterFieldProperties,
   getAllApps,
   getViews,
+  withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
-import { outputAppIdState } from './plugin';
+import { outputAppIdState, outputAppSpaceIdState } from './plugin';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 import { GUEST_SPACE_ID } from '@/lib/global';
 
@@ -62,13 +63,18 @@ export const outputAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
     if (!appId) {
       return [];
     }
+    const appSpaceId = get(outputAppSpaceIdState);
 
-    const { properties } = await await getFormFields({
-      app: appId,
-      preview: true,
-      guestSpaceId: GUEST_SPACE_ID,
-      debug: process.env.NODE_ENV === 'development',
+    const { properties } = await withSpaceIdFallback({
+      spaceId: appSpaceId,
+      func: getFormFields,
+      funcParams: {
+        app: appId,
+        preview: true,
+        debug: process.env.NODE_ENV === 'development',
+      },
     });
+
     const filtered = filterFieldProperties(
       properties,
       (field) => !['GROUP', 'SUBTABLE'].includes(field.type)

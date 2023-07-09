@@ -1,7 +1,7 @@
 import { FC, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { chatHistoriesState, historiesFetchedState, pluginConfigState } from '../../states/states';
-import { getAllRecords } from '@konomi-app/kintone-utilities';
+import { getAllRecords, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
 import { ChatCompletionRequestMessage } from 'openai';
 
 const Component: FC = () => {
@@ -13,15 +13,20 @@ const Component: FC = () => {
     if (!config) {
       return;
     }
-    const { outputAppId, outputContentFieldCode } = config;
+    const { outputAppId, outputAppSpaceId, outputContentFieldCode } = config;
     if (!outputAppId || !outputContentFieldCode) {
       setHistoriesFetched(true);
       return;
     }
     (async () => {
-      const records = await getAllRecords({
-        app: outputAppId,
-        fields: ['$id', outputContentFieldCode],
+      const records = await withSpaceIdFallback({
+        spaceId: outputAppSpaceId,
+        func: getAllRecords,
+        funcParams: {
+          app: outputAppId,
+          fields: ['$id', outputContentFieldCode],
+          debug: process.env.NODE_ENV === 'development',
+        },
       });
       const histories = records
         .filter(
@@ -34,6 +39,7 @@ const Component: FC = () => {
             record[outputContentFieldCode].value as string
           );
           const id = record.$id.value as string;
+          //@ts-ignore
           return { id, title: messages[0]?.content.slice(0, 8) ?? id, messages };
         });
       process.env.NODE_ENV === 'development' && console.log('⌛ histories', histories);
