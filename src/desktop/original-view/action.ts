@@ -2,7 +2,13 @@ import { OPENAI_ENDPOINT } from '@/lib/static';
 import { CreateChatCompletionRequest, CreateChatCompletionResponse } from 'openai';
 import { marked } from 'marked';
 import { PLUGIN_ID } from '@/lib/global';
-import { ChatMessage } from './states/states';
+import { ChatHistory, ChatMessage } from './states/states';
+import {
+  addRecord,
+  getRecords,
+  updateRecord,
+  withSpaceIdFallback,
+} from '@konomi-app/kintone-utilities';
 
 marked.use({ mangle: false, headerIds: false });
 
@@ -48,4 +54,49 @@ export const fetchChatCompletion = async (params: { model: string; messages: Cha
 export const getHTMLfromMarkdown = (markdown: string) => {
   const html = marked(markdown);
   return html;
+};
+
+export const logChatCompletion = async (params: {
+  chatHistory: ChatHistory;
+  appId: string;
+  spaceId?: string;
+  keyFieldCode: string;
+  contentFieldCode: string;
+}) => {
+  const { chatHistory, appId, spaceId, keyFieldCode, contentFieldCode } = params;
+
+  const chatId = chatHistory.id;
+
+  const { records } = await withSpaceIdFallback({
+    spaceId,
+    func: getRecords,
+    funcParams: { app: appId, query: `${keyFieldCode} = "${chatId}"`, fields: ['$id'] },
+  });
+
+  if (!records.length) {
+    await withSpaceIdFallback({
+      spaceId,
+      func: addRecord,
+      funcParams: {
+        app: appId,
+        record: {
+          [keyFieldCode]: { value: chatId },
+          [contentFieldCode]: { value: JSON.stringify(chatHistory) },
+        },
+      },
+    });
+  } else {
+    await withSpaceIdFallback({
+      spaceId,
+      func: updateRecord,
+      funcParams: {
+        app: appId,
+        id: records[0].$id.value,
+        record: {
+          [keyFieldCode]: { value: chatId },
+          [contentFieldCode]: { value: JSON.stringify(chatHistory) },
+        },
+      },
+    });
+  }
 };

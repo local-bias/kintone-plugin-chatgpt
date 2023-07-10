@@ -1,6 +1,6 @@
-import { fetchChatCompletion } from '@/desktop/original-view/action';
+import { fetchChatCompletion, logChatCompletion } from '@/desktop/original-view/action';
 import {
-  ChatMessage,
+  ChatHistory,
   apiErrorMessageState,
   chatHistoriesState,
   inputTextState,
@@ -14,7 +14,6 @@ import { addRecord, updateRecord, withSpaceIdFallback } from '@konomi-app/kinton
 import SendIcon from '@mui/icons-material/Send';
 import { Button } from '@mui/material';
 import { produce } from 'immer';
-import { ChatCompletionRequestMessage } from 'openai';
 import React, { FCX } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 
@@ -35,6 +34,7 @@ const Component: FCX = ({ className }) => {
             outputContentFieldCode,
             logAppId,
             logAppSpaceId,
+            logKeyFieldCode,
             logContentFieldCode,
           } = config ?? {};
           const input = await snapshot.getPromise(inputTextState);
@@ -46,13 +46,15 @@ const Component: FCX = ({ className }) => {
 
           const selectedHistoryId = await snapshot.getPromise(selectedHistoryIdState);
           const histories = await snapshot.getPromise(chatHistoriesState);
-          const chatHisory = histories.find((history) => history.id === selectedHistoryId);
-          const chatMessages = chatHisory?.messages ?? [];
+          const chatHisory = histories.find((history) => history.id === selectedHistoryId) ?? {
+            id: '',
+            title: input.slice(0, 8),
+            messages: [],
+          };
 
-          const updatedChatMessages: ChatMessage[] = [
-            ...chatMessages,
-            { role: 'user', content: input },
-          ];
+          const updatedChatHistory = produce(chatHisory, (draft) => {
+            draft.messages.push({ role: 'user', content: input });
+          });
           let historyId = selectedHistoryId;
           if (!selectedHistoryId) {
             if (outputAppId && outputContentFieldCode) {
@@ -62,7 +64,7 @@ const Component: FCX = ({ className }) => {
                 funcParams: {
                   app: outputAppId,
                   record: {
-                    [outputContentFieldCode]: { value: JSON.stringify(updatedChatMessages) },
+                    [outputContentFieldCode]: { value: JSON.stringify(updatedChatHistory) },
                   },
                 },
               });
@@ -72,32 +74,27 @@ const Component: FCX = ({ className }) => {
             }
             set(selectedHistoryIdState, historyId);
           }
+          const historyWithId: ChatHistory = { ...updatedChatHistory, id: historyId! };
           set(chatHistoriesState, (histories) =>
             produce(histories, (draft) => {
-              const history = draft.find((history) => history.id === historyId);
-              if (history) {
-                history.messages = updatedChatMessages;
+              const index = draft.findIndex((history) => history.id === historyId);
+              if (index !== -1) {
+                draft[index] = historyWithId;
               } else {
-                draft.unshift({
-                  id: historyId!,
-                  /**@ts-ignore */
-                  title: updatedChatMessages[0]?.content.slice(0, 8) ?? historyId!,
-                  messages: updatedChatMessages,
-                });
+                draft.unshift(historyWithId);
               }
             })
           );
           const response = await fetchChatCompletion({
             model: aiModel,
-            messages: updatedChatMessages,
+            messages: historyWithId.messages,
           });
 
           const assistantMessage = response.choices[0].message;
           if (assistantMessage) {
-            const mergedChatMessages: ChatMessage[] = [
-              ...updatedChatMessages,
-              { role: assistantMessage.role, content: assistantMessage.content ?? '' },
-            ];
+            const historyWithAssistantMessage = produce(historyWithId, (draft) => {
+              draft.messages.push({ role: 'assistant', content: assistantMessage.content ?? '' });
+            });
             if (outputAppId && outputContentFieldCode) {
               await withSpaceIdFallback({
                 spaceId: outputAppSpaceId,
@@ -106,7 +103,9 @@ const Component: FCX = ({ className }) => {
                   app: outputAppId,
                   id: historyId!,
                   record: {
-                    [outputContentFieldCode]: { value: JSON.stringify(mergedChatMessages) },
+                    [outputContentFieldCode]: {
+                      value: JSON.stringify(historyWithAssistantMessage),
+                    },
                   },
                   debug: process.env.NODE_ENV === 'development',
                 },
@@ -114,12 +113,22 @@ const Component: FCX = ({ className }) => {
             }
             set(chatHistoriesState, (histories) =>
               produce(histories, (draft) => {
-                const history = draft.find((history) => history.id === historyId);
-                if (history) {
-                  history.messages = mergedChatMessages;
+                const index = draft.findIndex((history) => history.id === historyId);
+                if (index !== -1) {
+                  draft[index] = historyWithAssistantMessage;
                 }
               })
             );
+            set(waitingForResponseState, false);
+            if (logAppId && logContentFieldCode && logKeyFieldCode) {
+              await logChatCompletion({
+                appId: logAppId,
+                spaceId: logAppSpaceId,
+                keyFieldCode: logKeyFieldCode,
+                contentFieldCode: logContentFieldCode,
+                chatHistory: historyWithAssistantMessage,
+              });
+            }
           }
         } catch (error: any) {
           if (error instanceof Error) {

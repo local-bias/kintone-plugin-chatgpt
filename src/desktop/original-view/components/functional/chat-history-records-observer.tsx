@@ -1,13 +1,12 @@
 import { FC, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import {
-  ChatMessage,
+  ChatHistory,
   chatHistoriesState,
   historiesFetchedState,
   pluginConfigState,
 } from '../../states/states';
 import { getAllRecords, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
-import { ChatCompletionRequestMessage } from 'openai';
 
 const Component: FC = () => {
   const config = useRecoilValue(pluginConfigState);
@@ -40,12 +39,8 @@ const Component: FC = () => {
             typeof record[outputContentFieldCode].value === 'string'
         )
         .map((record) => {
-          const messages: ChatMessage[] = JSON.parse(
-            record[outputContentFieldCode].value as string
-          );
-          const id = record.$id.value as string;
-          //@ts-ignore
-          return { id, title: messages[0]?.content.slice(0, 8) ?? id, messages };
+          const history: ChatHistory = JSON.parse(record[outputContentFieldCode].value as string);
+          return history;
         });
       process.env.NODE_ENV === 'development' && console.log('⌛ histories', histories);
       setChatHistoryRecords((_current) => [..._current, ...histories]);
