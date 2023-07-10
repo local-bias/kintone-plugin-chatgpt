@@ -127,6 +127,21 @@ export const logAppSpaceIdState = selector<string | undefined>({
   },
 });
 
+export const logKeyFieldCodeState = selector<string>({
+  key: `${PREFIX}logKeyFieldCodeState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage?.logKeyFieldCode ?? '';
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft!.logKeyFieldCode = newValue as string;
+      })
+    );
+  },
+});
+
 export const logContentFieldCodeState = selector<string>({
   key: `${PREFIX}logContentFieldCodeState`,
   get: ({ get }) => {

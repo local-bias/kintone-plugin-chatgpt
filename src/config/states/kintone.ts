@@ -7,7 +7,14 @@ import {
   getViews,
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
-import { outputAppIdState, outputAppSpaceIdState } from './plugin';
+import {
+  logAppIdState,
+  logAppSpaceIdState,
+  logContentFieldCodeState,
+  logKeyFieldCodeState,
+  outputAppIdState,
+  outputAppSpaceIdState,
+} from './plugin';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 import { GUEST_SPACE_ID } from '@/lib/global';
 
@@ -84,16 +91,8 @@ export const outputAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
   },
 });
 
-export const outputAppUserSelectPropertiesState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}outputAppUserSelectPropertiesState`,
-  get: async ({ get }) => {
-    const allProperties = get(outputAppPropertiesState);
-    return allProperties.filter((field) => field.type === 'USER_SELECT');
-  },
-});
-
 export const outputAppTextPropertiesState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}outputAppRichTextPropertiesState`,
+  key: `${PREFIX}outputAppTextPropertiesState`,
   get: async ({ get }) => {
     const allProperties = get(outputAppPropertiesState);
     return allProperties.filter(
@@ -102,5 +101,64 @@ export const outputAppTextPropertiesState = selector<kintoneAPI.FieldProperty[]>
         field.type === 'MULTI_LINE_TEXT' ||
         field.type === 'SINGLE_LINE_TEXT'
     );
+  },
+});
+
+export const logAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
+  key: `${PREFIX}logAppPropertiesState`,
+  get: async ({ get }) => {
+    const appId = get(logAppIdState);
+    if (!appId) {
+      return [];
+    }
+    const appSpaceId = get(logAppSpaceIdState);
+
+    const { properties } = await withSpaceIdFallback({
+      spaceId: appSpaceId,
+      func: getFormFields,
+      funcParams: {
+        app: appId,
+        preview: true,
+        debug: process.env.NODE_ENV === 'development',
+      },
+    });
+
+    const filtered = filterFieldProperties(
+      properties,
+      (field) => !['GROUP', 'SUBTABLE'].includes(field.type)
+    );
+
+    return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
+  },
+});
+
+export const logAppTextPropertiesState = selector<kintoneAPI.FieldProperty[]>({
+  key: `${PREFIX}logAppTextPropertiesState`,
+  get: async ({ get }) => {
+    const allProperties = get(logAppPropertiesState);
+    return allProperties.filter(
+      (field) =>
+        field.type === 'RICH_TEXT' ||
+        field.type === 'MULTI_LINE_TEXT' ||
+        field.type === 'SINGLE_LINE_TEXT'
+    );
+  },
+});
+
+export const logAppTextPropertiesWithoutContentState = selector<kintoneAPI.FieldProperty[]>({
+  key: `${PREFIX}logAppTextPropertiesWithoutContentState`,
+  get: async ({ get }) => {
+    const allProperties = get(logAppTextPropertiesState);
+    const contentFieldCode = get(logContentFieldCodeState);
+    return allProperties.filter((field) => field.code !== contentFieldCode);
+  },
+});
+
+export const logAppTextPropertiesWithoutKeyState = selector<kintoneAPI.FieldProperty[]>({
+  key: `${PREFIX}logAppTextPropertiesWithoutKeyState`,
+  get: async ({ get }) => {
+    const allProperties = get(logAppTextPropertiesState);
+    const keyFieldCode = get(logKeyFieldCodeState);
+    return allProperties.filter((field) => field.code !== keyFieldCode);
   },
 });

@@ -9,6 +9,7 @@ declare namespace kintone {
       outputContentFieldCode: string;
       logAppId?: string;
       logAppSpaceId?: string;
+      logKeyFieldCode?: string;
       logContentFieldCode?: string;
     };
   }

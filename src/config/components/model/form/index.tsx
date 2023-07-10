@@ -6,6 +6,7 @@ import OutputAppIdForm from './form-output-app-id';
 import OutputContentForm from './form-output-content';
 import LogAppIdForm from './form-log-app-id';
 import LogContentForm from './form-log-content';
+import LogKeyForm from './form-log-key';
 import AIModelForm from './form-ai-model';
 import {
   PluginFormTitle,
@@ -71,10 +72,16 @@ const Component: FCX = ({ className }) => {
         <PluginFormDescription last>
           ここで設定したデータはユーザーが削除しても残り続けます。
         </PluginFormDescription>
-        <div>
+        <div style={{ marginBottom: '16px' }}>
           <LogAppIdForm />
         </div>
-        <div style={{ marginTop: '16px' }}>
+        <PluginFormDescription last>
+          ログを円滑に更新するために、チャットとログを紐づけるキー情報を格納するフィールドが必要になります。
+        </PluginFormDescription>
+        <div style={{ marginBottom: '16px' }}>
+          <LogKeyForm />
+        </div>
+        <div>
           <LogContentForm />
         </div>
       </PluginFormSection>

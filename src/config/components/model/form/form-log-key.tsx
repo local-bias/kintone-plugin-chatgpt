@@ -1,25 +1,25 @@
-import { logAppTextPropertiesWithoutKeyState } from '@/config/states/kintone';
-import { logContentFieldCodeState } from '@/config/states/plugin';
+import { logAppTextPropertiesWithoutContentState } from '@/config/states/kintone';
+import { logKeyFieldCodeState } from '@/config/states/plugin';
 import { Skeleton } from '@mui/material';
 import React, { FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { AutocompleteKintoneField } from './autocomplete-field-input';
 
 const Component: FCX = () => {
-  const fields = useRecoilValue(logAppTextPropertiesWithoutKeyState);
-  const fieldCode = useRecoilValue(logContentFieldCodeState);
+  const fields = useRecoilValue(logAppTextPropertiesWithoutContentState);
+  const fieldCode = useRecoilValue(logKeyFieldCodeState);
 
   const onFieldChange = useRecoilCallback(
     ({ set }) =>
       (value: string) => {
-        set(logContentFieldCodeState, value);
+        set(logKeyFieldCodeState, value);
       },
     []
   );
 
   return (
     <AutocompleteKintoneField
-      label='内容を格納するフィールド'
+      label='キー情報を格納するフィールド'
       fields={fields}
       fieldCode={fieldCode}
       onChange={onFieldChange}
