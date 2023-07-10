@@ -1,8 +1,13 @@
-import { ChatCompletionRequestMessage } from 'openai';
+import { ChatCompletionResponseMessageRoleEnum } from 'openai';
 import { atom, selector } from 'recoil';
 import { getHTMLfromMarkdown } from '../action';
 
-export type ChatHistory = { id: string; title: string; messages: ChatCompletionRequestMessage[] };
+export type ChatMessage = {
+  role: ChatCompletionResponseMessageRoleEnum;
+  content: string;
+};
+
+export type ChatHistory = { id: string; title: string; messages: ChatMessage[] };
 
 const PREFIX = 'kintone';
 
@@ -21,7 +26,7 @@ export const waitingForResponseState = atom<boolean>({
   default: false,
 });
 
-export const chatMessagesState = selector<ChatCompletionRequestMessage[]>({
+export const chatMessagesState = selector<ChatMessage[]>({
   key: `${PREFIX}chatMessagesState`,
   get: ({ get }) => {
     const chatHistory = get(chatHistoriesState);

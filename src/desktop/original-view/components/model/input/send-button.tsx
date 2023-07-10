@@ -1,5 +1,6 @@
 import { fetchChatCompletion } from '@/desktop/original-view/action';
 import {
+  ChatMessage,
   apiErrorMessageState,
   chatHistoriesState,
   inputTextState,
@@ -48,7 +49,7 @@ const Component: FCX = ({ className }) => {
           const chatHisory = histories.find((history) => history.id === selectedHistoryId);
           const chatMessages = chatHisory?.messages ?? [];
 
-          const updatedChatMessages: ChatCompletionRequestMessage[] = [
+          const updatedChatMessages: ChatMessage[] = [
             ...chatMessages,
             { role: 'user', content: input },
           ];
@@ -93,9 +94,9 @@ const Component: FCX = ({ className }) => {
 
           const assistantMessage = response.choices[0].message;
           if (assistantMessage) {
-            const mergedChatMessages = [
+            const mergedChatMessages: ChatMessage[] = [
               ...updatedChatMessages,
-              { ...assistantMessage, content: assistantMessage.content },
+              { role: assistantMessage.role, content: assistantMessage.content ?? '' },
             ];
             if (outputAppId && outputContentFieldCode) {
               await withSpaceIdFallback({

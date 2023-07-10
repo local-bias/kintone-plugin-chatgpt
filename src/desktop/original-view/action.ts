@@ -1,18 +1,12 @@
 import { OPENAI_ENDPOINT } from '@/lib/static';
-import {
-  ChatCompletionRequestMessage,
-  CreateChatCompletionRequest,
-  CreateChatCompletionResponse,
-} from 'openai';
+import { CreateChatCompletionRequest, CreateChatCompletionResponse } from 'openai';
 import { marked } from 'marked';
 import { PLUGIN_ID } from '@/lib/global';
+import { ChatMessage } from './states/states';
 
 marked.use({ mangle: false, headerIds: false });
 
-export const fetchChatCompletion = async (params: {
-  model: string;
-  messages: ChatCompletionRequestMessage[];
-}) => {
+export const fetchChatCompletion = async (params: { model: string; messages: ChatMessage[] }) => {
   const { model, messages } = params;
 
   const requestBody: CreateChatCompletionRequest = {

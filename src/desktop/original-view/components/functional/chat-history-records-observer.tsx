@@ -1,6 +1,11 @@
 import { FC, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import { chatHistoriesState, historiesFetchedState, pluginConfigState } from '../../states/states';
+import {
+  ChatMessage,
+  chatHistoriesState,
+  historiesFetchedState,
+  pluginConfigState,
+} from '../../states/states';
 import { getAllRecords, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
 import { ChatCompletionRequestMessage } from 'openai';
 
@@ -35,7 +40,7 @@ const Component: FC = () => {
             typeof record[outputContentFieldCode].value === 'string'
         )
         .map((record) => {
-          const messages: ChatCompletionRequestMessage[] = JSON.parse(
+          const messages: ChatMessage[] = JSON.parse(
             record[outputContentFieldCode].value as string
           );
           const id = record.$id.value as string;
