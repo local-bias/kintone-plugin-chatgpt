@@ -1,5 +1,6 @@
 import { PLUGIN_ID } from '@/lib/global';
 import { createConfig } from '@/lib/plugin';
+import { OPENAI_MODELS } from '@/lib/static';
 import { restoreStorage } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { atom, selector } from 'recoil';
@@ -19,6 +20,21 @@ export const loadingState = atom<boolean>({
 export const apiKeyState = atom<string>({
   key: `${PREFIX}apiKeyState`,
   default: '',
+});
+
+export const aiModelState = selector<string>({
+  key: `${PREFIX}aiModelState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage?.aiModel ?? OPENAI_MODELS[0];
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft!.aiModel = newValue as string;
+      })
+    );
+  },
 });
 
 export const viewIdState = selector<string>({
@@ -76,6 +92,51 @@ export const outputContentFieldCodeState = selector<string>({
     set(storageState, (current) =>
       produce(current, (draft) => {
         draft!.outputContentFieldCode = newValue as string;
+      })
+    );
+  },
+});
+
+export const logAppIdState = selector<string>({
+  key: `${PREFIX}logAppIdState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage?.logAppId ?? '';
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft!.logAppId = newValue as string;
+      })
+    );
+  },
+});
+
+export const logAppSpaceIdState = selector<string | undefined>({
+  key: `${PREFIX}logAppSpaceIdState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage.logAppSpaceId;
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft.logAppSpaceId = newValue as string | undefined;
+      })
+    );
+  },
+});
+
+export const logContentFieldCodeState = selector<string>({
+  key: `${PREFIX}logContentFieldCodeState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage?.logContentFieldCode ?? '';
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft!.logContentFieldCode = newValue as string;
       })
     );
   },

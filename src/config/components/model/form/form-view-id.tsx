@@ -34,7 +34,6 @@ const Component: FCX = ({ className }) => {
       <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
         <Input />
       </Suspense>
-      <small>選択できる一覧の表示形式は「カスタマイズ」のみです</small>
     </div>
   );
 };
@@ -44,10 +43,6 @@ const StyledComponent = styled(Component)`
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
-
-  small {
-    color: #ffb347;
-  }
 
   & > div {
     width: 250px;

@@ -9,11 +9,14 @@ import { PLUGIN_ID } from '@/lib/global';
 
 marked.use({ mangle: false, headerIds: false });
 
-export const fetchChatCompletion = async (params: { messages: ChatCompletionRequestMessage[] }) => {
-  const { messages } = params;
+export const fetchChatCompletion = async (params: {
+  model: string;
+  messages: ChatCompletionRequestMessage[];
+}) => {
+  const { model, messages } = params;
 
   const requestBody: CreateChatCompletionRequest = {
-    model: 'gpt-3.5-turbo',
+    model,
     temperature: 0.7,
     max_tokens: process.env.NODE_ENV === 'development' ? 512 : 2048,
     messages,

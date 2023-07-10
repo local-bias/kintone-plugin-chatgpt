@@ -7,6 +7,7 @@ import {
   selectedHistoryIdState,
   waitingForResponseState,
 } from '@/desktop/original-view/states/states';
+import { OPENAI_MODELS } from '@/lib/static';
 import styled from '@emotion/styled';
 import { addRecord, updateRecord, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
 import SendIcon from '@mui/icons-material/Send';
@@ -26,7 +27,15 @@ const Component: FCX = ({ className }) => {
         try {
           set(waitingForResponseState, true);
           const config = await snapshot.getPromise(pluginConfigState);
-          const { outputAppId, outputAppSpaceId, outputContentFieldCode } = config ?? {};
+          const {
+            aiModel = OPENAI_MODELS[0],
+            outputAppId,
+            outputAppSpaceId,
+            outputContentFieldCode,
+            logAppId,
+            logAppSpaceId,
+            logContentFieldCode,
+          } = config ?? {};
           const input = await snapshot.getPromise(inputTextState);
           if (input === '') {
             return;
@@ -77,7 +86,10 @@ const Component: FCX = ({ className }) => {
               }
             })
           );
-          const response = await fetchChatCompletion({ messages: updatedChatMessages });
+          const response = await fetchChatCompletion({
+            model: aiModel,
+            messages: updatedChatMessages,
+          });
 
           const assistantMessage = response.choices[0].message;
           if (assistantMessage) {
