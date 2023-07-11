@@ -16,6 +16,11 @@ export const pluginConfigState = atom<kintone.plugin.Storage | null>({
   default: null,
 });
 
+export const loadingState = atom<boolean>({
+  key: `${PREFIX}loadingState`,
+  default: false,
+});
+
 export const inputTextState = atom<string>({
   key: `${PREFIX}inputTextState`,
   default: '',
