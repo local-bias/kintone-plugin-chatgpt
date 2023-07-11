@@ -7,6 +7,7 @@ import Sidebar from './components/model/sidebar';
 import ChatMessages from './components/model/chat-messages';
 import Input from './components/model/input';
 import ChatHistoryRecordsObserver from './components/functional/chat-history-records-observer';
+import { SnackbarProvider } from 'notistack';
 
 type Props = { config: kintone.plugin.Storage };
 
@@ -16,14 +17,16 @@ const Component: FC<Props> = ({ config }) => (
       set(pluginConfigState, config);
     }}
   >
-    <ChatHistoryRecordsObserver />
-    <Layout>
-      <Sidebar />
-      <Contents>
-        <ChatMessages />
-        <Input />
-      </Contents>
-    </Layout>
+    <SnackbarProvider maxSnack={1}>
+      <ChatHistoryRecordsObserver />
+      <Layout>
+        <Sidebar />
+        <Contents>
+          <ChatMessages />
+          <Input />
+        </Contents>
+      </Layout>
+    </SnackbarProvider>
   </RecoilRoot>
 );
 
