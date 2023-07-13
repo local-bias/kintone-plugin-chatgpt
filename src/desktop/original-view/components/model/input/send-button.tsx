@@ -36,6 +36,7 @@ const Component: FCX = ({ className }) => {
             logAppSpaceId,
             logKeyFieldCode,
             logContentFieldCode,
+            systemPrompt = '',
           } = config ?? {};
           const input = await snapshot.getPromise(inputTextState);
           if (input === '') {
@@ -53,6 +54,9 @@ const Component: FCX = ({ className }) => {
           };
 
           const updatedChatHistory = produce(chatHisory, (draft) => {
+            if (!draft.messages.length) {
+              draft.messages.push({ role: 'system', content: systemPrompt });
+            }
             draft.messages.push({ role: 'user', content: input });
           });
           let historyId = selectedHistoryId;

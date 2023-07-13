@@ -186,3 +186,18 @@ export const aiIconState = selector<string>({
     );
   },
 });
+
+export const systemPromptState = selector<string>({
+  key: `${PREFIX}systemPromptState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage?.systemPrompt ?? '';
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft.systemPrompt = newValue as string;
+      })
+    );
+  },
+});

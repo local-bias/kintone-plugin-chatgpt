@@ -10,6 +10,7 @@ import LogKeyForm from './form-log-key';
 import AIModelForm from './form-ai-model';
 import AnimationForm from './form-animation';
 import AiIconForm from './form-ai-icon';
+import SystemPromptForm from './form-system-prompt';
 import {
   PluginFormTitle,
   PluginFormDescription,
@@ -50,6 +51,13 @@ const Component: FCX = ({ className }) => {
           </PluginFormDescription>
           <ViewIdState />
         </div>
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>AIの役割の設定</PluginFormTitle>
+        <PluginFormDescription last>
+          このアプリで使用するAIに、予め設定された役割を割り当てることができます。
+        </PluginFormDescription>
+        <SystemPromptForm />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>対話ログ設定(ユーザーによって削除可能)</PluginFormTitle>

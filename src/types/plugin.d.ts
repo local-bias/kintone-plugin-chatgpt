@@ -13,6 +13,7 @@ declare namespace kintone {
       logContentFieldCode?: string;
       enablesAnimation?: boolean;
       aiIcon?: string;
+      systemPrompt?: string;
     };
   }
 }

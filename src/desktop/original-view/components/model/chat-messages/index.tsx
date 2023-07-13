@@ -17,16 +17,20 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
   const watingForResponse = useRecoilValue(waitingForResponseState);
   const apiErrorMessage = useRecoilValue(apiErrorMessageState);
 
+  const displayMessages = chatMessages.filter(
+    (message) => message.role === 'user' || message.role === 'assistant'
+  );
+
   return (
     <div className={className}>
       {chatMessages.length === 0 && <Empty />}
       <div className='messages'>
-        {chatMessages.map((message, index) => (
+        {displayMessages.map((message, index) => (
           <div key={index} className='message-container'>
             <MessageContainer role={message.role}>
               <Message
                 message={message.content}
-                typing={message.role === 'assistant' && index === chatMessages.length - 1}
+                typing={message.role === 'assistant' && index === displayMessages.length - 1}
                 speed={message.content.length > 500 ? 5 : 10}
               />
             </MessageContainer>
