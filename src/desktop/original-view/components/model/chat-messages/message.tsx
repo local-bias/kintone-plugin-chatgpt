@@ -10,11 +10,10 @@ type Props = {
   speed?: number;
 };
 
-const Component: FC<Props> = ({ message, typing, cursor = true, className = '', speed = 20 }) => {
+const Component: FC<Props> = ({ message, typing, speed = 20 }) => {
   const [text, setText] = useState('');
   const [typeEnd, setTypeEnd] = useState<boolean>(false);
   const msgEl = useRef<HTMLDivElement>(null);
-  const sanitizedMessage = message.replace(/<.*?>/g, '');
   const pluginConfig = useRecoilValue(pluginConfigState);
 
   // 指定された間隔でstateを更新する
@@ -23,7 +22,7 @@ const Component: FC<Props> = ({ message, typing, cursor = true, className = '', 
       return;
     }
     // マウント時の処理
-    const charItr = sanitizedMessage[Symbol.iterator]();
+    const charItr = message[Symbol.iterator]();
     let timerId: NodeJS.Timeout | null = null;
 
     (function showChar() {
@@ -46,15 +45,7 @@ const Component: FC<Props> = ({ message, typing, cursor = true, className = '', 
     return <div dangerouslySetInnerHTML={{ __html: message }} />;
   }
 
-  return (
-    <div
-      className={className + (cursor ? ' cursor-blink' : '')}
-      style={{ whiteSpace: 'pre-line' }}
-      ref={msgEl}
-    >
-      {text}
-    </div>
-  );
+  return <div ref={msgEl} dangerouslySetInnerHTML={{ __html: text }} />;
 };
 
 export default Component;
