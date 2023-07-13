@@ -54,7 +54,7 @@ const Component: FCX = ({ className }) => {
           };
 
           const updatedChatHistory = produce(chatHisory, (draft) => {
-            if (!draft.messages.length) {
+            if (!draft.messages.length && systemPrompt) {
               draft.messages.push({ role: 'system', content: systemPrompt });
             }
             draft.messages.push({ role: 'user', content: input });
