@@ -2,11 +2,11 @@ import { Skeleton, TextField } from '@mui/material';
 import React, { ChangeEventHandler, FC, FCX, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 
-import { aiIconState, apiKeyState } from '../../../states/plugin';
+import { aiIconState } from '../../../states/plugin';
 import styled from '@emotion/styled';
 
 const Component: FCX = ({ className }) => {
-  const apiToken = useRecoilValue(aiIconState);
+  const aiIcon = useRecoilValue(aiIconState);
 
   const onFieldChange: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
     ({ set }) =>
@@ -21,7 +21,7 @@ const Component: FCX = ({ className }) => {
       <TextField
         variant='outlined'
         label='アイコンのURL'
-        value={apiToken}
+        value={aiIcon}
         onChange={onFieldChange}
         placeholder='https://example.com/icon.png'
       />
