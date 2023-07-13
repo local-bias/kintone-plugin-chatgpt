@@ -8,6 +8,7 @@ import LogAppIdForm from './form-log-app-id';
 import LogContentForm from './form-log-content';
 import LogKeyForm from './form-log-key';
 import AIModelForm from './form-ai-model';
+import AnimationForm from './form-animation';
 import {
   PluginFormTitle,
   PluginFormDescription,
@@ -84,6 +85,13 @@ const Component: FCX = ({ className }) => {
         <div>
           <LogContentForm />
         </div>
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>アニメーションの設定</PluginFormTitle>
+        <PluginFormDescription last>
+          このオプションを有効にすると、AIの返答をアニメーションで表示することができます。
+        </PluginFormDescription>
+        <AnimationForm />
       </PluginFormSection>
     </div>
   );

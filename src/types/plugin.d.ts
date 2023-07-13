@@ -11,6 +11,7 @@ declare namespace kintone {
       logAppSpaceId?: string;
       logKeyFieldCode?: string;
       logContentFieldCode?: string;
+      enablesAnimation?: boolean;
     };
   }
 }

@@ -7,6 +7,7 @@ import styled from '@emotion/styled';
 import { Skeleton } from '@mui/material';
 import React, { FCX, PropsWithChildren } from 'react';
 import { useRecoilValue } from 'recoil';
+import MessageContainer from './message-container';
 import Message from './message';
 import ErrorMessage from './error-message';
 import Empty from './empty';
@@ -22,24 +23,28 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
       <div className='messages'>
         {chatMessages.map((message, index) => (
           <div key={index} className='message-container'>
-            <Message role={message.role}>
-              <div dangerouslySetInnerHTML={{ __html: message.content }} />
-            </Message>
+            <MessageContainer role={message.role}>
+              <Message
+                message={message.content}
+                typing={message.role === 'assistant' && index === chatMessages.length - 1}
+                speed={message.content.length > 500 ? 5 : 10}
+              />
+            </MessageContainer>
           </div>
         ))}
         {watingForResponse && (
           <div className='message-container'>
-            <Message role='assistant'>
+            <MessageContainer role='assistant'>
               <Skeleton variant='text' width='100%' />
               <Skeleton variant='text' width='100%' />
               <Skeleton variant='text' width={200} />
-            </Message>
+            </MessageContainer>
           </div>
         )}
         {apiErrorMessage && (
-          <div className='message-container'>
+          <MessageContainer role='assistant'>
             <ErrorMessage>{apiErrorMessage}</ErrorMessage>
-          </div>
+          </MessageContainer>
         )}
       </div>
     </div>
@@ -56,16 +61,6 @@ const StyledComponent = styled(Component)`
     .message-container:nth-of-type(2n) {
       background-color: #0000000a;
     }
-  }
-
-  .message-container {
-    padding: 1.5em 1em;
-    border-bottom: 1px solid #0001;
-  }
-
-  .message {
-    max-width: 900px;
-    margin: 0 auto;
   }
 `;
 

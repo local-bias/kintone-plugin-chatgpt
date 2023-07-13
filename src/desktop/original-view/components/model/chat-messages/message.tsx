@@ -1,49 +1,60 @@
-import styled from '@emotion/styled';
-import { ChatCompletionRequestMessageRoleEnum } from 'openai';
-import React, { FCX, PropsWithChildren } from 'react';
-import { ChatGPTIcon } from '../../ui/chatgpt-icon';
-import PersonIcon from '@mui/icons-material/Person';
+import { pluginConfigState } from '@/desktop/original-view/states/states';
+import React, { FC, useEffect, useRef, useState } from 'react';
+import { useRecoilValue } from 'recoil';
 
-type Props = { role: ChatCompletionRequestMessageRoleEnum };
+type Props = {
+  message: string;
+  typing?: boolean;
+  cursor?: boolean;
+  className?: string;
+  speed?: number;
+};
 
-const Component: FCX<PropsWithChildren<Props>> = ({ className, children, role }) => (
-  <div className={className}>
-    <div className='icon'>
-      {role === 'assistant' && <ChatGPTIcon />}
-      {role === 'user' && <PersonIcon />}
-    </div>
-    <div className='content'>{children}</div>
-  </div>
-);
+const Component: FC<Props> = ({ message, typing, cursor = true, className = '', speed = 20 }) => {
+  const [text, setText] = useState('');
+  const [typeEnd, setTypeEnd] = useState<boolean>(false);
+  const msgEl = useRef<HTMLDivElement>(null);
+  const sanitizedMessage = message.replace(/<.*?>/g, '');
+  const pluginConfig = useRecoilValue(pluginConfigState);
 
-const StyledComponent = styled(Component)`
-  max-width: 900px;
-  margin: 0 auto;
-  display: flex;
-  gap: 1.5em;
-
-  .icon {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 6px;
-    background-color: #0284c7;
-    color: #fff;
-  }
-
-  .content {
-    flex: 1;
-    > div {
-      > *:nth-of-type(1) {
-        margin-top: 0;
-      }
-      > *:last-child {
-        margin-bottom: 0;
-      }
+  // 指定された間隔でstateを更新する
+  useEffect(() => {
+    if (!typing || !pluginConfig?.enablesAnimation) {
+      return;
     }
-  }
-`;
+    // マウント時の処理
+    const charItr = sanitizedMessage[Symbol.iterator]();
+    let timerId: NodeJS.Timeout | null = null;
 
-export default StyledComponent;
+    (function showChar() {
+      const nextChar = charItr.next();
+      if (nextChar.done) {
+        setTypeEnd(true);
+        return;
+      }
+      setText((current) => current + nextChar.value);
+      timerId = setTimeout(showChar, speed);
+    })();
+
+    // アンマウント時に念のためタイマー解除
+    return () => {
+      if (timerId) clearTimeout(timerId);
+    };
+  }, [typing]);
+
+  if (!typing || !pluginConfig?.enablesAnimation || typeEnd) {
+    return <div dangerouslySetInnerHTML={{ __html: message }} />;
+  }
+
+  return (
+    <div
+      className={className + (cursor ? ' cursor-blink' : '')}
+      style={{ whiteSpace: 'pre-line' }}
+      ref={msgEl}
+    >
+      {text}
+    </div>
+  );
+};
+
+export default Component;

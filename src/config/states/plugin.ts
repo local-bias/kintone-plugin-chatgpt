@@ -151,7 +151,22 @@ export const logContentFieldCodeState = selector<string>({
   set: ({ set }, newValue) => {
     set(storageState, (current) =>
       produce(current, (draft) => {
-        draft!.logContentFieldCode = newValue as string;
+        draft.logContentFieldCode = newValue as string;
+      })
+    );
+  },
+});
+
+export const enablesAnimationState = selector<boolean>({
+  key: `${PREFIX}enablesAnimationState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage?.enablesAnimation ?? false;
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft.enablesAnimation = newValue as boolean;
       })
     );
   },
