@@ -12,6 +12,7 @@ declare namespace kintone {
       logKeyFieldCode?: string;
       logContentFieldCode?: string;
       enablesAnimation?: boolean;
+      aiIcon?: string;
     };
   }
 }

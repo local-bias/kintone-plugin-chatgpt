@@ -1,15 +1,15 @@
 import styled from '@emotion/styled';
 import { ChatCompletionRequestMessageRoleEnum } from 'openai';
 import React, { FCX, PropsWithChildren } from 'react';
-import { ChatGPTIcon } from '../../ui/chatgpt-icon';
 import PersonIcon from '@mui/icons-material/Person';
+import AiIcon from './ai-icon';
 
 type Props = { role: ChatCompletionRequestMessageRoleEnum };
 
 const Component: FCX<PropsWithChildren<Props>> = ({ className, children, role }) => (
   <div className={className}>
-    <div className='icon'>
-      {role === 'assistant' && <ChatGPTIcon />}
+    <div className={`icon ${role}`}>
+      {role === 'assistant' && <AiIcon />}
       {role === 'user' && <PersonIcon />}
     </div>
     <div className='content'>{children}</div>
@@ -30,8 +30,18 @@ const StyledComponent = styled(Component)`
     justify-content: center;
     align-items: center;
     border-radius: 6px;
-    background-color: #0284c7;
     color: #fff;
+    overflow: hidden;
+
+    &.user {
+      background-color: #0284c7;
+    }
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
   }
 
   .content {

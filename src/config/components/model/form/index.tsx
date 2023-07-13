@@ -9,6 +9,7 @@ import LogContentForm from './form-log-content';
 import LogKeyForm from './form-log-key';
 import AIModelForm from './form-ai-model';
 import AnimationForm from './form-animation';
+import AiIconForm from './form-ai-icon';
 import {
   PluginFormTitle,
   PluginFormDescription,
@@ -19,7 +20,7 @@ const Component: FCX = ({ className }) => {
   return (
     <div {...{ className }}>
       <PluginFormSection>
-        <PluginFormTitle>ChatGPTのAPIキー</PluginFormTitle>
+        <PluginFormTitle>ChatGPTのAPIキー*</PluginFormTitle>
         <div>
           <PluginFormDescription>OpenAI Platformで発行したAPIキー。</PluginFormDescription>
           <PluginFormDescription last>
@@ -30,7 +31,7 @@ const Component: FCX = ({ className }) => {
         </div>
       </PluginFormSection>
       <PluginFormSection>
-        <PluginFormTitle>使用するAIモデル</PluginFormTitle>
+        <PluginFormTitle>使用するAIモデル*</PluginFormTitle>
         <div>
           <PluginFormDescription>OpenAIが提供しているAIモデルの設定。</PluginFormDescription>
           <PluginFormDescription last>
@@ -41,7 +42,7 @@ const Component: FCX = ({ className }) => {
         </div>
       </PluginFormSection>
       <PluginFormSection>
-        <PluginFormTitle>チャット画面を表示するビューID</PluginFormTitle>
+        <PluginFormTitle>チャット画面を表示するビューID*</PluginFormTitle>
         <div>
           <PluginFormDescription>AIとの対話を行う一覧。</PluginFormDescription>
           <PluginFormDescription last>
@@ -92,6 +93,13 @@ const Component: FCX = ({ className }) => {
           このオプションを有効にすると、AIの返答をアニメーションで表示することができます。
         </PluginFormDescription>
         <AnimationForm />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>アイコンの設定</PluginFormTitle>
+        <PluginFormDescription last>
+          AIが回答した際のアイコンを、設定した画像に変更することができます。
+        </PluginFormDescription>
+        <AiIconForm />
       </PluginFormSection>
     </div>
   );

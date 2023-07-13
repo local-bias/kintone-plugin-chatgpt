@@ -171,3 +171,18 @@ export const enablesAnimationState = selector<boolean>({
     );
   },
 });
+
+export const aiIconState = selector<string>({
+  key: `${PREFIX}aiIconState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage?.aiIcon ?? '';
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft.aiIcon = newValue as string;
+      })
+    );
+  },
+});
