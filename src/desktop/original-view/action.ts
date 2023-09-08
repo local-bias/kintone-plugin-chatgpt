@@ -18,7 +18,6 @@ export const fetchChatCompletion = async (params: { model: string; messages: Cha
   const requestBody: CreateChatCompletionRequest = {
     model,
     temperature: 0.7,
-    max_tokens: process.env.NODE_ENV === 'development' ? 512 : 2048,
     messages,
   };
 
