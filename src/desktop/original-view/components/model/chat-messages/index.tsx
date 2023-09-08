@@ -4,7 +4,7 @@ import {
   waitingForResponseState,
 } from '@/desktop/original-view/states/states';
 import styled from '@emotion/styled';
-import { Skeleton } from '@mui/material';
+import { CircularProgress, Skeleton } from '@mui/material';
 import React, { FCX, PropsWithChildren } from 'react';
 import { useRecoilValue } from 'recoil';
 import MessageContainer from './message-container';
@@ -26,7 +26,7 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
       {chatMessages.length === 0 && <Empty />}
       <div className='messages'>
         {displayMessages.map((message, index) => (
-          <div key={index} className='message-container'>
+          <div key={index} className='[&:nth-of-type(n+1)]:border-t border-gray-300'>
             <MessageContainer role={message.role}>
               <Message
                 message={message.content}
@@ -37,11 +37,14 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
           </div>
         ))}
         {watingForResponse && (
-          <div className='message-container'>
+          <div className='[&:nth-of-type(n+1)]:border-t border-gray-300'>
             <MessageContainer role='assistant'>
-              <Skeleton variant='text' width='100%' />
-              <Skeleton variant='text' width='100%' />
-              <Skeleton variant='text' width={200} />
+              <div className='flex gap-8 items-center'>
+                <div className='flex justify-center'>
+                  <div className='animate-spin h-8 w-8 bg-gray-300 rounded-xl'></div>
+                </div>
+                <p className=''>回答を生成しています・・・</p>
+              </div>
             </MessageContainer>
           </div>
         )}

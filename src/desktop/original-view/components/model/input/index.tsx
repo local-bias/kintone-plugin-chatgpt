@@ -1,25 +1,14 @@
-import styled from '@emotion/styled';
 import React, { FCX } from 'react';
-import Wrapper from './wrapper';
 import SendButton from './send-button';
 import Input from './input';
 
-const Component: FCX = ({ className }) => (
-  <Wrapper>
-    <div className={className}>
+const Component: FCX = () => (
+  <div className='z-10 sticky bottom-0 left-0 w-full bg-gray-50'>
+    <div className='flex flex-col py-2 px-4 gap-2 max-w-[900px] mx-auto'>
       <SendButton />
       <Input />
     </div>
-  </Wrapper>
+  </div>
 );
 
-const StyledComponent = styled(Component)`
-  display: flex;
-  flex-direction: column;
-  padding: 8px 16px;
-  gap: 8px;
-  max-width: 900px;
-  margin: 0 auto;
-`;
-
-export default StyledComponent;
+export default Component;

@@ -22,6 +22,7 @@ const StyledComponent = styled(Component)`
   padding: 1.5em 1em;
   display: flex;
   gap: 1.5em;
+  position: relative;
 
   .icon {
     width: 30px;

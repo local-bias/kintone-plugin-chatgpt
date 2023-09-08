@@ -1,8 +1,6 @@
 import React, { FC } from 'react';
 import { RecoilRoot } from 'recoil';
 import { pluginConfigState } from './states/states';
-import Layout from './components/layout';
-import Contents from './components/layout/contents';
 import Sidebar from './components/model/sidebar';
 import ChatMessages from './components/model/chat-messages';
 import Input from './components/model/input';
@@ -19,13 +17,13 @@ const Component: FC<Props> = ({ config }) => (
   >
     <SnackbarProvider maxSnack={1}>
       <ChatHistoryRecordsObserver />
-      <Layout>
+      <div className='bg-gray-50 min-h-[calc(100vh_-_300px)] flex'>
         <Sidebar />
-        <Contents>
+        <div className='flex-1 relative'>
           <ChatMessages />
           <Input />
-        </Contents>
-      </Layout>
+        </div>
+      </div>
     </SnackbarProvider>
   </RecoilRoot>
 );

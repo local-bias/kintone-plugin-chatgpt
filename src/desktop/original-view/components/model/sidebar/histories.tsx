@@ -20,7 +20,7 @@ import { useRecoilCallback, useRecoilValue } from 'recoil';
 import ChatIcon from '@mui/icons-material/Chat';
 import DeleteIcon from '@mui/icons-material/Delete';
 import styled from '@emotion/styled';
-import { deleteAllRecords, isGuestSpace, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
+import { deleteAllRecords, isGuestSpace } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { useSnackbar } from 'notistack';
 
