@@ -1,14 +1,10 @@
 /* このファイルはビルドの基点になります。 ファイル名、ディレクトリを変更すると、ビルドが正常に動作しない可能性があります */
 
 import '@/lib/global';
-import { pushPluginName } from '@/lib/local-storage';
 import { PLUGIN_NAME } from '@/lib/static';
 import { KintoneEventListener } from '@konomi-app/kintone-utilities';
 import originalView from './original-view';
 
-try {
-  pushPluginName();
-} catch (error) {}
 const listener = new KintoneEventListener({
   errorHandler: (error, props) => {
     const { event } = props;
