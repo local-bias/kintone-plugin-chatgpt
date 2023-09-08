@@ -9,7 +9,6 @@ import {
   waitingForResponseState,
 } from '@/desktop/original-view/states/states';
 import { OPENAI_MODELS } from '@/lib/static';
-import styled from '@emotion/styled';
 import { addRecord, updateRecord, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
 import SendIcon from '@mui/icons-material/Send';
 import { Button } from '@mui/material';

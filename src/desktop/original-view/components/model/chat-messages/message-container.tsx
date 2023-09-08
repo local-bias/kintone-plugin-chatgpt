@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
-import { ChatCompletionRequestMessageRoleEnum } from 'openai';
+import { OpenAI } from 'openai';
 import React, { FCX, PropsWithChildren } from 'react';
 import PersonIcon from '@mui/icons-material/Person';
 import AiIcon from './ai-icon';
 
-type Props = { role: ChatCompletionRequestMessageRoleEnum };
+type Props = { role: OpenAI.Chat.ChatCompletionMessage['role'] };
 
 const Component: FCX<PropsWithChildren<Props>> = ({ className, children, role }) => (
   <div className={className}>

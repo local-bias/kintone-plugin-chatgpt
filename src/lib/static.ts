@@ -1,4 +1,4 @@
-import { ChatCompletionRequestMessage } from 'openai';
+import { OpenAI } from 'openai';
 import manifest from '../../plugin/manifest.json';
 
 export const OPENAI_ENDPOINT_ROOT = 'https://api.openai.com';
@@ -19,7 +19,7 @@ export const OPENAI_MODELS = ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4'];
 
 type LogDataV1 = {
   title: string;
-  messages: ChatCompletionRequestMessage[];
+  messages: OpenAI.Chat.ChatCompletionMessage[];
 };
 
 type LogData = { version: 1 } & LogDataV1; // | { version: 2 } & LogDataV2 ...

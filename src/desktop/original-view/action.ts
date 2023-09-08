@@ -1,5 +1,5 @@
 import { OPENAI_ENDPOINT } from '@/lib/static';
-import { CreateChatCompletionRequest, CreateChatCompletionResponse } from 'openai';
+import { OpenAI } from 'openai';
 import { marked } from 'marked';
 import { PLUGIN_ID } from '@/lib/global';
 import { ChatHistory, ChatMessage } from './states/states';
@@ -10,12 +10,10 @@ import {
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
 
-marked.use({ mangle: false, headerIds: false });
-
 export const fetchChatCompletion = async (params: { model: string; messages: ChatMessage[] }) => {
   const { model, messages } = params;
 
-  const requestBody: CreateChatCompletionRequest = {
+  const requestBody: OpenAI.Chat.ChatCompletionCreateParams = {
     model,
     temperature: 0.7,
     messages,
@@ -29,10 +27,10 @@ export const fetchChatCompletion = async (params: { model: string; messages: Cha
     requestBody
   );
 
-  const completionResponse: CreateChatCompletionResponse = JSON.parse(responseBody);
+  const chatCompletion: OpenAI.Chat.ChatCompletion = JSON.parse(responseBody);
 
   if (responseCode !== 200) {
-    const errorResponse = completionResponse as any;
+    const errorResponse = chatCompletion as any;
     if (errorResponse?.error?.message) {
       throw new Error(errorResponse.error.message);
     }
@@ -42,12 +40,12 @@ export const fetchChatCompletion = async (params: { model: string; messages: Cha
   }
 
   process.env.NODE_ENV === 'development' &&
-    console.log({ completionResponse, responseCode, responseHeader });
+    console.log({ chatCompletion, responseCode, responseHeader });
 
   process.env.NODE_ENV === 'development' &&
-    console.log(`このやり取りで${completionResponse.usage?.total_tokens}トークン消費しました`);
+    console.log(`このやり取りで${chatCompletion.usage?.total_tokens}トークン消費しました`);
 
-  return completionResponse;
+  return chatCompletion;
 };
 
 export const getHTMLfromMarkdown = (markdown: string) => {

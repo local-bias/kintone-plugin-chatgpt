@@ -1,11 +1,11 @@
-import { ChatCompletionResponseMessageRoleEnum } from 'openai';
+import { OpenAI } from 'openai';
 import { atom, selector } from 'recoil';
 import { getHTMLfromMarkdown } from '../action';
 import { restoreStorage } from '@konomi-app/kintone-utilities';
 import { PLUGIN_ID } from '@/lib/global';
 
 export type ChatMessage = {
-  role: ChatCompletionResponseMessageRoleEnum;
+  role: OpenAI.Chat.ChatCompletionMessage['role'];
   content: string;
 };
 

@@ -15,7 +15,7 @@ const Component: FC = () => {
   );
 
   return (
-    <div className={className}>
+    <div>
       <TextField
         multiline
         sx={{ width: '100%' }}
