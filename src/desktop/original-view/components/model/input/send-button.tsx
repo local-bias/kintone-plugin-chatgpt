@@ -16,6 +16,7 @@ import { Button } from '@mui/material';
 import { produce } from 'immer';
 import React, { FCX } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { nanoid } from 'nanoid';
 
 const Component: FCX = ({ className }) => {
   const input = useRecoilValue(inputTextState);
@@ -31,13 +32,14 @@ const Component: FCX = ({ className }) => {
             aiModel = OPENAI_MODELS[0],
             outputAppId,
             outputAppSpaceId,
+            outputKeyFieldCode,
             outputContentFieldCode,
             logAppId,
             logAppSpaceId,
             logKeyFieldCode,
             logContentFieldCode,
             systemPrompt = '',
-          } = config ?? {};
+          } = config;
           const input = await snapshot.getPromise(inputTextState);
           if (input === '') {
             return;
@@ -45,10 +47,11 @@ const Component: FCX = ({ className }) => {
           reset(inputTextState);
           reset(apiErrorMessageState);
 
+          const temporaryId = nanoid();
           const selectedHistoryId = await snapshot.getPromise(selectedHistoryIdState);
           const histories = await snapshot.getPromise(chatHistoriesState);
           const chatHisory = histories.find((history) => history.id === selectedHistoryId) ?? {
-            id: '',
+            id: temporaryId,
             title: input.slice(0, 8),
             messages: [],
           };
@@ -61,20 +64,19 @@ const Component: FCX = ({ className }) => {
           });
           let historyId = selectedHistoryId;
           if (!selectedHistoryId) {
-            if (outputAppId && outputContentFieldCode) {
-              const { id } = await withSpaceIdFallback({
+            historyId = temporaryId;
+            if (outputAppId && outputKeyFieldCode && outputContentFieldCode) {
+              await withSpaceIdFallback({
                 spaceId: outputAppSpaceId,
                 func: addRecord,
                 funcParams: {
                   app: outputAppId,
                   record: {
+                    [outputKeyFieldCode]: { value: historyId },
                     [outputContentFieldCode]: { value: JSON.stringify(updatedChatHistory) },
                   },
                 },
               });
-              historyId = id;
-            } else {
-              historyId = new Date().getTime().toString();
             }
             set(selectedHistoryIdState, historyId);
           }
@@ -105,7 +107,10 @@ const Component: FCX = ({ className }) => {
                 func: updateRecord,
                 funcParams: {
                   app: outputAppId,
-                  id: historyId!,
+                  updateKey: {
+                    field: outputKeyFieldCode,
+                    value: historyId!,
+                  },
                   record: {
                     [outputContentFieldCode]: {
                       value: JSON.stringify(historyWithAssistantMessage),

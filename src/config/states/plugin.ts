@@ -26,7 +26,7 @@ export const aiModelState = selector<string>({
   key: `${PREFIX}aiModelState`,
   get: ({ get }) => {
     const storage = get(storageState);
-    return storage?.aiModel ?? OPENAI_MODELS[0];
+    return storage.aiModel ?? OPENAI_MODELS[0];
   },
   set: ({ set }, newValue) => {
     set(storageState, (current) =>
@@ -41,7 +41,7 @@ export const viewIdState = selector<string>({
   key: `${PREFIX}viewIdState`,
   get: ({ get }) => {
     const storage = get(storageState);
-    return storage?.viewId ?? '';
+    return storage.viewId ?? '';
   },
   set: ({ set }, newValue) => {
     set(storageState, (current) =>
@@ -56,7 +56,7 @@ export const outputAppIdState = selector<string>({
   key: `${PREFIX}outputAppIdState`,
   get: ({ get }) => {
     const storage = get(storageState);
-    return storage?.outputAppId ?? '';
+    return storage.outputAppId ?? '';
   },
   set: ({ set }, newValue) => {
     set(storageState, (current) =>
@@ -82,11 +82,26 @@ export const outputAppSpaceIdState = selector<string | undefined>({
   },
 });
 
+export const outputKeyFieldCodeState = selector<string>({
+  key: `${PREFIX}outputKeyFieldCodeState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage.outputKeyFieldCode ?? '';
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft!.outputKeyFieldCode = newValue as string;
+      })
+    );
+  },
+});
+
 export const outputContentFieldCodeState = selector<string>({
   key: `${PREFIX}outputContentFieldCodeState`,
   get: ({ get }) => {
     const storage = get(storageState);
-    return storage?.outputContentFieldCode ?? '';
+    return storage.outputContentFieldCode ?? '';
   },
   set: ({ set }, newValue) => {
     set(storageState, (current) =>
@@ -101,7 +116,7 @@ export const logAppIdState = selector<string>({
   key: `${PREFIX}logAppIdState`,
   get: ({ get }) => {
     const storage = get(storageState);
-    return storage?.logAppId ?? '';
+    return storage.logAppId ?? '';
   },
   set: ({ set }, newValue) => {
     set(storageState, (current) =>
@@ -131,7 +146,7 @@ export const logKeyFieldCodeState = selector<string>({
   key: `${PREFIX}logKeyFieldCodeState`,
   get: ({ get }) => {
     const storage = get(storageState);
-    return storage?.logKeyFieldCode ?? '';
+    return storage.logKeyFieldCode ?? '';
   },
   set: ({ set }, newValue) => {
     set(storageState, (current) =>
@@ -146,7 +161,7 @@ export const logContentFieldCodeState = selector<string>({
   key: `${PREFIX}logContentFieldCodeState`,
   get: ({ get }) => {
     const storage = get(storageState);
-    return storage?.logContentFieldCode ?? '';
+    return storage.logContentFieldCode ?? '';
   },
   set: ({ set }, newValue) => {
     set(storageState, (current) =>
@@ -161,7 +176,7 @@ export const enablesAnimationState = selector<boolean>({
   key: `${PREFIX}enablesAnimationState`,
   get: ({ get }) => {
     const storage = get(storageState);
-    return storage?.enablesAnimation ?? false;
+    return storage.enablesAnimation ?? false;
   },
   set: ({ set }, newValue) => {
     set(storageState, (current) =>
@@ -176,7 +191,7 @@ export const aiIconState = selector<string>({
   key: `${PREFIX}aiIconState`,
   get: ({ get }) => {
     const storage = get(storageState);
-    return storage?.aiIcon ?? '';
+    return storage.aiIcon ?? '';
   },
   set: ({ set }, newValue) => {
     set(storageState, (current) =>
@@ -191,7 +206,7 @@ export const systemPromptState = selector<string>({
   key: `${PREFIX}systemPromptState`,
   get: ({ get }) => {
     const storage = get(storageState);
-    return storage?.systemPrompt ?? '';
+    return storage.systemPrompt ?? '';
   },
   set: ({ set }, newValue) => {
     set(storageState, (current) =>

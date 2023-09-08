@@ -91,6 +91,14 @@ export const outputAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
   },
 });
 
+export const outputAppSingleLineTextPropertiesState = selector<kintoneAPI.FieldProperty[]>({
+  key: `${PREFIX}outputAppSingleLineTextPropertiesState`,
+  get: async ({ get }) => {
+    const allProperties = get(outputAppPropertiesState);
+    return allProperties.filter((field) => field.type === 'SINGLE_LINE_TEXT');
+  },
+});
+
 export const outputAppTextPropertiesState = selector<kintoneAPI.FieldProperty[]>({
   key: `${PREFIX}outputAppTextPropertiesState`,
   get: async ({ get }) => {

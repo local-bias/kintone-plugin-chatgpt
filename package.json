@@ -1,6 +1,6 @@
 {
   "name": "kintone-plugin-chatgpt",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "author": "ribbit",
   "license": "MIT",
   "scripts": {
@@ -48,6 +48,7 @@
     "immer": "10.0.2",
     "luxon": "3.4.1",
     "marked": "^7.0.4",
+    "nanoid": "^4.0.2",
     "notistack": "3.0.1",
     "openai": "^3.3.0",
     "react": "18.2.0",
@@ -57,8 +58,7 @@
     "recoil": "0.7.7",
     "tailwindcss": "^3.3.3",
     "ts-loader": "^9.4.4",
-    "typescript": "5.2.2",
-    "uuid": "^9.0.0"
+    "typescript": "5.2.2"
   },
   "prettier": {
     "printWidth": 100,

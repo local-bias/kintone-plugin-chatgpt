@@ -82,6 +82,7 @@ export const logChatCompletion = async (params: {
           [keyFieldCode]: { value: chatId },
           [contentFieldCode]: { value: JSON.stringify(chatHistory) },
         },
+        debug: process.env.NODE_ENV === 'development',
       },
     });
   } else {
@@ -95,6 +96,7 @@ export const logChatCompletion = async (params: {
           [keyFieldCode]: { value: chatId },
           [contentFieldCode]: { value: JSON.stringify(chatHistory) },
         },
+        debug: process.env.NODE_ENV === 'development',
       },
     });
   }

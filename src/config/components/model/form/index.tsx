@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import APITokenForm from './form-api-key';
 import ViewIdState from './form-view-id';
 import OutputAppIdForm from './form-output-app-id';
+import OutputKeyForm from './form-output-key';
 import OutputContentForm from './form-output-content';
 import LogAppIdForm from './form-log-app-id';
 import LogContentForm from './form-log-content';
@@ -69,6 +70,12 @@ const Component: FCX = ({ className }) => {
         </PluginFormDescription>
         <div>
           <OutputAppIdForm />
+        </div>
+        <div style={{ marginTop: '16px' }}>
+          <PluginFormDescription last>
+            キー情報は「文字列一行」フィールドのみ選択可能で、「値の重複を禁止する」がチェックされている必要があります。
+          </PluginFormDescription>
+          <OutputKeyForm />
         </div>
         <div style={{ marginTop: '16px' }}>
           <OutputContentForm />

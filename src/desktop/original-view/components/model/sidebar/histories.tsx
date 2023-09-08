@@ -20,7 +20,7 @@ import { useRecoilCallback, useRecoilValue } from 'recoil';
 import ChatIcon from '@mui/icons-material/Chat';
 import DeleteIcon from '@mui/icons-material/Delete';
 import styled from '@emotion/styled';
-import { deleteAllRecords, isGuestSpace } from '@konomi-app/kintone-utilities';
+import { deleteAllRecordsByQuery, isGuestSpace } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { useSnackbar } from 'notistack';
 
@@ -46,13 +46,17 @@ const Component: FCX = ({ className }) => {
         try {
           set(loadingState, true);
           const id = (await snapshot.getPromise(selectedHistoryIdState))!;
-          const { outputAppId, outputAppSpaceId } = (await snapshot.getPromise(pluginConfigState))!;
+          const { outputAppId, outputKeyFieldCode, outputAppSpaceId } = await snapshot.getPromise(
+            pluginConfigState
+          );
 
           const isGuest = await isGuestSpace(outputAppId);
 
-          await deleteAllRecords({
+          const query = `${outputKeyFieldCode} = "${id}"`;
+
+          await deleteAllRecordsByQuery({
             app: outputAppId,
-            ids: [Number(id)],
+            query,
             debug: process.env.NODE_ENV === 'development',
             guestSpaceId: isGuest ? outputAppSpaceId : undefined,
           });

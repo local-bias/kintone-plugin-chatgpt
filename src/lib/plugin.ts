@@ -7,5 +7,6 @@ export const createConfig = (): kintone.plugin.Storage => ({
   aiModel: OPENAI_MODELS[0],
   viewId: '',
   outputAppId: '',
+  outputKeyFieldCode: '',
   outputContentFieldCode: '',
 });

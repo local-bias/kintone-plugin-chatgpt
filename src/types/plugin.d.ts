@@ -6,6 +6,7 @@ declare namespace kintone {
       viewId: string;
       outputAppId: string;
       outputAppSpaceId?: string;
+      outputKeyFieldCode: string;
       outputContentFieldCode: string;
       logAppId?: string;
       logAppSpaceId?: string;

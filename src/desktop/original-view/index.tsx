@@ -16,7 +16,7 @@ export default (listener: KintoneEventListener) => {
       return event;
     }
     const root = createRoot(rootElement);
-    root.render(<App config={config} />);
+    root.render(<App />);
 
     return event;
   });

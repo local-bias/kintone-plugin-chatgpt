@@ -1,6 +1,8 @@
 import { ChatCompletionResponseMessageRoleEnum } from 'openai';
 import { atom, selector } from 'recoil';
 import { getHTMLfromMarkdown } from '../action';
+import { restoreStorage } from '@konomi-app/kintone-utilities';
+import { PLUGIN_ID } from '@/lib/global';
 
 export type ChatMessage = {
   role: ChatCompletionResponseMessageRoleEnum;
@@ -11,9 +13,9 @@ export type ChatHistory = { id: string; title: string; messages: ChatMessage[] }
 
 const PREFIX = 'kintone';
 
-export const pluginConfigState = atom<kintone.plugin.Storage | null>({
+export const pluginConfigState = atom<kintone.plugin.Storage>({
   key: `${PREFIX}pluginConfigState`,
-  default: null,
+  default: restoreStorage<kintone.plugin.Storage>(PLUGIN_ID)!,
 });
 
 export const loadingState = atom<boolean>({
