@@ -1,10 +1,10 @@
-import React, { FCX } from 'react';
+import React, { FC } from 'react';
 import NewChatButton from './new-chat';
 import Histories from './histories';
 
-const Component: FCX = ({ className }) => (
+const Component: FC = () => (
   <div className='basis-64 sticky top-12 max-h-[calc(100vh_-_48px)] bg-gray-100'>
-    <div className={className}>
+    <div>
       <NewChatButton />
       <Histories />
     </div>

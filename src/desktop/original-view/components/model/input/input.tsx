@@ -1,10 +1,9 @@
 import { inputTextState } from '@/desktop/original-view/states/states';
-import styled from '@emotion/styled';
 import { TextField } from '@mui/material';
-import React, { ChangeEventHandler, FC, FCX } from 'react';
+import React, { ChangeEventHandler, FC } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 
-const Component: FCX = ({ className }) => {
+const Component: FC = () => {
   const input = useRecoilValue(inputTextState);
 
   const onChange: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
@@ -31,6 +30,4 @@ const Component: FCX = ({ className }) => {
   );
 };
 
-const StyledComponent = styled(Component)``;
-
-export default StyledComponent;
+export default Component;

@@ -1,11 +1,11 @@
 import { outputAppTextPropertiesState } from '@/config/states/kintone';
 import { outputContentFieldCodeState } from '@/config/states/plugin';
 import { Skeleton } from '@mui/material';
-import React, { FC, FCX, memo, Suspense } from 'react';
+import React, { FC, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { AutocompleteKintoneField } from './autocomplete-field-input';
 
-const Component: FCX = () => {
+const Component: FC = () => {
   const fields = useRecoilValue(outputAppTextPropertiesState);
   const fieldCode = useRecoilValue(outputContentFieldCodeState);
 

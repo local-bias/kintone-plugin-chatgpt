@@ -14,11 +14,11 @@ import { addRecord, updateRecord, withSpaceIdFallback } from '@konomi-app/kinton
 import SendIcon from '@mui/icons-material/Send';
 import { Button } from '@mui/material';
 import { produce } from 'immer';
-import React, { FCX } from 'react';
+import React, { FC } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { nanoid } from 'nanoid';
 
-const Component: FCX = ({ className }) => {
+const Component: FC = () => {
   const input = useRecoilValue(inputTextState);
   const waitingForResponse = useRecoilValue(waitingForResponseState);
 
@@ -154,7 +154,7 @@ const Component: FCX = ({ className }) => {
   );
 
   return (
-    <div className={className}>
+    <div className='flex justify-between'>
       <div></div>
       <Button
         variant='contained'
@@ -169,9 +169,4 @@ const Component: FCX = ({ className }) => {
   );
 };
 
-const StyledComponent = styled(Component)`
-  display: flex;
-  justify-content: space-between;
-`;
-
-export default StyledComponent;
+export default Component;

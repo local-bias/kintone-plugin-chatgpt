@@ -2,10 +2,10 @@ import { allKintoneAppsState } from '@/config/states/kintone';
 import { logAppIdState, logAppSpaceIdState } from '@/config/states/plugin';
 import { App } from '@kintone/rest-api-client/lib/src/client/types';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
-import React, { FC, FCX, memo, Suspense } from 'react';
+import React, { FC, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 
-const Component: FCX = () => {
+const Component: FC = () => {
   const allApps = useRecoilValue(allKintoneAppsState);
   const appId = useRecoilValue(logAppIdState);
 

@@ -1,8 +1,8 @@
-import React, { FCX } from 'react';
+import React, { FC } from 'react';
 import SendButton from './send-button';
 import Input from './input';
 
-const Component: FCX = () => (
+const Component: FC = () => (
   <div className='z-10 sticky bottom-0 left-0 w-full bg-gray-50'>
     <div className='flex flex-col py-2 px-4 gap-2 max-w-[900px] mx-auto'>
       <SendButton />

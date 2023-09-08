@@ -1,11 +1,10 @@
 import { Button } from '@mui/material';
-import React, { FCX } from 'react';
+import React, { FC } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { useRecoilCallback } from 'recoil';
 import { selectedHistoryIdState } from '@/desktop/original-view/states/states';
-import styled from '@emotion/styled';
 
-const Component: FCX = ({ className }) => {
+const Component: FC = () => {
   const onClick = useRecoilCallback(
     ({ set }) =>
       () => {
@@ -15,7 +14,7 @@ const Component: FCX = ({ className }) => {
   );
 
   return (
-    <div className={className}>
+    <div className='p-4'>
       <Button
         variant='outlined'
         color='primary'
@@ -29,8 +28,4 @@ const Component: FCX = ({ className }) => {
   );
 };
 
-const StyledComponent = styled(Component)`
-  padding: 16px;
-`;
-
-export default StyledComponent;
+export default Component;
