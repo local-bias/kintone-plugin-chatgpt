@@ -1,6 +1,6 @@
 import { PLUGIN_ID } from '@/lib/global';
 import { createConfig } from '@/lib/plugin';
-import { OPENAI_MODELS } from '@/lib/static';
+import { OPENAI_ENDPOINT_ROOT, OPENAI_MODELS } from '@/lib/static';
 import { restoreStorage } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { atom, selector } from 'recoil';
@@ -19,7 +19,10 @@ export const loadingState = atom<boolean>({
 
 export const apiKeyState = atom<string>({
   key: `${PREFIX}apiKeyState`,
-  default: '',
+  default: (() => {
+    const proxyConfig = kintone.plugin.app.getProxyConfig(OPENAI_ENDPOINT_ROOT, 'POST');
+    return proxyConfig?.headers.Authorization.replace('Bearer ', '') ?? '';
+  })(),
 });
 
 export const aiModelState = selector<string>({

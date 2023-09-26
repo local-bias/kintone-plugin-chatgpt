@@ -1,26 +1,25 @@
+import { aiIconState, apiKeyState, enablesAnimationState } from '@/config/states/plugin';
+import { FormSwitch } from '@/lib/components/form-switch';
+import {
+  PluginFormDescription,
+  PluginFormSection,
+  PluginFormTitle,
+} from '@konomi-app/kintone-utility-component';
 import React, { FCX } from 'react';
-import styled from '@emotion/styled';
-import APITokenForm from './form-api-key';
-import ViewIdState from './form-view-id';
-import OutputAppIdForm from './form-output-app-id';
-import OutputKeyForm from './form-output-key';
-import OutputContentForm from './form-output-content';
+import AIModelForm from './form-ai-model';
 import LogAppIdForm from './form-log-app-id';
 import LogContentForm from './form-log-content';
 import LogKeyForm from './form-log-key';
-import AIModelForm from './form-ai-model';
-import AnimationForm from './form-animation';
-import AiIconForm from './form-ai-icon';
+import OutputAppIdForm from './form-output-app-id';
+import OutputContentForm from './form-output-content';
+import OutputKeyForm from './form-output-key';
 import SystemPromptForm from './form-system-prompt';
-import {
-  PluginFormTitle,
-  PluginFormDescription,
-  PluginFormSection,
-} from '@konomi-app/kintone-utility-component';
+import ViewIdState from './form-view-id';
+import FormText from '@/lib/components/form-text';
 
-const Component: FCX = ({ className }) => {
+const Component: FCX = () => {
   return (
-    <div {...{ className }}>
+    <div className='text-sm px-4 max-w-[800px]'>
       <PluginFormSection>
         <PluginFormTitle>ChatGPTのAPIキー*</PluginFormTitle>
         <div>
@@ -29,7 +28,13 @@ const Component: FCX = ({ className }) => {
             キーの発行は<a href='https://platform.openai.com/account/api-keys'>こちらから</a>
             可能です。
           </PluginFormDescription>
-          <APITokenForm />
+          <FormText
+            state={apiKeyState}
+            variant='outlined'
+            label='APIキー'
+            placeholder='sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+            width={510}
+          />
         </div>
       </PluginFormSection>
       <PluginFormSection>
@@ -71,13 +76,13 @@ const Component: FCX = ({ className }) => {
         <div>
           <OutputAppIdForm />
         </div>
-        <div style={{ marginTop: '16px' }}>
+        <div className='mt-4'>
           <PluginFormDescription last>
             キー情報は「文字列一行」フィールドのみ選択可能で、「値の重複を禁止する」がチェックされている必要があります。
           </PluginFormDescription>
           <OutputKeyForm />
         </div>
-        <div style={{ marginTop: '16px' }}>
+        <div className='mt-4'>
           <OutputContentForm />
         </div>
       </PluginFormSection>
@@ -89,13 +94,13 @@ const Component: FCX = ({ className }) => {
         <PluginFormDescription last>
           ここで設定したデータはユーザーが削除しても残り続けます。
         </PluginFormDescription>
-        <div style={{ marginBottom: '16px' }}>
+        <div className='mb-4'>
           <LogAppIdForm />
         </div>
         <PluginFormDescription last>
           ログを円滑に更新するために、チャットとログを紐づけるキー情報を格納するフィールドが必要になります。
         </PluginFormDescription>
-        <div style={{ marginBottom: '16px' }}>
+        <div className='mb-4'>
           <LogKeyForm />
         </div>
         <div>
@@ -107,24 +112,22 @@ const Component: FCX = ({ className }) => {
         <PluginFormDescription last>
           このオプションを有効にすると、AIの返答をアニメーションで表示することができます。
         </PluginFormDescription>
-        <AnimationForm />
+        <FormSwitch state={enablesAnimationState} label='アニメーションを有効にする' />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>アイコンの設定</PluginFormTitle>
         <PluginFormDescription last>
           AIが回答した際のアイコンを、設定した画像に変更することができます。
         </PluginFormDescription>
-        <AiIconForm />
+        <FormText
+          state={aiIconState}
+          variant='outlined'
+          label='アイコンのURL'
+          placeholder='https://example.com/icon.png'
+        />
       </PluginFormSection>
     </div>
   );
 };
 
-const StyledComponent = styled(Component)`
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 0 16px;
-  font-size: 14px;
-`;
-
-export default StyledComponent;
+export default Component;
