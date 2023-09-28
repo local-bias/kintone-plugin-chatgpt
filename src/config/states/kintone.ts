@@ -95,7 +95,9 @@ export const outputAppSingleLineTextPropertiesState = selector<kintoneAPI.FieldP
   key: `${PREFIX}outputAppSingleLineTextPropertiesState`,
   get: async ({ get }) => {
     const allProperties = get(outputAppPropertiesState);
-    return allProperties.filter((field) => field.type === 'SINGLE_LINE_TEXT');
+    return allProperties
+      .filter((field) => field.type === 'SINGLE_LINE_TEXT')
+      .filter((singleLineField) => (singleLineField as kintoneAPI.property.SingleLineText).unique);
   },
 });
 
