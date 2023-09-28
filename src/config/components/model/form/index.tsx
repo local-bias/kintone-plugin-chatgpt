@@ -10,8 +10,7 @@ const Component: FC = () => {
   if (tabIndex === 0) {
     return <CommonForm />;
   }
-
-  return <AssistantForm index={tabIndex - 1} />;
+  return <AssistantForm />;
 };
 
 export default Component;
