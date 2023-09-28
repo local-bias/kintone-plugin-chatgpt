@@ -1,7 +1,6 @@
 //@ts-check
 const hp = 'https://konomi.app/';
 const commonCdn = 'https://kintone-plugin.konomi.app/common';
-const cdn = 'https://kintone-plugin.konomi.app/chatgpt';
 const localhost = 'https://127.0.0.1:9152';
 
 /** @type {import('@konomi-app/kintone-utilities').PluginConfig} */
@@ -53,9 +52,9 @@ export default {
       },
     },
     prod: {
-      desktop: { js: [`${cdn}/desktop.js`], css: [`${cdn}/desktop.css`] },
-      mobile: { js: [`${cdn}/desktop.js`], css: [`${cdn}/desktop.css`] },
-      config: { js: [`${cdn}/config.js`], css: [`${cdn}/config.css`] },
+      desktop: { js: [`desktop.js`], css: [`desktop.css`] },
+      mobile: { js: [`desktop.js`], css: [`desktop.css`] },
+      config: { js: [`config.js`], css: [`config.css`] },
     },
     standalone: {
       desktop: { js: ['desktop.js'], css: ['desktop.css'] },
