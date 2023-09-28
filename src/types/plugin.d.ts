@@ -1,7 +1,18 @@
 declare namespace kintone {
   namespace plugin {
     /** プラグインがアプリ単位で保存する設定情報🔌 */
-    type Storage = { version: 1 } & StorageV1;
+    type Storage = ({ version: 1 } & StorageV1) | ({ version: 2 } & StorageV2);
+
+    type LatestStorage = { version: 2 } & StorageV2;
+
+    type AiAssistantProps = {
+      name: string;
+      description: string;
+      aiModel: string;
+      aiIcon: string;
+      temperature: number;
+      systemPrompt: string;
+    };
 
     type StorageV1 = {
       aiModel?: string;
@@ -17,6 +28,20 @@ declare namespace kintone {
       enablesAnimation?: boolean;
       aiIcon?: string;
       systemPrompt?: string;
+    };
+
+    type StorageV2 = {
+      viewId: string;
+      outputAppId: string;
+      outputAppSpaceId?: string;
+      outputKeyFieldCode: string;
+      outputContentFieldCode: string;
+      logAppId?: string;
+      logAppSpaceId?: string;
+      logKeyFieldCode?: string;
+      logContentFieldCode?: string;
+      enablesAnimation?: boolean;
+      assistants: AiAssistantProps[];
     };
   }
 }

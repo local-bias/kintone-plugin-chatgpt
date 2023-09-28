@@ -141,17 +141,6 @@ const Component: FCX = ({ className }) => {
 const StyledComponent = styled(Component)`
   max-height: 600px;
   overflow-y: auto;
-  &::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-  &::-webkit-scrollbar-thumb {
-    background-color: #0004;
-    border-radius: 4px;
-  }
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
-  }
 `;
 
 export default StyledComponent;

@@ -9,6 +9,7 @@ import Form from './components/model/form';
 import { PluginBanner, PluginContent, PluginLayout } from '@konomi-app/kintone-utility-component';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import Announcement from './components/model/announcement';
+import Sidebar from './components/model/sidebar';
 
 const Component: FC = () => (
   <Suspense fallback={<LoaderWithLabel label='画面の描画を待機しています' />}>
@@ -17,7 +18,8 @@ const Component: FC = () => (
         <Announcement />
         <SnackbarProvider maxSnack={1}>
           <Suspense fallback={<LoaderWithLabel label='設定情報を取得しています' />}>
-            <PluginLayout singleCondition>
+            <PluginLayout>
+              <Sidebar />
               <PluginContent>
                 <Form />
               </PluginContent>

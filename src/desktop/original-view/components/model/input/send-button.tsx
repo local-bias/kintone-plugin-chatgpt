@@ -5,6 +5,7 @@ import {
   chatHistoriesState,
   inputTextState,
   pluginConfigState,
+  selectedAssistantIndexState,
   selectedHistoryIdState,
   waitingForResponseState,
 } from '@/desktop/original-view/states/states';
@@ -27,8 +28,13 @@ const Component: FC = () => {
         try {
           set(waitingForResponseState, true);
           const config = await snapshot.getPromise(pluginConfigState);
+          const assistantIndex = await snapshot.getPromise(selectedAssistantIndexState);
+
+          process.env.NODE_ENV === 'development' && console.log({ assistantIndex });
+
+          const assistant = config.assistants[assistantIndex];
+
           const {
-            aiModel = OPENAI_MODELS[0],
             outputAppId,
             outputAppSpaceId,
             outputKeyFieldCode,
@@ -37,7 +43,6 @@ const Component: FC = () => {
             logAppSpaceId,
             logKeyFieldCode,
             logContentFieldCode,
-            systemPrompt = '',
           } = config;
           const input = await snapshot.getPromise(inputTextState);
           if (input === '') {
@@ -56,8 +61,8 @@ const Component: FC = () => {
           };
 
           const updatedChatHistory = produce(chatHisory, (draft) => {
-            if (!draft.messages.length && systemPrompt) {
-              draft.messages.push({ role: 'system', content: systemPrompt });
+            if (!draft.messages.length && assistant.systemPrompt) {
+              draft.messages.push({ role: 'system', content: assistant.systemPrompt });
             }
             draft.messages.push({ role: 'user', content: input });
           });
@@ -91,7 +96,8 @@ const Component: FC = () => {
             })
           );
           const response = await fetchChatCompletion({
-            model: aiModel,
+            model: assistant.aiModel,
+            temperature: assistant.temperature,
             messages: historyWithId.messages,
           });
 
