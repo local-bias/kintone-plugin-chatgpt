@@ -1,8 +1,7 @@
 import { OpenAI } from 'openai';
 import { atom, selector } from 'recoil';
 import { getHTMLfromMarkdown } from '../action';
-import { restoreStorage } from '@konomi-app/kintone-utilities';
-import { PLUGIN_ID } from '@/lib/global';
+import { restorePluginConfig } from '@/lib/plugin';
 
 export type ChatMessage = {
   role: OpenAI.Chat.ChatCompletionMessage['role'];
@@ -15,7 +14,7 @@ const PREFIX = 'kintone';
 
 export const pluginConfigState = atom<kintone.plugin.Storage>({
   key: `${PREFIX}pluginConfigState`,
-  default: restoreStorage<kintone.plugin.Storage>(PLUGIN_ID)!,
+  default: restorePluginConfig(),
 });
 
 export const loadingState = atom<boolean>({

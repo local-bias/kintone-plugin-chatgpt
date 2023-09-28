@@ -1,13 +1,12 @@
 import { VIEW_ROOT_ID } from '@/lib/static';
-import { restoreStorage } from '@konomi-app/kintone-utilities';
 import { createRoot } from 'react-dom/client';
 import App from './app';
 import React from 'react';
-import { PLUGIN_ID } from '@/lib/global';
 import { listener } from '@/lib/listener';
+import { restorePluginConfig } from '@/lib/plugin';
 
 listener.add(['app.record.index.show'], (event) => {
-  const config = restoreStorage<kintone.plugin.Storage>(PLUGIN_ID);
+  const config = restorePluginConfig();
   if (!config || config?.viewId !== String(event.viewId)) {
     return event;
   }
