@@ -1,7 +1,7 @@
 import { OpenAI } from 'openai';
 import { atom, selector } from 'recoil';
 import { getHTMLfromMarkdown } from '../action';
-import { restorePluginConfig } from '@/lib/plugin';
+import { createNewAiAssistant, restorePluginConfig } from '@/lib/plugin';
 
 export type ChatMessage = {
   role: OpenAI.Chat.ChatCompletionMessage['role'];
@@ -12,7 +12,7 @@ export type ChatHistory = { id: string; title: string; messages: ChatMessage[] }
 
 const PREFIX = 'kintone';
 
-export const pluginConfigState = atom<kintone.plugin.Storage>({
+export const pluginConfigState = atom<kintone.plugin.LatestStorage>({
   key: `${PREFIX}pluginConfigState`,
   default: restorePluginConfig(),
 });
@@ -30,6 +30,11 @@ export const inputTextState = atom<string>({
 export const waitingForResponseState = atom<boolean>({
   key: `${PREFIX}waitingForResponseState`,
   default: false,
+});
+
+export const selectedAssistantIndexState = atom<number>({
+  key: `${PREFIX}selectedAssistantIndexState`,
+  default: 0,
 });
 
 export const chatMessagesState = selector<ChatMessage[]>({

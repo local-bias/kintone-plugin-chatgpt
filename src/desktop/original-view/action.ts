@@ -10,14 +10,14 @@ import {
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
 
-export const fetchChatCompletion = async (params: { model: string; messages: ChatMessage[] }) => {
-  const { model, messages } = params;
+export const fetchChatCompletion = async (params: {
+  model: string;
+  temperature: number;
+  messages: ChatMessage[];
+}) => {
+  const { model, temperature, messages } = params;
 
-  const requestBody: OpenAI.Chat.ChatCompletionCreateParams = {
-    model,
-    temperature: 0.7,
-    messages,
-  };
+  const requestBody: OpenAI.Chat.ChatCompletionCreateParams = { model, temperature, messages };
 
   const [responseBody, responseCode, responseHeader] = await kintone.plugin.app.proxy(
     PLUGIN_ID,

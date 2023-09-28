@@ -1,16 +1,22 @@
 import React, { FC } from 'react';
 import { ChatGPTIcon } from '../../ui/chatgpt-icon';
 import { useRecoilValue } from 'recoil';
-import { pluginConfigState } from '@/desktop/original-view/states/states';
+import {
+  pluginConfigState,
+  selectedAssistantIndexState,
+} from '@/desktop/original-view/states/states';
 
 const Component: FC = () => {
   const pluginConfig = useRecoilValue(pluginConfigState);
+  const assitantIndex = useRecoilValue(selectedAssistantIndexState);
 
-  if (!pluginConfig?.aiIcon) {
-    return <ChatGPTIcon />;
+  const src = pluginConfig.assistants[assitantIndex].aiIcon;
+
+  if (src) {
+    return <img className='object-cover w-full h-full' src={src} />;
   }
 
-  return <img src={pluginConfig.aiIcon} />;
+  return <ChatGPTIcon />;
 };
 
 export default Component;
