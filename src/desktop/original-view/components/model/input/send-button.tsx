@@ -1,6 +1,5 @@
 import { fetchChatCompletion, logChatCompletion } from '@/desktop/original-view/action';
 import {
-  ChatHistory,
   apiErrorMessageState,
   chatHistoriesState,
   inputTextState,
@@ -9,14 +8,14 @@ import {
   selectedHistoryIdState,
   waitingForResponseState,
 } from '@/desktop/original-view/states/states';
-import { OPENAI_MODELS } from '@/lib/static';
+import { ChatHistory } from '@/lib/static';
 import { addRecord, updateRecord, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
 import SendIcon from '@mui/icons-material/Send';
 import { Button } from '@mui/material';
 import { produce } from 'immer';
+import { nanoid } from 'nanoid';
 import React, { FC } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { nanoid } from 'nanoid';
 
 const Component: FC = () => {
   const input = useRecoilValue(inputTextState);

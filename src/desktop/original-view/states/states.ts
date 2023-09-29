@@ -1,14 +1,7 @@
-import { OpenAI } from 'openai';
+import { restorePluginConfig } from '@/lib/plugin';
+import { ChatHistory, ChatMessage } from '@/lib/static';
 import { atom, selector } from 'recoil';
 import { getHTMLfromMarkdown } from '../action';
-import { createNewAiAssistant, restorePluginConfig } from '@/lib/plugin';
-
-export type ChatMessage = {
-  role: OpenAI.Chat.ChatCompletionMessage['role'];
-  content: string;
-};
-
-export type ChatHistory = { id: string; title: string; messages: ChatMessage[] };
 
 const PREFIX = 'kintone';
 

@@ -1,14 +1,13 @@
-import { OPENAI_ENDPOINT } from '@/lib/static';
-import { OpenAI } from 'openai';
-import { marked } from 'marked';
 import { PLUGIN_ID } from '@/lib/global';
-import { ChatHistory, ChatMessage } from './states/states';
+import { ChatHistory, ChatMessage, OPENAI_ENDPOINT } from '@/lib/static';
 import {
   addRecord,
   getRecords,
   updateRecord,
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
+import { marked } from 'marked';
+import { OpenAI } from 'openai';
 
 export const fetchChatCompletion = async (params: {
   model: string;

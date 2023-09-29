@@ -16,6 +16,13 @@ export const URL_PLUGIN_LIST = 'https://ribbit.konomi.app/kintone-plugin';
 
 export const OPENAI_MODELS = ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4'];
 
+export type ChatMessage = {
+  role: OpenAI.Chat.ChatCompletionMessage['role'];
+  content: string;
+};
+
+export type ChatHistory = { id: string; title: string; messages: ChatMessage[] };
+
 type LogDataV1 = {
   title: string;
   messages: OpenAI.Chat.ChatCompletionMessage[];

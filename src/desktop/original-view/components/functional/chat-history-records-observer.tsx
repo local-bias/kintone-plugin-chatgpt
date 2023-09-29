@@ -1,12 +1,8 @@
+import { ChatHistory } from '@/lib/static';
+import { getAllRecords, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
 import { FC, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
-import {
-  ChatHistory,
-  chatHistoriesState,
-  historiesFetchedState,
-  pluginConfigState,
-} from '../../states/states';
-import { getAllRecords, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
+import { chatHistoriesState, historiesFetchedState, pluginConfigState } from '../../states/states';
 
 const Component: FC = () => {
   const config = useRecoilValue(pluginConfigState);
