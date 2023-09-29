@@ -61,7 +61,7 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
 const StyledComponent = styled(Component)`
   display: flex;
   flex-direction: column;
-  min-height: calc(100vh - 180px);
+  min-height: calc(100vh - 200px);
 
   .messages {
     width: 100%;

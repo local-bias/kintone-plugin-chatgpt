@@ -33,7 +33,7 @@ const Component: FCX = () => {
                 <ChatGPTIcon />
               )}
             </div>
-            <div>
+            <div className='flex-1'>
               <div className='text-lg text-gray-700'>{assistant.name}</div>
               <div className='text-sm text-gray-500'>{assistant.description}</div>
             </div>

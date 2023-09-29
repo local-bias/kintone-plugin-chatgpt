@@ -12,7 +12,7 @@ const Component: FC = () => (
     <SnackbarProvider maxSnack={1}>
       <ChatHistoryRecordsObserver />
       <Layout>
-        <div className='bg-gray-50 min-h-[calc(100vh_-_180px)]'>
+        <div className='bg-gray-50 min-h-[calc(100vh_-_200px)]'>
           <Sidebar />
           <div className='relative'>
             <ChatMessages />
