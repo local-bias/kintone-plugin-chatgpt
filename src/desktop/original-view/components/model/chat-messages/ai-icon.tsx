@@ -4,13 +4,15 @@ import { useRecoilValue } from 'recoil';
 import {
   pluginConfigState,
   selectedAssistantIndexState,
+  selectedHistoryState,
 } from '@/desktop/original-view/states/states';
 
 const Component: FC = () => {
+  const selectedHistory = useRecoilValue(selectedHistoryState);
   const pluginConfig = useRecoilValue(pluginConfigState);
   const assitantIndex = useRecoilValue(selectedAssistantIndexState);
 
-  const src = pluginConfig.assistants[assitantIndex].aiIcon;
+  const src = selectedHistory?.iconUrl ?? pluginConfig.assistants[assitantIndex].aiIcon;
 
   if (src) {
     return <img className='object-cover w-full h-full' src={src} />;

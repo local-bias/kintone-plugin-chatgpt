@@ -14,17 +14,9 @@ const Component: FC = () => {
   );
 
   return (
-    <div className='p-4'>
-      <Button
-        variant='outlined'
-        color='primary'
-        fullWidth
-        startIcon={<AddIcon />}
-        onClick={onClick}
-      >
-        新しいチャット
-      </Button>
-    </div>
+    <Button variant='outlined' color='primary' fullWidth startIcon={<AddIcon />} onClick={onClick}>
+      新しいチャット
+    </Button>
   );
 };
 

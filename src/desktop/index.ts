@@ -2,4 +2,4 @@
 
 import '@/lib/global';
 import './original-view';
-
+import './hide-elements';

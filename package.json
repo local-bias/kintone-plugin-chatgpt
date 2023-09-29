@@ -20,6 +20,7 @@
     "path": false
   },
   "devDependencies": {
+    "@emotion/css": "^11.11.2",
     "@emotion/react": "11.11.1",
     "@emotion/styled": "11.11.0",
     "@kintone/dts-gen": "7.0.5",

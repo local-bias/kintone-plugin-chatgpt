@@ -1,5 +1,5 @@
 import { restorePluginConfig } from '@/lib/plugin';
-import { ChatHistory, ChatMessage } from '@/lib/static';
+import { ChatMessage, LatestChatHistory } from '@/lib/static';
 import { atom, selector } from 'recoil';
 import { getHTMLfromMarkdown } from '../action';
 
@@ -51,7 +51,7 @@ export const chatMessagesState = selector<ChatMessage[]>({
   },
 });
 
-export const chatHistoriesState = atom<ChatHistory[]>({
+export const chatHistoriesState = atom<LatestChatHistory[]>({
   key: `${PREFIX}chatHistoriesState`,
   default: [],
 });
@@ -69,4 +69,17 @@ export const selectedHistoryIdState = atom<string | null>({
 export const apiErrorMessageState = atom<string>({
   key: `${PREFIX}apiErrorMessageState`,
   default: '',
+});
+
+export const selectedHistoryState = selector<LatestChatHistory | null>({
+  key: `${PREFIX}selectedHistoryState`,
+  get: ({ get }) => {
+    const chatHistory = get(chatHistoriesState);
+    const selectedHistoryId = get(selectedHistoryIdState);
+    if (!selectedHistoryId) {
+      return null;
+    }
+    const selectedHistory = chatHistory.find((history) => history.id === selectedHistoryId);
+    return selectedHistory ?? null;
+  },
 });

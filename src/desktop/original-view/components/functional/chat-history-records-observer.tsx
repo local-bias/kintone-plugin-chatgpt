@@ -1,8 +1,8 @@
-import { ChatHistory } from '@/lib/static';
 import { getAllRecords, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
 import { FC, useEffect } from 'react';
 import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { chatHistoriesState, historiesFetchedState, pluginConfigState } from '../../states/states';
+import { migrateChatHistory } from '../../action';
 
 const Component: FC = () => {
   const config = useRecoilValue(pluginConfigState);
@@ -35,7 +35,9 @@ const Component: FC = () => {
             typeof record[outputContentFieldCode].value === 'string'
         )
         .map((record) => {
-          const history: ChatHistory = JSON.parse(record[outputContentFieldCode].value as string);
+          const history = migrateChatHistory(
+            JSON.parse(record[outputContentFieldCode].value as string)
+          );
           return history;
         });
       process.env.NODE_ENV === 'development' && console.log('⌛ histories', histories);

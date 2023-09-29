@@ -21,11 +21,16 @@ export type ChatMessage = {
   content: string;
 };
 
-export type ChatHistory = { id: string; title: string; messages: ChatMessage[] };
+export type ChatHistory = ChatHistoryV1 | ChatHistoryV2;
 
-type LogDataV1 = {
+export type LatestChatHistory = ChatHistoryV2;
+
+type ChatHistoryV1 = { version: 1; id: string; title: string; messages: ChatMessage[] };
+
+type ChatHistoryV2 = {
+  version: 2;
+  id: string;
+  iconUrl: string;
   title: string;
-  messages: OpenAI.Chat.ChatCompletionMessage[];
+  messages: ChatMessage[];
 };
-
-type LogData = { version: 1 } & LogDataV1; // | { version: 2 } & LogDataV2 ...
