@@ -1,4 +1,9 @@
-import { apiKeyState, enablesAnimationState } from '@/config/states/plugin';
+import {
+  apiKeyState,
+  enablesAnimationState,
+  enablesEnterState,
+  enablesShiftEnterState,
+} from '@/config/states/plugin';
 import { FormSwitch } from '@/lib/components/form-switch';
 import {
   PluginFormDescription,
@@ -86,6 +91,16 @@ const Component: FCX = () => {
         <div>
           <LogContentForm />
         </div>
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>送信オプション</PluginFormTitle>
+        <PluginFormDescription last>
+          送信用のショートカットを設定することができます。
+        </PluginFormDescription>
+        <div className='mb-4'>
+          <FormSwitch state={enablesEnterState} label='Enterキーで送信' />
+        </div>
+        <FormSwitch state={enablesShiftEnterState} label='Shift + Enterキーで送信' />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>アニメーションの設定</PluginFormTitle>

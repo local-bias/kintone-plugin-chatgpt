@@ -6,7 +6,7 @@ import { PLUGIN_ID } from './global';
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): kintone.plugin.LatestStorage => ({
-  version: 2,
+  version: 3,
   viewId: '',
   outputAppId: '',
   outputKeyFieldCode: '',
@@ -15,6 +15,8 @@ export const createConfig = (): kintone.plugin.LatestStorage => ({
   logKeyFieldCode: '',
   logContentFieldCode: '',
   enablesAnimation: false,
+  enablesEnter: false,
+  enablesShiftEnter: false,
   assistants: [createNewAiAssistant()],
 });
 
@@ -30,14 +32,23 @@ export const migrateConfig = (storage: kintone.plugin.Storage): kintone.plugin.L
     case 1:
       return {
         ...storage,
-        version: 2,
+        version: 3,
+        enablesAnimation: false,
+        enablesEnter: false,
+        enablesShiftEnter: false,
         assistants: [createNewAiAssistant()],
       };
     case 2:
-      return storage;
+      return {
+        ...storage,
+        version: 3,
+        enablesAnimation: false,
+        enablesEnter: false,
+        enablesShiftEnter: false,
+      };
     default:
       //@ts-ignore
-      return { version: 2, ...storage };
+      return { version: 3, ...storage };
   }
 };
 

@@ -178,6 +178,36 @@ export const enablesAnimationState = selector<boolean>({
   },
 });
 
+export const enablesEnterState = selector<boolean>({
+  key: `${PREFIX}enablesEnterState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage.enablesEnter ?? false;
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft.enablesEnter = newValue as boolean;
+      })
+    );
+  },
+});
+
+export const enablesShiftEnterState = selector<boolean>({
+  key: `${PREFIX}enablesShiftEnterState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return storage.enablesShiftEnter ?? false;
+  },
+  set: ({ set }, newValue) => {
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft.enablesShiftEnter = newValue as boolean;
+      })
+    );
+  },
+});
+
 export const assistantsState = selector<kintone.plugin.AiAssistantProps[]>({
   key: `${PREFIX}assistantsState`,
   get: ({ get }) => {

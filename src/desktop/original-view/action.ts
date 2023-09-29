@@ -1,5 +1,5 @@
 import { PLUGIN_ID } from '@/lib/global';
-import { ChatHistory, ChatMessage, OPENAI_ENDPOINT } from '@/lib/static';
+import { ChatHistory, ChatMessage, LatestChatHistory, OPENAI_ENDPOINT } from '@/lib/static';
 import {
   addRecord,
   getRecords,
@@ -8,6 +8,26 @@ import {
 } from '@konomi-app/kintone-utilities';
 import { marked } from 'marked';
 import { OpenAI } from 'openai';
+
+export const migrateChatHistory = (chatHistory: ChatHistory): LatestChatHistory => {
+  switch (chatHistory.version) {
+    case undefined:
+    case 1:
+      return {
+        ...chatHistory,
+        version: 2,
+        iconUrl: '',
+      };
+    case 2:
+      return chatHistory;
+    default:
+      throw new Error('不明なバージョンのチャット履歴です');
+  }
+};
+
+export const createNewChatHistory = (params: Partial<LatestChatHistory>): LatestChatHistory => {
+  return { version: 2, id: '', iconUrl: '', title: '', messages: [], ...params };
+};
 
 export const fetchChatCompletion = async (params: {
   model: string;
@@ -53,7 +73,7 @@ export const getHTMLfromMarkdown = (markdown: string) => {
 };
 
 export const logChatCompletion = async (params: {
-  chatHistory: ChatHistory;
+  chatHistory: LatestChatHistory;
   appId: string;
   spaceId?: string;
   keyFieldCode: string;
