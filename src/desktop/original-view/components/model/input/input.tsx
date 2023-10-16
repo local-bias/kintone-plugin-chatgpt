@@ -32,7 +32,8 @@ const Component: FC = () => {
       <TextField
         multiline
         sx={{ width: '100%' }}
-        rows={2}
+        minRows={2}
+        maxRows={10}
         variant='outlined'
         label='送信メッセージ'
         value={input}
