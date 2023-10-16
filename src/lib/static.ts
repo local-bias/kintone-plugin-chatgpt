@@ -4,9 +4,14 @@ import manifest from '../../plugin/manifest.json';
 export const OPENAI_ENDPOINT_ROOT = 'https://api.openai.com';
 export const OPENAI_ENDPOINT = `${OPENAI_ENDPOINT_ROOT}/v1/chat/completions`;
 
-export const VIEW_ROOT_ID = `ribbit-chatgpt-plugin-root`;
-export const PLUGIN_KEY = 'ribbit-kintone-plugin-chatgpt';
+export const PLUGIN_KEY = 'chatgpt';
 export const PLUGIN_NAME = manifest.name.ja;
+export const PLUGIN_VERSION = manifest.version;
+
+export const LOCAL_STORAGE_PREFIX = 'ribbit-kintone-plugin-';
+export const LOCAL_STORAGE_KEY = `${LOCAL_STORAGE_PREFIX}${PLUGIN_KEY}`;
+
+export const VIEW_ROOT_ID = `ribbit-chatgpt-plugin-root`;
 
 export const URL_HOMEPAGE = manifest.homepage_url.ja;
 export const URL_INQUIRY = 'https://form.konomi.app';
