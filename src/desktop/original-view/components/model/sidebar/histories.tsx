@@ -1,9 +1,6 @@
 import {
-  apiErrorMessageState,
-  chatHistoriesState,
   historiesFetchedState,
   loadingState,
-  pluginConfigState,
   selectedHistoryIdState,
 } from '@/desktop/original-view/states/states';
 import {
@@ -16,66 +13,17 @@ import {
   Skeleton,
 } from '@mui/material';
 import React, { FCX } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import ChatIcon from '@mui/icons-material/Chat';
 import DeleteIcon from '@mui/icons-material/Delete';
 import styled from '@emotion/styled';
-import { deleteAllRecordsByQuery, isGuestSpace } from '@konomi-app/kintone-utilities';
-import { produce } from 'immer';
-import { useSnackbar } from 'notistack';
+import { useChatHistory } from '@/desktop/original-view/hooks/use-chat-history';
 
 const Component: FCX = ({ className }) => {
+  const { histories, setSelectedHistoryId, removeSelectedHistory } = useChatHistory();
   const historiesFetched = useRecoilValue(historiesFetchedState);
-  const histories = useRecoilValue(chatHistoriesState);
   const selectedHistoryId = useRecoilValue(selectedHistoryIdState);
   const loading = useRecoilValue(loadingState);
-  const { enqueueSnackbar } = useSnackbar();
-
-  const onHistoryChange = useRecoilCallback(
-    ({ reset, set }) =>
-      (historyId: string) => {
-        set(selectedHistoryIdState, historyId);
-        reset(apiErrorMessageState);
-      },
-    []
-  );
-
-  const onDeleteButtonClick = useRecoilCallback(
-    ({ reset, set, snapshot }) =>
-      async () => {
-        try {
-          set(loadingState, true);
-          const id = (await snapshot.getPromise(selectedHistoryIdState))!;
-          const { outputAppId, outputKeyFieldCode, outputAppSpaceId } = await snapshot.getPromise(
-            pluginConfigState
-          );
-
-          const isGuest = await isGuestSpace(outputAppId);
-
-          const query = `${outputKeyFieldCode} = "${id}"`;
-
-          await deleteAllRecordsByQuery({
-            app: outputAppId,
-            query,
-            debug: process.env.NODE_ENV === 'development',
-            guestSpaceId: isGuest ? outputAppSpaceId : undefined,
-          });
-
-          set(chatHistoriesState, (_histories) =>
-            produce(_histories, (draft) => {
-              const index = draft.findIndex((history) => history.id === id);
-              draft.splice(index, 1);
-            })
-          );
-
-          reset(selectedHistoryIdState);
-          enqueueSnackbar('履歴を削除しました', { variant: 'success' });
-        } finally {
-          reset(loadingState);
-        }
-      },
-    []
-  );
 
   if (!historiesFetched) {
     return (
@@ -104,7 +52,7 @@ const Component: FCX = ({ className }) => {
         {histories.map((history, index) => (
           <ListItem
             key={index}
-            onClick={() => onHistoryChange(history.id)}
+            onClick={() => setSelectedHistoryId(history.id)}
             disablePadding
             sx={{
               backgroundColor: selectedHistoryId === history.id ? '#1976d222' : undefined,
@@ -118,7 +66,7 @@ const Component: FCX = ({ className }) => {
               <ListItemText primary={history.title} />
               {selectedHistoryId === history.id && (
                 <IconButton
-                  onClick={onDeleteButtonClick}
+                  onClick={removeSelectedHistory}
                   disabled={loading}
                   sx={{
                     position: 'absolute',
