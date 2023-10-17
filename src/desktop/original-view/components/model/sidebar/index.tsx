@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import NewChatButton from '../new-chat';
 import Histories from './histories';
-import { Drawer, Fab, IconButton } from '@mui/material';
+import { Drawer, Fab } from '@mui/material';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 
 const Component: FC = () => {
