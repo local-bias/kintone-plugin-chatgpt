@@ -8,7 +8,7 @@ export default {
   manifest: {
     base: {
       manifest_version: 1,
-      version: '4.3.0',
+      version: '4.4.0',
       type: 'APP',
       name: {
         en: 'ChatGPT integration plugin',
