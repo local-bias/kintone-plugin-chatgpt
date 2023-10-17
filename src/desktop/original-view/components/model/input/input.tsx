@@ -20,9 +20,11 @@ const Component: FC = () => {
 
   const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
     if (enablesEnter && event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
       sendMessage();
     }
     if (enablesShiftEnter && event.key === 'Enter' && event.shiftKey) {
+      event.preventDefault();
       sendMessage();
     }
   };
