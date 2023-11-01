@@ -6,7 +6,7 @@ export default styled.section`
     height: 8px;
   }
   *::-webkit-scrollbar-thumb {
-    background-color: #0005;
+    background-color: #9ca3af;
     border-radius: 9999px;
   }
   *::-webkit-scrollbar-track {
