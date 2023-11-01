@@ -1,6 +1,6 @@
 import { restorePluginConfig } from '@/lib/plugin';
 import { ChatMessage, LatestChatHistory } from '@/lib/static';
-import { atom, selector } from 'recoil';
+import { DefaultValue, atom, selector } from 'recoil';
 import { getHTMLfromMarkdown } from '../action';
 
 const PREFIX = 'kintone';
@@ -81,5 +81,17 @@ export const selectedHistoryState = selector<LatestChatHistory | null>({
     }
     const selectedHistory = chatHistory.find((history) => history.id === selectedHistoryId);
     return selectedHistory ?? null;
+  },
+  set: ({ set }, newHistory) => {
+    if (!newHistory || newHistory instanceof DefaultValue) {
+      return;
+    }
+    set(chatHistoriesState, (prev) => {
+      const index = prev.findIndex((history) => history.id === newHistory.id);
+      if (index === -1) {
+        return [newHistory, ...prev];
+      }
+      return prev.map((history, i) => (i === index ? newHistory : history));
+    });
   },
 });

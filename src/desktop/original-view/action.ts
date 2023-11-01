@@ -38,6 +38,8 @@ export const fetchChatCompletion = async (params: {
 
   const requestBody: OpenAI.Chat.ChatCompletionCreateParams = { model, temperature, messages };
 
+  process.env.NODE_ENV === 'development' && console.log('OpenAIのAPIを呼び出します', requestBody);
+
   const [responseBody, responseCode, responseHeader] = await kintone.plugin.app.proxy(
     PLUGIN_ID,
     OPENAI_ENDPOINT,

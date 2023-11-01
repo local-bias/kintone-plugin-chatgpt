@@ -2,13 +2,19 @@ import { useRecoilCallback, useRecoilValue } from 'recoil';
 import {
   apiErrorMessageState,
   chatHistoriesState,
+  inputTextState,
   loadingState,
   pluginConfigState,
+  selectedAssistantIndexState,
   selectedHistoryIdState,
+  selectedHistoryState,
 } from '../states/states';
 import { deleteAllRecordsByQuery, isGuestSpace } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { useSnackbar } from 'notistack';
+import { createNewChatHistory } from '../action';
+import { nanoid } from 'nanoid';
+import { ChatMessage } from '@/lib/static';
 
 export const useChatHistory = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -20,6 +26,54 @@ export const useChatHistory = () => {
         set(selectedHistoryIdState, historyId);
         reset(apiErrorMessageState);
       },
+    []
+  );
+
+  const pushMessage = useRecoilCallback(
+    ({ set, snapshot }) =>
+      async (message: ChatMessage) => {
+        const selectedHistory = await snapshot.getPromise(selectedHistoryState);
+        const config = await snapshot.getPromise(pluginConfigState);
+        const assistantIndex = await snapshot.getPromise(selectedAssistantIndexState);
+        const assistant = config.assistants[assistantIndex];
+
+        const historyId = selectedHistory?.id ?? nanoid();
+        const history =
+          selectedHistory ??
+          createNewChatHistory({
+            id: historyId,
+            iconUrl: assistant.aiIcon,
+            title: message.content.slice(0, 8),
+            messages: [],
+          });
+
+        const updatedHistory = produce(history, (draft) => {
+          if (draft.messages.length === 0 && assistant.systemPrompt) {
+            draft.messages.push({ role: 'system', content: assistant.systemPrompt });
+          }
+          draft.messages.push(message);
+        });
+
+        set(selectedHistoryIdState, historyId);
+        set(selectedHistoryState, updatedHistory);
+      },
+    []
+  );
+
+  const pushUserMessage = useRecoilCallback(
+    ({ reset, snapshot }) =>
+      async () => {
+        const content = await snapshot.getPromise(inputTextState);
+        await pushMessage({ role: 'user', content });
+        reset(inputTextState);
+      },
+    []
+  );
+
+  const pushAssistantMessage = useRecoilCallback(
+    () => async (content: string) => {
+      await pushMessage({ role: 'assistant', content });
+    },
     []
   );
 
@@ -60,5 +114,11 @@ export const useChatHistory = () => {
     []
   );
 
-  return { histories, setSelectedHistoryId, removeSelectedHistory };
+  return {
+    histories,
+    pushUserMessage,
+    pushAssistantMessage,
+    setSelectedHistoryId,
+    removeSelectedHistory,
+  };
 };

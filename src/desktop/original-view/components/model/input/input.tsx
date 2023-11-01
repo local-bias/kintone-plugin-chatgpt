@@ -1,4 +1,5 @@
 import { useMessageController } from '@/desktop/original-view/hooks/message-controller';
+import { useChatHistory } from '@/desktop/original-view/hooks/use-chat-history';
 import { inputTextState, pluginConfigState } from '@/desktop/original-view/states/states';
 import { TextField } from '@mui/material';
 import React, { ChangeEventHandler, FC, KeyboardEventHandler } from 'react';
@@ -9,6 +10,7 @@ const Component: FC = () => {
   const input = useRecoilValue(inputTextState);
   const { enablesEnter, enablesShiftEnter } = config;
   const { sendMessage } = useMessageController();
+  const { pushUserMessage } = useChatHistory();
 
   const onChange: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
     ({ set }) =>
@@ -18,14 +20,14 @@ const Component: FC = () => {
     []
   );
 
-  const onKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
-    if (enablesEnter && event.key === 'Enter' && !event.shiftKey) {
+  const onKeyDown: KeyboardEventHandler<HTMLInputElement> = async (event) => {
+    const isEnter = event.key === 'Enter';
+    const isShift = event.shiftKey;
+
+    if ((enablesEnter && isEnter && !isShift) || (enablesShiftEnter && isEnter && isShift)) {
       event.preventDefault();
-      sendMessage();
-    }
-    if (enablesShiftEnter && event.key === 'Enter' && event.shiftKey) {
-      event.preventDefault();
-      sendMessage();
+      await pushUserMessage();
+      await sendMessage();
     }
   };
 
