@@ -144,11 +144,27 @@ export const useMessageController = () => {
             }
           }
         } catch (error: any) {
-          if (error instanceof Error) {
+          const defaultErrorMessage =
+            '不明なエラーが発生しました。再度試していただくか、AIモデルを変更してください。';
+          if (typeof error === 'string') {
+            try {
+              const errorObject = JSON.parse(error);
+
+              if (errorObject?.code === 'GAIA_PR03') {
+                set(
+                  apiErrorMessageState,
+                  'タイムアウトしました。再度試していただくか、AIモデルを変更してください。'
+                );
+              } else {
+                set(apiErrorMessageState, errorObject?.message ?? defaultErrorMessage);
+              }
+            } catch (e) {
+              set(apiErrorMessageState, defaultErrorMessage);
+            }
+          } else if (error instanceof Error) {
             set(apiErrorMessageState, error.message);
-            console.error(error.message);
           } else {
-            set(apiErrorMessageState, '不明なエラーが発生しました');
+            set(apiErrorMessageState, error?.message ?? defaultErrorMessage);
           }
         } finally {
           set(waitingForResponseState, false);
