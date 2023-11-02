@@ -5,7 +5,8 @@ import {
   pluginConfigState,
   selectedAssistantIndexState,
   selectedHistoryState,
-  waitingForResponseState,
+  isWaitingForAIState,
+  pendingRequestsCountState,
 } from '@/desktop/original-view/states/states';
 import { useKintoneApp } from './use-kintone-app';
 import { useChatHistory } from './use-chat-history';
@@ -14,37 +15,42 @@ export const useMessageController = () => {
   const { updateLogApp, updateOutputApp } = useKintoneApp();
   const { pushAssistantMessage } = useChatHistory();
 
-  const sendMessage = useRecoilCallback(
-    ({ set, snapshot, reset }) =>
+  const fetchChatCompletions = useRecoilCallback(
+    ({ reset, set, snapshot }) =>
       async () => {
         try {
-          set(waitingForResponseState, true);
-          reset(apiErrorMessageState);
-
+          set(isWaitingForAIState, true);
           const config = await snapshot.getPromise(pluginConfigState);
           const assistantIndex = await snapshot.getPromise(selectedAssistantIndexState);
           const chatHistory = await snapshot.getPromise(selectedHistoryState);
-
+          const assistant = config.assistants[assistantIndex];
           if (!chatHistory) {
             throw new Error('チャットが選択されていません');
           }
 
-          process.env.NODE_ENV === 'development' && console.log({ assistantIndex });
-
-          const assistant = config.assistants[assistantIndex];
-
-          const [response] = await Promise.all([
-            fetchChatCompletion({
-              model: assistant.aiModel,
-              temperature: assistant.temperature,
-              messages: chatHistory.messages,
-            }),
-            updateLogApp(),
-          ]);
+          const response = await fetchChatCompletion({
+            model: assistant.aiModel,
+            temperature: assistant.temperature,
+            messages: chatHistory.messages,
+          });
 
           const assistantMessage = response.choices[0].message;
           await pushAssistantMessage(assistantMessage.content ?? '');
-          set(waitingForResponseState, false);
+        } finally {
+          reset(isWaitingForAIState);
+        }
+      },
+    []
+  );
+
+  const sendMessage = useRecoilCallback(
+    ({ set, reset }) =>
+      async () => {
+        try {
+          set(pendingRequestsCountState, (count) => count + 1);
+          reset(apiErrorMessageState);
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          await fetchChatCompletions();
           await updateOutputApp();
           await updateLogApp();
         } catch (error: any) {
@@ -71,7 +77,7 @@ export const useMessageController = () => {
             set(apiErrorMessageState, error?.message ?? defaultErrorMessage);
           }
         } finally {
-          set(waitingForResponseState, false);
+          set(pendingRequestsCountState, (count) => count - 1);
         }
       },
     []

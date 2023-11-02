@@ -10,19 +10,29 @@ export const pluginConfigState = atom<kintone.plugin.LatestStorage>({
   default: restorePluginConfig(),
 });
 
-export const loadingState = atom<boolean>({
-  key: `${PREFIX}loadingState`,
+export const pendingRequestsCountState = atom<number>({
+  key: `${PREFIX}pendingRequestsCountState`,
+  default: 0,
+});
+
+export const isWaitingForAIState = atom<boolean>({
+  key: `${PREFIX}isWaitingForAIState`,
   default: false,
+});
+
+export const loadingState = selector<boolean>({
+  key: `${PREFIX}loadingState`,
+  get: ({ get }) => {
+    const pendingRequestsCount = get(pendingRequestsCountState);
+    const isWaitingForAI = get(isWaitingForAIState);
+
+    return pendingRequestsCount > 0 || isWaitingForAI;
+  },
 });
 
 export const inputTextState = atom<string>({
   key: `${PREFIX}inputTextState`,
   default: '',
-});
-
-export const waitingForResponseState = atom<boolean>({
-  key: `${PREFIX}waitingForResponseState`,
-  default: false,
 });
 
 export const selectedAssistantIndexState = atom<number>({

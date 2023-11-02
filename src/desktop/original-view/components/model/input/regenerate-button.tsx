@@ -1,15 +1,12 @@
 import { useMessageController } from '@/desktop/original-view/hooks/message-controller';
-import {
-  selectedHistoryState,
-  waitingForResponseState,
-} from '@/desktop/original-view/states/states';
+import { loadingState, selectedHistoryState } from '@/desktop/original-view/states/states';
 import { Button } from '@mui/material';
 import React, { FC, memo } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 
 const Component: FC = () => {
   const { sendMessage } = useMessageController();
-  const waitingForResponse = useRecoilValue(waitingForResponseState);
+  const loading = useRecoilValue(loadingState);
 
   const onClick = useRecoilCallback(
     ({ set }) =>
@@ -26,7 +23,7 @@ const Component: FC = () => {
   );
 
   return (
-    <Button variant='outlined' color='info' onClick={onClick} disabled={waitingForResponse}>
+    <Button variant='outlined' color='info' onClick={onClick} disabled={loading}>
       再生成
     </Button>
   );

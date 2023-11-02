@@ -1,10 +1,9 @@
 import {
   apiErrorMessageState,
   chatMessagesState,
-  waitingForResponseState,
+  isWaitingForAIState,
 } from '@/desktop/original-view/states/states';
 import styled from '@emotion/styled';
-import { CircularProgress, Skeleton } from '@mui/material';
 import React, { FCX, PropsWithChildren } from 'react';
 import { useRecoilValue } from 'recoil';
 import MessageContainer from './message-container';
@@ -14,7 +13,7 @@ import Empty from './empty';
 
 const Component: FCX<PropsWithChildren> = ({ className }) => {
   const chatMessages = useRecoilValue(chatMessagesState);
-  const watingForResponse = useRecoilValue(waitingForResponseState);
+  const isWaitingForAI = useRecoilValue(isWaitingForAIState);
   const apiErrorMessage = useRecoilValue(apiErrorMessageState);
 
   const displayMessages = chatMessages.filter(
@@ -36,7 +35,7 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
             </MessageContainer>
           </div>
         ))}
-        {watingForResponse && (
+        {isWaitingForAI && (
           <div className='[&:nth-of-type(n+1)]:border-t border-gray-300'>
             <MessageContainer role='assistant'>
               <div className='flex gap-8 items-center'>

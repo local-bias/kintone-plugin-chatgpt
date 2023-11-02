@@ -17,7 +17,13 @@ export const useKintoneApp = () => {
           throw new Error('チャットが選択されていません');
         }
 
-        console.log({ appId, keyFieldCode, contentFieldCode, spaceId });
+        process.env.NODE_ENV === 'development' &&
+          console.log('💿 レコードを更新します', {
+            appId,
+            keyFieldCode,
+            contentFieldCode,
+            spaceId,
+          });
 
         await withSpaceIdFallback({
           spaceId,

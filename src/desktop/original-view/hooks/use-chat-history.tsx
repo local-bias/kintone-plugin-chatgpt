@@ -3,7 +3,7 @@ import {
   apiErrorMessageState,
   chatHistoriesState,
   inputTextState,
-  loadingState,
+  pendingRequestsCountState,
   pluginConfigState,
   selectedAssistantIndexState,
   selectedHistoryIdState,
@@ -81,7 +81,7 @@ export const useChatHistory = () => {
     ({ reset, set, snapshot }) =>
       async () => {
         try {
-          set(loadingState, true);
+          set(pendingRequestsCountState, (count) => count + 1);
           const id = (await snapshot.getPromise(selectedHistoryIdState))!;
           const { outputAppId, outputKeyFieldCode, outputAppSpaceId } = await snapshot.getPromise(
             pluginConfigState
@@ -108,7 +108,7 @@ export const useChatHistory = () => {
           reset(selectedHistoryIdState);
           enqueueSnackbar('履歴を削除しました', { variant: 'success' });
         } finally {
-          reset(loadingState);
+          set(pendingRequestsCountState, (count) => count - 1);
         }
       },
     []
