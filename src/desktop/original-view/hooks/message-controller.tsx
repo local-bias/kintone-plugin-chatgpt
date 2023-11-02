@@ -19,6 +19,7 @@ export const useMessageController = () => {
     ({ reset, set, snapshot }) =>
       async () => {
         try {
+          reset(apiErrorMessageState);
           set(isWaitingForAIState, true);
           const config = await snapshot.getPromise(pluginConfigState);
           const assistantIndex = await snapshot.getPromise(selectedAssistantIndexState);
@@ -37,23 +38,6 @@ export const useMessageController = () => {
 
           const assistantMessage = response.choices[0].message;
           await pushAssistantMessage(assistantMessage.content ?? '');
-        } finally {
-          reset(isWaitingForAIState);
-        }
-      },
-    []
-  );
-
-  const sendMessage = useRecoilCallback(
-    ({ set, reset }) =>
-      async () => {
-        try {
-          set(pendingRequestsCountState, (count) => count + 1);
-          reset(apiErrorMessageState);
-          await new Promise((resolve) => setTimeout(resolve, 10));
-          await Promise.allSettled([fetchChatCompletions(), updateOutputApp()]);
-          await updateOutputApp();
-          await updateLogApp();
         } catch (error: any) {
           const defaultErrorMessage =
             '不明なエラーが発生しました。再度試していただくか、AIモデルを変更してください。';
@@ -77,6 +61,22 @@ export const useMessageController = () => {
           } else {
             set(apiErrorMessageState, error?.message ?? defaultErrorMessage);
           }
+        } finally {
+          reset(isWaitingForAIState);
+        }
+      },
+    []
+  );
+
+  const sendMessage = useRecoilCallback(
+    ({ set }) =>
+      async () => {
+        try {
+          set(pendingRequestsCountState, (count) => count + 1);
+          await new Promise((resolve) => setTimeout(resolve, 10));
+          await Promise.allSettled([fetchChatCompletions(), updateOutputApp()]);
+          await updateOutputApp();
+          await updateLogApp();
         } finally {
           set(pendingRequestsCountState, (count) => count - 1);
         }
