@@ -52,14 +52,13 @@ const Component: FCX = ({ className }) => {
         {histories.map((history, index) => (
           <ListItem
             key={index}
-            onClick={() => setSelectedHistoryId(history.id)}
             disablePadding
             sx={{
               backgroundColor: selectedHistoryId === history.id ? '#1976d222' : undefined,
               position: 'relative',
             }}
           >
-            <ListItemButton>
+            <ListItemButton disabled={loading} onClick={() => setSelectedHistoryId(history.id)}>
               <ListItemIcon>
                 <ChatIcon />
               </ListItemIcon>
