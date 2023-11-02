@@ -18,7 +18,7 @@ import DeleteButton from './delete-button';
 
 const Component: FC = () => {
   return (
-    <div className='px-4 max-w-[900px]'>
+    <div className='px-4 max-w-content'>
       <PluginFormSection>
         <PluginFormTitle>アシスタント名</PluginFormTitle>
         <PluginFormDescription>画面上に表示するアシスタントの名前</PluginFormDescription>

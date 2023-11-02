@@ -7,8 +7,10 @@ import AiIcon from './ai-icon';
 type Props = { role: OpenAI.Chat.ChatCompletionMessage['role'] };
 
 const Component: FCX<PropsWithChildren<Props>> = ({ className, children, role }) => (
-  <div className={className}>
-    <div className={`icon ${role}`}>
+  <div
+    className={`${className} max-w-content mx-auto py-6 px-4 grid grid-cols-message gap-6 relative`}
+  >
+    <div className={`icon h-[30px] grid place-items-center rounded text-white ${role}`}>
       {role === 'assistant' && <AiIcon />}
       {role === 'user' && <PersonIcon />}
     </div>
@@ -17,21 +19,7 @@ const Component: FCX<PropsWithChildren<Props>> = ({ className, children, role })
 );
 
 const StyledComponent = styled(Component)`
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 1.5em 1em;
-  display: flex;
-  gap: 1.5em;
-  position: relative;
-
   .icon {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 6px;
-    color: #fff;
     overflow: hidden;
 
     &.user {
@@ -46,7 +34,6 @@ const StyledComponent = styled(Component)`
   }
 
   .content {
-    flex: 1;
     > div {
       > *:nth-of-type(1) {
         margin-top: 0;

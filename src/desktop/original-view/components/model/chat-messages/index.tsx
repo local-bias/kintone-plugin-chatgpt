@@ -47,11 +47,7 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
             </MessageContainer>
           </div>
         )}
-        {apiErrorMessage && (
-          <MessageContainer role='assistant'>
-            <ErrorMessage>{apiErrorMessage}</ErrorMessage>
-          </MessageContainer>
-        )}
+        {apiErrorMessage && <ErrorMessage>{apiErrorMessage}</ErrorMessage>}
       </div>
     </div>
   );

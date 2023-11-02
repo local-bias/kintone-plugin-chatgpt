@@ -1,44 +1,21 @@
-import styled from '@emotion/styled';
-import React, { FCX, PropsWithChildren } from 'react';
+import React, { FC, PropsWithChildren } from 'react';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import RegenerateButton from '../input/regenerate-button';
 
-const Component: FCX<PropsWithChildren> = ({ className, children }) => (
-  <div className={className}>
-    <div className='icon'>
-      <ErrorOutlineIcon />
+const Component: FC<PropsWithChildren> = ({ children }) => (
+  <div className='bg-red-50 py-6 px-4'>
+    <div className='max-w-content mx-auto grid grid-cols-message gap-6'>
+      <div className='icon h-[30px] grid place-items-center rounded bg-red-500 text-white'>
+        <ErrorOutlineIcon />
+      </div>
+      <div className='content'>
+        <div>{children}</div>
+        <div className='mt-8'>
+          <RegenerateButton />
+        </div>
+      </div>
     </div>
-    <div className='content'>{children}</div>
   </div>
 );
 
-const StyledComponent = styled(Component)`
-  max-width: 900px;
-  margin: 0 auto;
-  display: flex;
-  gap: 1.5em;
-
-  .icon {
-    width: 30px;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 6px;
-    background-color: #f44336;
-    color: #fff;
-  }
-
-  .content {
-    flex: 1;
-    > div {
-      > *:nth-of-type(1) {
-        margin-top: 0;
-      }
-      > *:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-`;
-
-export default StyledComponent;
+export default Component;
