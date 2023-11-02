@@ -51,7 +51,7 @@ export const useMessageController = () => {
           set(pendingRequestsCountState, (count) => count + 1);
           reset(apiErrorMessageState);
           await new Promise((resolve) => setTimeout(resolve, 10));
-          await fetchChatCompletions();
+          await Promise.allSettled([fetchChatCompletions(), updateOutputApp()]);
           await updateOutputApp();
           await updateLogApp();
         } catch (error: any) {
