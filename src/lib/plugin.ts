@@ -45,10 +45,23 @@ export const migrateConfig = (storage: kintone.plugin.Storage): kintone.plugin.L
         enablesAnimation: false,
         enablesEnter: false,
         enablesShiftEnter: false,
+        assistants: storage.assistants.map((assistant) => ({
+          //@ts-ignore
+          maxTokens: 0,
+          ...assistant,
+        })),
       };
     default:
       //@ts-ignore
-      return { version: 3, ...storage };
+      return {
+        ...storage,
+        version: 3,
+        assistants: storage.assistants.map((assistant) => ({
+          //@ts-ignore
+          maxTokens: 0,
+          ...assistant,
+        })),
+      };
   }
 };
 
@@ -67,4 +80,5 @@ export const createNewAiAssistant = (): kintone.plugin.AiAssistantProps => ({
   aiIcon: '',
   temperature: 0.7,
   systemPrompt: '',
+  maxTokens: 0,
 });

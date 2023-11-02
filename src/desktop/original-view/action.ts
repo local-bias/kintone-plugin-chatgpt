@@ -32,13 +32,22 @@ export const createNewChatHistory = (params: Partial<LatestChatHistory>): Latest
 export const fetchChatCompletion = async (params: {
   model: string;
   temperature: number;
+  maxTokens: number;
   messages: ChatMessage[];
 }) => {
-  const { model, temperature, messages } = params;
+  const { model, temperature, maxTokens, messages } = params;
 
-  const requestBody: OpenAI.Chat.ChatCompletionCreateParams = { model, temperature, messages };
+  process.env.NODE_ENV === 'development' && console.group("🧠 openai's API call");
 
-  process.env.NODE_ENV === 'development' && console.log('OpenAIのAPIを呼び出します', requestBody);
+  const requestBody: OpenAI.Chat.ChatCompletionCreateParams = {
+    model,
+    temperature,
+    max_tokens: maxTokens === 0 ? undefined : maxTokens,
+    messages,
+  };
+
+  process.env.NODE_ENV === 'development' && console.time("openai's API call");
+  process.env.NODE_ENV === 'development' && console.log('OpenAI - APIリクエスト', requestBody);
 
   const [responseBody, responseCode, responseHeader] = await kintone.plugin.app.proxy(
     PLUGIN_ID,
@@ -47,6 +56,10 @@ export const fetchChatCompletion = async (params: {
     {},
     requestBody
   );
+
+  process.env.NODE_ENV === 'development' && console.timeEnd("openai's API call");
+  process.env.NODE_ENV === 'development' &&
+    console.log('OpenAI - APIレスポンス', { responseBody, responseCode, responseHeader });
 
   const chatCompletion: OpenAI.Chat.ChatCompletion = JSON.parse(responseBody);
 
@@ -65,6 +78,8 @@ export const fetchChatCompletion = async (params: {
 
   process.env.NODE_ENV === 'development' &&
     console.log(`このやり取りで${chatCompletion.usage?.total_tokens}トークン消費しました`);
+
+  process.env.NODE_ENV === 'development' && console.groupEnd();
 
   return chatCompletion;
 };

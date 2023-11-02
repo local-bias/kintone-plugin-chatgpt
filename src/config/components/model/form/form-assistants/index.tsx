@@ -1,17 +1,13 @@
 import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
 import {
   aiIconState,
   assistantDescriptionState,
   assistantNameState,
-  assistantsState,
+  maxTokensState,
   systemPromptState,
 } from '@/config/states/plugin';
 import AiModelForm from './ai-model';
 import FormText from '@/lib/components/form-text';
-import { produce } from 'immer';
-import { IconButton, Tooltip } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
 import TemperatureForm from './temperature';
 import {
   PluginFormDescription,
@@ -21,18 +17,6 @@ import {
 import DeleteButton from './delete-button';
 
 const Component: FC = () => {
-  const removeRow = useRecoilCallback(
-    ({ set }) =>
-      (rowIndex: number) => {
-        set(assistantsState, (current) =>
-          produce(current, (draft) => {
-            draft.splice(rowIndex, 1);
-          })
-        );
-      },
-    []
-  );
-
   return (
     <div className='px-4 max-w-[900px]'>
       <PluginFormSection>
@@ -109,6 +93,26 @@ const Component: FC = () => {
           AIが回答した際のアイコンを、設定した画像に変更することができます。
         </PluginFormDescription>
         <FormText state={aiIconState} label='AIのアイコン' width={520} placeholder='https://' />
+      </PluginFormSection>
+
+      <PluginFormSection>
+        <PluginFormTitle>返答の長さの最大値</PluginFormTitle>
+        <PluginFormDescription>AIが返答する文章の最大の長さを設定します。</PluginFormDescription>
+        <PluginFormDescription>
+          この設定を有効にすると、指定されたトークン数に達した時点で返答を終了します。
+        </PluginFormDescription>
+        <PluginFormDescription>
+          少なすぎる数値を設定すると、文章が不完全な状態で返答される可能性があります。
+        </PluginFormDescription>
+        <PluginFormDescription>0を設定した場合、モデルの設定に従います。</PluginFormDescription>
+        <PluginFormDescription last>
+          文字列の長さにはトークンという独自の単位が使用されています。詳細は
+          <a href='https://platform.openai.com/tokenizer' target='_blank' rel='noopener noreferrer'>
+            OpenAIのドキュメント
+          </a>
+          をご確認ください。
+        </PluginFormDescription>
+        <FormText type='number' state={maxTokensState} label='返答の長さの最大値' width={200} />
       </PluginFormSection>
 
       <DeleteButton />

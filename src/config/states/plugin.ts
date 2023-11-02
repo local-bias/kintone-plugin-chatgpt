@@ -307,6 +307,23 @@ export const aiIconState = selector<string>({
   },
 });
 
+export const maxTokensState = selector<string>({
+  key: `${PREFIX}maxTokensState`,
+  get: ({ get }) => {
+    const index = get(assistantIndexState);
+    const storage = get(storageState);
+    return String(storage.assistants[index].maxTokens ?? 0);
+  },
+  set: ({ get, set }, newValue) => {
+    const index = get(assistantIndexState);
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft.assistants[index].maxTokens = Number(newValue);
+      })
+    );
+  },
+});
+
 export const temperatureState = selector<number>({
   key: `${PREFIX}temperatureState`,
   get: ({ get }) => {

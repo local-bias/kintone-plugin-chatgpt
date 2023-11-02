@@ -12,6 +12,7 @@ declare namespace kintone {
       aiIcon: string;
       temperature: number;
       systemPrompt: string;
+      maxTokens: number;
     };
 
     type StorageV1 = {

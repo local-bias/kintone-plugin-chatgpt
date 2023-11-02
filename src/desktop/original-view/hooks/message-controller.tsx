@@ -31,6 +31,7 @@ export const useMessageController = () => {
           const response = await fetchChatCompletion({
             model: assistant.aiModel,
             temperature: assistant.temperature,
+            maxTokens: assistant.maxTokens,
             messages: chatHistory.messages,
           });
 
