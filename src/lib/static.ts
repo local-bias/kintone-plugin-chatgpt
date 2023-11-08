@@ -1,4 +1,3 @@
-import { OpenAI } from 'openai';
 import manifest from '../../plugin/manifest.json';
 
 export const OPENAI_ENDPOINT_ROOT = 'https://api.openai.com';
