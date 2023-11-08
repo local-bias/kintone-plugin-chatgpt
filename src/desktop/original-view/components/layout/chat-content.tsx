@@ -72,7 +72,7 @@ export const ChatContent = styled.div`
   }
   ul,
   ol {
-    background-color: #bfdbfe22;
+    background-color: #bfdbfe11;
     border: 1px solid #bfdbfe;
     padding: 0.5rem 1rem 0.5rem 3rem;
     margin-bottom: 2rem;
