@@ -4,7 +4,7 @@ import React, { FCX, PropsWithChildren } from 'react';
 import PersonIcon from '@mui/icons-material/Person';
 import AiIcon from './ai-icon';
 
-type Props = { role: OpenAI.Chat.ChatCompletionMessage['role'] };
+type Props = { role: OpenAI.Chat.ChatCompletionRole };
 
 const Component: FCX<PropsWithChildren<Props>> = ({ className, children, role }) => (
   <div

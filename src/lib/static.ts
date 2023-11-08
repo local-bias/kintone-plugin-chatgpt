@@ -19,10 +19,10 @@ export const URL_PROMOTION = 'https://promotion.konomi.app/kintone-plugin';
 export const URL_BANNER = 'https://promotion.konomi.app/kintone-plugin/sidebar';
 export const URL_PLUGIN_LIST = 'https://ribbit.konomi.app/kintone-plugin';
 
-export const OPENAI_MODELS = ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4'];
+export const OPENAI_MODELS = ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4', 'gpt-4-1106-preview'];
 
 export type ChatMessage = {
-  role: OpenAI.Chat.ChatCompletionMessage['role'];
+  role: OpenAI.Chat.ChatCompletionRole;
   content: string;
 };
 
