@@ -1,5 +1,11 @@
 import { PLUGIN_ID } from '@/lib/global';
-import { ChatHistory, ChatMessage, LatestChatHistory, OPENAI_ENDPOINT } from '@/lib/static';
+import {
+  ChatHistory,
+  ChatMessage,
+  LatestChatHistory,
+  OPENAI_ENDPOINT,
+  OPENAI_MODELS,
+} from '@/lib/static';
 import {
   addRecord,
   getRecords,
@@ -15,18 +21,31 @@ export const migrateChatHistory = (chatHistory: ChatHistory): LatestChatHistory 
     case 1:
       return {
         ...chatHistory,
-        version: 2,
+        version: 3,
         iconUrl: '',
+        aiModel: OPENAI_MODELS[0],
+        temperature: 0.7,
+        maxTokens: 0,
       };
     case 2:
+      return {
+        ...chatHistory,
+        version: 3,
+        aiModel: OPENAI_MODELS[0],
+        temperature: 0.7,
+        maxTokens: 0,
+      };
+    case 3:
       return chatHistory;
     default:
       throw new Error('不明なバージョンのチャット履歴です');
   }
 };
 
-export const createNewChatHistory = (params: Partial<LatestChatHistory>): LatestChatHistory => {
-  return { version: 2, id: '', iconUrl: '', title: '', messages: [], ...params };
+export const createNewChatHistory = (
+  params: Omit<LatestChatHistory, 'version'>
+): LatestChatHistory => {
+  return { version: 3, ...params };
 };
 
 export const fetchChatCompletion = async (params: {

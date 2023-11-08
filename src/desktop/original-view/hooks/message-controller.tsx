@@ -21,18 +21,15 @@ export const useMessageController = () => {
         try {
           reset(apiErrorMessageState);
           set(isWaitingForAIState, true);
-          const config = await snapshot.getPromise(pluginConfigState);
-          const assistantIndex = await snapshot.getPromise(selectedAssistantIndexState);
           const chatHistory = await snapshot.getPromise(selectedHistoryState);
-          const assistant = config.assistants[assistantIndex];
           if (!chatHistory) {
             throw new Error('チャットが選択されていません');
           }
 
           const response = await fetchChatCompletion({
-            model: assistant.aiModel,
-            temperature: assistant.temperature,
-            maxTokens: assistant.maxTokens,
+            model: chatHistory.aiModel,
+            temperature: chatHistory.temperature,
+            maxTokens: chatHistory.maxTokens,
             messages: chatHistory.messages,
           });
 

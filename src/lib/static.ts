@@ -26,15 +26,26 @@ export type ChatMessage = {
   content: string;
 };
 
-export type ChatHistory = ChatHistoryV1 | ChatHistoryV2;
+export type ChatHistory = ChatHistoryV1 | ChatHistoryV2 | ChatHistoryV3;
 
-export type LatestChatHistory = ChatHistoryV2;
+export type LatestChatHistory = ChatHistoryV3;
 
 type ChatHistoryV1 = { version: 1; id: string; title: string; messages: ChatMessage[] };
 
 type ChatHistoryV2 = {
   version: 2;
   id: string;
+  iconUrl: string;
+  title: string;
+  messages: ChatMessage[];
+};
+
+type ChatHistoryV3 = {
+  version: 3;
+  id: string;
+  aiModel: string;
+  temperature: number;
+  maxTokens: number;
   iconUrl: string;
   title: string;
   messages: ChatMessage[];

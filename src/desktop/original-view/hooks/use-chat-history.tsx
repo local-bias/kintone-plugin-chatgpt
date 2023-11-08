@@ -42,6 +42,9 @@ export const useChatHistory = () => {
           selectedHistory ??
           createNewChatHistory({
             id: historyId,
+            aiModel: assistant.aiModel,
+            temperature: assistant.temperature,
+            maxTokens: assistant.maxTokens,
             iconUrl: assistant.aiIcon,
             title: message.content.slice(0, 8),
             messages: [],
