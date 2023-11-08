@@ -58,7 +58,7 @@ export const fetchChatCompletion = async (params: {
 
   process.env.NODE_ENV === 'development' && console.group("🧠 openai's API call");
 
-  const requestBody: OpenAI.Chat.ChatCompletionCreateParams = {
+  const requestBody: OpenAI.Chat.ChatCompletionCreateParamsNonStreaming = {
     model,
     temperature,
     max_tokens: maxTokens === 0 ? undefined : maxTokens,
