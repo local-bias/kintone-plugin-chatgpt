@@ -6,7 +6,7 @@ import SendingOption from './sending-option';
 import RegenerateButton from './regenerate-button';
 
 const Component: FC = () => (
-  <div className='z-10 sticky bottom-0 left-0 w-full bg-gray-50'>
+  <div className='z-10 sticky bottom-0 left-0 w-full bg-white'>
     <div className='flex flex-col py-2 px-4 gap-3 max-w-content mx-auto'>
       <div className='flex justify-between items-end gap-8'>
         <div>

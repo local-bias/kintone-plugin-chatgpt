@@ -21,7 +21,7 @@ const Component: FCX = () => {
         {config.assistants.map((assistant, i) => (
           <div
             key={i}
-            className={`py-4 px-8 rounded flex gap-8 transition-all cursor-pointer ${
+            className={`py-4 px-8 rounded flex gap-8 transition-all cursor-pointer border border-solid border-gray-200 ${
               i === assistantIndex ? 'bg-blue-100 hover:bg-blue-200' : 'bg-white hover:bg-gray-100'
             }`}
             onClick={() => onAssistantClick(i)}

@@ -10,6 +10,7 @@ import MessageContainer from './message-container';
 import Message from './message';
 import ErrorMessage from './error-message';
 import Empty from './empty';
+import { ChatContent } from '../../layout/chat-content';
 
 const Component: FCX<PropsWithChildren> = ({ className }) => {
   const chatMessages = useRecoilValue(chatMessagesState);
@@ -25,7 +26,7 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
       {chatMessages.length === 0 && <Empty />}
       <div className='messages'>
         {displayMessages.map((message, index) => (
-          <div key={index} className='[&:nth-of-type(n+1)]:border-t border-gray-300'>
+          <ChatContent key={index}>
             <MessageContainer role={message.role}>
               <Message
                 message={message.content}
@@ -33,10 +34,10 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
                 speed={message.content.length > 500 ? 5 : 10}
               />
             </MessageContainer>
-          </div>
+          </ChatContent>
         ))}
         {isWaitingForAI && (
-          <div className='[&:nth-of-type(n+1)]:border-t border-gray-300'>
+          <ChatContent>
             <MessageContainer role='assistant'>
               <div className='flex gap-8 items-center'>
                 <div className='flex justify-center'>
@@ -45,7 +46,7 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
                 <p className=''>回答を生成しています・・・</p>
               </div>
             </MessageContainer>
-          </div>
+          </ChatContent>
         )}
         {apiErrorMessage && <ErrorMessage>{apiErrorMessage}</ErrorMessage>}
       </div>
