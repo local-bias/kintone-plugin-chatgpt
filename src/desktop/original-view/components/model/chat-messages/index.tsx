@@ -11,6 +11,7 @@ import Message from './message';
 import ErrorMessage from './error-message';
 import Empty from './empty';
 import { ChatContent } from '../../layout/chat-content';
+import { Loader } from '@konomi-app/ui-react';
 
 const Component: FCX<PropsWithChildren> = ({ className }) => {
   const chatMessages = useRecoilValue(chatMessagesState);
@@ -40,8 +41,8 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
           <ChatContent>
             <MessageContainer role='assistant'>
               <div className='flex gap-8 items-center'>
-                <div className='flex justify-center'>
-                  <div className='animate-spin h-8 w-8 bg-gray-300 rounded-xl'></div>
+                <div className='flex justify-center overflow-hidden'>
+                  <Loader size={32} />
                 </div>
                 <p className=''>回答を生成しています・・・</p>
               </div>

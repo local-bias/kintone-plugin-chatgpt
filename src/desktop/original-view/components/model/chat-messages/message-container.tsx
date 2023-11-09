@@ -14,7 +14,7 @@ const Component: FCX<PropsWithChildren<Props>> = ({ className, children, role })
       {role === 'assistant' && <AiIcon />}
       {role === 'user' && <PersonIcon />}
     </div>
-    <div className='content'>{children}</div>
+    <div className='content overflow-x-auto'>{children}</div>
   </div>
 );
 
