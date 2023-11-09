@@ -17,11 +17,11 @@ const Component: FCX = () => {
   return (
     <div className='py-8 px-4 max-w-content mx-auto'>
       <div className='mb-8'>使用するアシスタントを選択してください。</div>
-      <div className='grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-6'>
+      <div className='grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-3 md:gap-y-6'>
         {config.assistants.map((assistant, i) => (
           <div
             key={i}
-            className={`py-4 px-8 rounded flex gap-8 transition-all cursor-pointer border border-solid border-gray-200 ${
+            className={`py-4 px-4 md:px-8 rounded flex gap-8 transition-all cursor-pointer border border-solid border-gray-200 ${
               i === assistantIndex ? 'bg-blue-100 hover:bg-blue-200' : 'bg-white hover:bg-gray-100'
             }`}
             onClick={() => onAssistantClick(i)}

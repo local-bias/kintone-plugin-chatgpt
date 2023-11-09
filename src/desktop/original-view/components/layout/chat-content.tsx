@@ -2,14 +2,14 @@ import styled from '@emotion/styled';
 
 export const ChatContent = styled.div`
   h1 {
-    font-size: 1.875rem;
+    font-size: 24px;
     line-height: 2.25rem;
     font-weight: 600;
-    margin-bottom: 1rem;
+    margin-bottom: 16px;
   }
   h2 {
     color: #1f2937;
-    font-size: 1.2rem;
+    font-size: 20px;
     line-height: 2rem;
     font-weight: 600;
     margin: 4rem 0 2rem;
@@ -19,14 +19,14 @@ export const ChatContent = styled.div`
   }
   @media (min-width: 768px) {
     h2 {
-      font-size: 1.3rem;
+      font-size: 22px;
       padding: 1rem 2rem;
       margin: 4rem 0 2rem;
     }
   }
   h3 {
     color: #1e293b;
-    font-size: 1.15rem;
+    font-size: 18px;
     line-height: 1.75rem;
     font-weight: 600;
     margin: 2.5rem 0 1rem;
@@ -36,7 +36,7 @@ export const ChatContent = styled.div`
   }
   @media (min-width: 768px) {
     h3 {
-      font-size: 1.25rem;
+      font-size: 20px;
     }
   }
   h3:before {
