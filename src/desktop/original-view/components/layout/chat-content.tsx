@@ -72,10 +72,8 @@ export const ChatContent = styled.div`
   }
   ul,
   ol {
-    background-color: #bfdbfe11;
-    border: 1px solid #bfdbfe;
     padding: 0.5rem 1rem 0.5rem 3rem;
-    margin-bottom: 2rem;
+    margin-bottom: 14px;
   }
   ol {
     list-style-type: decimal;
@@ -83,7 +81,11 @@ export const ChatContent = styled.div`
   ul li,
   ol li {
     line-height: 1.5;
-    padding: 0.5em 0;
+    padding: 4px 0;
+  }
+  li ul,
+  li ol {
+    margin-bottom: 0;
   }
   li p {
     margin-top: 0.5rem;
