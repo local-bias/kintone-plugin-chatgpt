@@ -20,6 +20,14 @@ export const isWaitingForAIState = atom<boolean>({
   default: false,
 });
 
+export const isHistoryFabShownState = selector<boolean>({
+  key: `${PREFIX}isHistoryFabShownState`,
+  get: ({ get }) => {
+    const config = get(pluginConfigState);
+    return !config.logAppId || !config.logKeyFieldCode || !config.logContentFieldCode;
+  },
+});
+
 export const loadingState = selector<boolean>({
   key: `${PREFIX}loadingState`,
   get: ({ get }) => {
