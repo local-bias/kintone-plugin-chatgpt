@@ -7,7 +7,7 @@ type Props = {
   width?: number;
 } & Omit<TextFieldProps, 'value' | 'onChange'>;
 
-const Component: FC<Props> = ({ state, width = 400, ...textFieldProps }) => {
+const Component: FC<Props> = ({ state, width, ...textFieldProps }) => {
   const query = useRecoilValue(state);
 
   const onChange: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(

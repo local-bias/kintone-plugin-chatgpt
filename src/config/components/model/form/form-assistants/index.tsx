@@ -40,8 +40,8 @@ const Component: FC = () => {
         <FormText
           state={assistantDescriptionState}
           multiline
+          fullWidth
           rows={4}
-          width={520}
           label='アシスタントの説明'
           placeholder='ChatGPTは、OpenAIが提供するAIを使用して、ユーザーとの対話を行うことができます。'
         />
@@ -80,8 +80,8 @@ const Component: FC = () => {
         <FormText
           state={systemPromptState}
           multiline
-          rows={4}
-          width={520}
+          rows={6}
+          fullWidth
           label='AIの役割'
           placeholder='あなたはITコンサルタントです。質問に対して、ITサービスを活用して適切に解決方法を提案してください。口調はあまり固すぎない敬語で話してください。'
         />
