@@ -24,7 +24,7 @@ export const isHistoryFabShownState = selector<boolean>({
   key: `${PREFIX}isHistoryFabShownState`,
   get: ({ get }) => {
     const config = get(pluginConfigState);
-    return !config.logAppId || !config.logKeyFieldCode || !config.logContentFieldCode;
+    return !!config.outputAppId && !!config.outputKeyFieldCode && !!config.outputContentFieldCode;
   },
 });
 
