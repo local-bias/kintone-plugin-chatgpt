@@ -46,7 +46,7 @@ export const useChatHistory = () => {
             temperature: assistant.temperature,
             maxTokens: assistant.maxTokens,
             iconUrl: assistant.aiIcon,
-            title: message.content.slice(0, 8),
+            title: message.content.slice(0, 16),
             messages: [],
           });
 
@@ -67,7 +67,7 @@ export const useChatHistory = () => {
     ({ reset, snapshot }) =>
       async () => {
         const content = await snapshot.getPromise(inputTextState);
-        await pushMessage({ role: 'user', content });
+        await pushMessage({ role: 'user', content: content.replace(/\n/, '  \n') });
         reset(inputTextState);
       },
     []
