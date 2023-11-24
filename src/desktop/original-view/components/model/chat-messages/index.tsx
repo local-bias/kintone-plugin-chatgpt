@@ -1,6 +1,7 @@
 import {
   apiErrorMessageState,
   chatMessagesState,
+  displayChatMessagesState,
   isWaitingForAIState,
 } from '@/desktop/original-view/states/states';
 import styled from '@emotion/styled';
@@ -14,24 +15,20 @@ import { ChatContent } from '../../layout/chat-content';
 import { Loader } from '@konomi-app/ui-react';
 
 const Component: FCX<PropsWithChildren> = ({ className }) => {
-  const chatMessages = useRecoilValue(chatMessagesState);
+  const chatMessages = useRecoilValue(displayChatMessagesState);
   const isWaitingForAI = useRecoilValue(isWaitingForAIState);
   const apiErrorMessage = useRecoilValue(apiErrorMessageState);
-
-  const displayMessages = chatMessages.filter(
-    (message) => message.role === 'user' || message.role === 'assistant'
-  );
 
   return (
     <div className={className}>
       {chatMessages.length === 0 && <Empty />}
       <div className='messages'>
-        {displayMessages.map((message, index) => (
+        {chatMessages.map((message, index) => (
           <ChatContent key={index}>
             <MessageContainer role={message.role}>
               <Message
                 message={message.content}
-                typing={message.role === 'assistant' && index === displayMessages.length - 1}
+                typing={message.role === 'assistant' && index === chatMessages.length - 1}
                 speed={message.content.length > 500 ? 5 : 10}
               />
             </MessageContainer>

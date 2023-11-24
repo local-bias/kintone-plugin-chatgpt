@@ -48,7 +48,7 @@ export const selectedAssistantIndexState = atom<number>({
   default: 0,
 });
 
-export const chatMessagesState = selector<ChatMessage[]>({
+const chatMessagesState = selector<ChatMessage[]>({
   key: `${PREFIX}chatMessagesState`,
   get: ({ get }) => {
     const chatHistory = get(chatHistoriesState);
@@ -66,6 +66,16 @@ export const chatMessagesState = selector<ChatMessage[]>({
       ...message,
       content: getHTMLfromMarkdown(message.content ?? ''),
     }));
+  },
+});
+
+export const displayChatMessagesState = selector<ChatMessage[]>({
+  key: `${PREFIX}displayChatMessagesState`,
+  get: ({ get }) => {
+    const chatMessages = get(chatMessagesState);
+    return chatMessages.filter(
+      (message) => message.role === 'user' || message.role === 'assistant'
+    );
   },
 });
 
