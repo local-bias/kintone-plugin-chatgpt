@@ -6,22 +6,27 @@ import Input from './components/model/input';
 import ChatHistoryRecordsObserver from './components/functional/chat-history-records-observer';
 import { SnackbarProvider } from 'notistack';
 import Layout from './components/layout';
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
 
 const Component: FC = () => (
-  <RecoilRoot>
-    <SnackbarProvider maxSnack={1}>
-      <ChatHistoryRecordsObserver />
-      <Layout>
-        <div className='bg-white min-h-[calc(100vh_-_200px)]'>
-          <Sidebar />
-          <div className='relative'>
-            <ChatMessages />
-            <Input />
+  <PluginErrorBoundary>
+    <RecoilRoot>
+      <SnackbarProvider maxSnack={1}>
+        <ChatHistoryRecordsObserver />
+        <Layout>
+          <div className='bg-white min-h-[calc(100vh_-_200px)]'>
+            <Sidebar />
+            <PluginErrorBoundary>
+              <div className='relative'>
+                <ChatMessages />
+                <Input />
+              </div>
+            </PluginErrorBoundary>
           </div>
-        </div>
-      </Layout>
-    </SnackbarProvider>
-  </RecoilRoot>
+        </Layout>
+      </SnackbarProvider>
+    </RecoilRoot>
+  </PluginErrorBoundary>
 );
 
 export default Component;

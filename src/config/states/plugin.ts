@@ -307,6 +307,23 @@ export const aiIconState = selector<string>({
   },
 });
 
+export const assistantExamplesState = selector<string[]>({
+  key: `${PREFIX}assistantExamplesState`,
+  get: ({ get }) => {
+    const index = get(assistantIndexState);
+    const storage = get(storageState);
+    return storage.assistants[index].examples;
+  },
+  set: ({ get, set }, newValue) => {
+    const index = get(assistantIndexState);
+    set(storageState, (current) =>
+      produce(current, (draft) => {
+        draft.assistants[index].examples = newValue as string[];
+      })
+    );
+  },
+});
+
 export const maxTokensState = selector<string>({
   key: `${PREFIX}maxTokensState`,
   get: ({ get }) => {

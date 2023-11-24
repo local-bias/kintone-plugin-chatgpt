@@ -48,6 +48,15 @@ export const selectedAssistantIndexState = atom<number>({
   default: 0,
 });
 
+export const selectedAssistantState = selector<kintone.plugin.AiAssistantProps>({
+  key: `${PREFIX}selectedAssistantState`,
+  get: ({ get }) => {
+    const config = get(pluginConfigState);
+    const selectedAssistantIndex = get(selectedAssistantIndexState);
+    return config.assistants[selectedAssistantIndex];
+  },
+});
+
 const chatMessagesState = selector<ChatMessage[]>({
   key: `${PREFIX}chatMessagesState`,
   get: ({ get }) => {

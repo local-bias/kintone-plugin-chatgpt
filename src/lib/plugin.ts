@@ -6,7 +6,7 @@ import { PLUGIN_ID } from './global';
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): kintone.plugin.LatestStorage => ({
-  version: 3,
+  version: 4,
   viewId: '',
   outputAppId: '',
   outputKeyFieldCode: '',
@@ -32,7 +32,7 @@ export const migrateConfig = (storage: kintone.plugin.Storage): kintone.plugin.L
     case 1:
       return {
         ...storage,
-        version: 3,
+        version: 4,
         enablesAnimation: false,
         enablesEnter: false,
         enablesShiftEnter: false,
@@ -41,7 +41,7 @@ export const migrateConfig = (storage: kintone.plugin.Storage): kintone.plugin.L
     case 2:
       return {
         ...storage,
-        version: 3,
+        version: 4,
         enablesAnimation: false,
         enablesEnter: false,
         enablesShiftEnter: false,
@@ -49,13 +49,20 @@ export const migrateConfig = (storage: kintone.plugin.Storage): kintone.plugin.L
           //@ts-ignore
           maxTokens: 0,
           ...assistant,
+          examples: [''],
         })),
+      };
+    case 3:
+      return {
+        ...storage,
+        version: 4,
+        assistants: storage.assistants.map((assistant) => ({ ...assistant, examples: [''] })),
       };
     default:
       //@ts-ignore
       return {
         ...storage,
-        version: 3,
+        version: 4,
         assistants: storage.assistants.map((assistant) => ({
           //@ts-ignore
           maxTokens: 0,
@@ -81,4 +88,5 @@ export const createNewAiAssistant = (): kintone.plugin.AiAssistantProps => ({
   temperature: 0.7,
   systemPrompt: '',
   maxTokens: 0,
+  examples: [''],
 });

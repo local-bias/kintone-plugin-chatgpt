@@ -9,6 +9,7 @@ import {
 import AiModelForm from './ai-model';
 import FormText from '@/lib/components/form-text';
 import TemperatureForm from './temperature';
+import ExamplesForm from './examples';
 import {
   PluginFormDescription,
   PluginFormSection,
@@ -113,6 +114,16 @@ const Component: FC = () => {
           をご確認ください。
         </PluginFormDescription>
         <FormText type='number' state={maxTokensState} label='返答の長さの最大値' width={200} />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>例文の設定</PluginFormTitle>
+        <PluginFormDescription>
+          このアシスタントに対してサンプルとなる文章を設定することができます。
+        </PluginFormDescription>
+        <PluginFormDescription last>
+          入力欄の上部に表示され、クリックすることで入力欄に自動で入力されます。
+        </PluginFormDescription>
+        <ExamplesForm />
       </PluginFormSection>
 
       <DeleteButton />
