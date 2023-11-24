@@ -1,6 +1,5 @@
 import {
   apiErrorMessageState,
-  chatMessagesState,
   displayChatMessagesState,
   isWaitingForAIState,
 } from '@/desktop/original-view/states/states';
