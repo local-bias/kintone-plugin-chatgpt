@@ -24,7 +24,7 @@ const Component: FC = () => {
   }
 
   return (
-    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+    <div className='hidden md:grid grid-cols-1 md:grid-cols-2 gap-4'>
       {examples.map((example, index) => (
         <div
           key={index}
