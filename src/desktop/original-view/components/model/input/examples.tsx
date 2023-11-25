@@ -5,6 +5,7 @@ import {
 } from '@/desktop/original-view/states/states';
 import React, { FC } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/solid';
 
 const Component: FC = () => {
   const assistant = useRecoilValue(selectedAssistantState);
@@ -24,16 +25,21 @@ const Component: FC = () => {
   }
 
   return (
-    <div className='hidden md:grid grid-cols-1 md:grid-cols-2 gap-4'>
-      {examples.map((example, index) => (
-        <div
-          key={index}
-          className='p-4 rounded-md border transition-all bg-blue-700 hover:bg-blue-500 text-white bg-opacity-80 cursor-pointer'
-          onClick={() => onClick(example)}
-        >
-          {example}
-        </div>
-      ))}
+    <div className='hidden md:flex gap-6'>
+      <div className='basis-8 text-blue-700'>
+        <ChatBubbleOvalLeftEllipsisIcon />
+      </div>
+      <div className='flex-1 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm'>
+        {examples.map((example, index) => (
+          <div
+            key={index}
+            className='p-3 rounded-md border transition-all border-solid border-blue-700 hover:bg-blue-50 text-blue-700 bg-opacity-80 cursor-pointer'
+            onClick={() => onClick(example)}
+          >
+            {example}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
