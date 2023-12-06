@@ -103,9 +103,8 @@ export const fetchChatCompletion = async (params: {
   return chatCompletion;
 };
 
-export const getHTMLfromMarkdown = (markdown: string) => {
-  const html = marked(markdown);
-  return html;
+export const getHTMLfromMarkdown = (markdown: string): string => {
+  return marked(markdown, { async: false }) as string;
 };
 
 export const logChatCompletion = async (params: {
