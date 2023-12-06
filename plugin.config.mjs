@@ -5,6 +5,8 @@ const localhost = 'https://127.0.0.1:9152';
 
 /** @type {import('@konomi-app/kintone-utilities').PluginConfig} */
 export default {
+  id: 'ribbit-kintone-plugin-chatgpt',
+  pluginReleasePageUrl: 'https://ribbit.konomi.app/kintone-plugin/',
   manifest: {
     base: {
       manifest_version: 1,
