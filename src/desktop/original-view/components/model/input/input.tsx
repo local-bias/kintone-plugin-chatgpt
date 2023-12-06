@@ -12,7 +12,7 @@ const Component: FC = () => {
   const { sendMessage } = useMessageController();
   const { pushUserMessage } = useChatHistory();
 
-  const onChange: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
+  const onChange: ChangeEventHandler<HTMLTextAreaElement> = useRecoilCallback(
     ({ set }) =>
       (event) => {
         set(inputTextState, event.target.value);
@@ -20,7 +20,7 @@ const Component: FC = () => {
     []
   );
 
-  const onKeyDown: KeyboardEventHandler<HTMLInputElement> = async (event) => {
+  const onKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = async (event) => {
     const isEnter = event.key === 'Enter';
     const isShift = event.shiftKey;
 
@@ -32,20 +32,14 @@ const Component: FC = () => {
   };
 
   return (
-    <div>
-      <TextField
-        multiline
-        sx={{ width: '100%' }}
-        minRows={2}
-        maxRows={10}
-        variant='outlined'
-        label='送信メッセージ'
-        value={input}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        placeholder='ここにメッセージを入力'
-      />
-    </div>
+    <textarea
+      style={{ height: input.split('\n').length * 24 }}
+      className='flex-1 min-h-[60px] resize-none border-0 p-4 placeholder:text-gray-400'
+      value={input}
+      onChange={onChange}
+      onKeyDown={onKeyDown}
+      placeholder='ここにメッセージを入力'
+    />
   );
 };
 

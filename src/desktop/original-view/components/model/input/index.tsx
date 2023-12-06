@@ -26,7 +26,9 @@ const Component: FC = () => (
           </div>
         </div>
       </div>
-      <Input />
+      <div className='relative flex max-h-60 overflow-auto border border-solid border-gray-300 rounded-md'>
+        <Input />
+      </div>
     </div>
   </div>
 );
