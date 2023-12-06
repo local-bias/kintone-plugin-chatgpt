@@ -25,10 +25,7 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
         {chatMessages.map((message, index) => (
           <ChatContent key={index}>
             <MessageContainer role={message.role}>
-              <Message
-                message={message.content}
-                typing={message.role === 'assistant' && index === chatMessages.length - 1}
-              />
+              <Message message={message.content} />
             </MessageContainer>
           </ChatContent>
         ))}

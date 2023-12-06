@@ -1,5 +1,6 @@
 import { getHTMLfromMarkdown } from '@/desktop/original-view/action';
 import { ChatMessage } from '@/lib/static';
+import OpenAI from 'openai';
 import React, { FC } from 'react';
 
 type Props = {
@@ -23,8 +24,12 @@ const Component: FC<Props> = ({ message }) => {
     );
   }
 
-  const text = message.find((m) => m.type === 'text')?.text || '';
-  const images = message.filter((m) => m.type === 'image_url');
+  const text =
+    (message.find((m) => m.type === 'text') as OpenAI.ChatCompletionContentPartText | undefined)
+      ?.text || '';
+  const images = message.filter(
+    (m) => m.type === 'image_url'
+  ) as OpenAI.ChatCompletionContentPartImage[];
 
   return (
     <div>
@@ -36,7 +41,7 @@ const Component: FC<Props> = ({ message }) => {
         <div className='flex flex-wrap gap-2 mt-4'>
           {images.map((image, i) => (
             <div key={i} className='w-16 h-12 overflow-hidden'>
-              <img src={image.image_url?.url ?? ''} className='w-full h-full object-cover' />
+              <img src={image.image_url.url ?? ''} className='w-full h-full object-cover' />
             </div>
           ))}
         </div>
