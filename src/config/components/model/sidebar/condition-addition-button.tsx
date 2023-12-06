@@ -4,7 +4,7 @@ import { produce } from 'immer';
 
 import { createNewAiAssistant } from '@/lib/plugin';
 import { assistantsState } from '../../../states/plugin';
-import { PluginConditionAppendButton } from '@konomi-app/kintone-utility-component';
+import { PluginConditionAppendButton } from '@konomi-app/kintone-utilities-react';
 
 const Container: FC = () => {
   const addCondition = useRecoilCallback(

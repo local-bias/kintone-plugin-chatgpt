@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useRecoilState } from 'recoil';
 import { produce } from 'immer';
-import { PluginConditionDeleteButton } from '@konomi-app/kintone-utility-component';
+import { PluginConditionDeleteButton } from '@konomi-app/kintone-utilities-react';
 import { assistantsState, tabIndexState } from '@/config/states/plugin';
 
 const Container: FC = () => {

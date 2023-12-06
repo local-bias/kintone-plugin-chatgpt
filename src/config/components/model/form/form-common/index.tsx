@@ -9,7 +9,7 @@ import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
-} from '@konomi-app/kintone-utility-component';
+} from '@konomi-app/kintone-utilities-react';
 import React, { FCX } from 'react';
 import LogAppIdForm from './form-log-app-id';
 import LogContentForm from './form-log-content';

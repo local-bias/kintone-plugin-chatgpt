@@ -14,7 +14,7 @@ import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
-} from '@konomi-app/kintone-utility-component';
+} from '@konomi-app/kintone-utilities-react';
 import DeleteButton from './delete-button';
 
 const Component: FC = () => {

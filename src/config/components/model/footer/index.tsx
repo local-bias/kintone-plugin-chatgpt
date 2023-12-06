@@ -12,7 +12,7 @@ import { apiKeyState, loadingState, storageState } from '../../../states/plugin'
 import ExportButton from './export-button';
 import ImportButton from './import-button';
 import ResetButton from './reset-button';
-import { PluginFooter } from '@konomi-app/kintone-utility-component';
+import { PluginFooter } from '@konomi-app/kintone-utilities-react';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 import { produce } from 'immer';
 import { OPENAI_ENDPOINT_ROOT, VIEW_ROOT_ID } from '@/lib/static';
