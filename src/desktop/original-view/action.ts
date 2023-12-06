@@ -1,8 +1,8 @@
 import { PLUGIN_ID } from '@/lib/global';
 import {
-  ChatHistory,
+  AnyChatHistory,
   ChatMessage,
-  LatestChatHistory,
+  ChatHistory,
   OPENAI_ENDPOINT,
   OPENAI_MODELS,
 } from '@/lib/static';
@@ -15,37 +15,37 @@ import {
 import { marked } from 'marked';
 import { OpenAI } from 'openai';
 
-export const migrateChatHistory = (chatHistory: ChatHistory): LatestChatHistory => {
+export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => {
   switch (chatHistory.version) {
+    case 3:
+      return {
+        ...chatHistory,
+        version: 4,
+      };
+    case 2:
+      return {
+        ...chatHistory,
+        version: 4,
+        aiModel: OPENAI_MODELS[0],
+        temperature: 0.7,
+        maxTokens: 0,
+      };
     case undefined:
+    default:
     case 1:
       return {
         ...chatHistory,
-        version: 3,
+        version: 4,
         iconUrl: '',
         aiModel: OPENAI_MODELS[0],
         temperature: 0.7,
         maxTokens: 0,
       };
-    case 2:
-      return {
-        ...chatHistory,
-        version: 3,
-        aiModel: OPENAI_MODELS[0],
-        temperature: 0.7,
-        maxTokens: 0,
-      };
-    case 3:
-      return chatHistory;
-    default:
-      throw new Error('不明なバージョンのチャット履歴です');
   }
 };
 
-export const createNewChatHistory = (
-  params: Omit<LatestChatHistory, 'version'>
-): LatestChatHistory => {
-  return { version: 3, ...params };
+export const createNewChatHistory = (params: Omit<ChatHistory, 'version'>): ChatHistory => {
+  return { version: 4, ...params };
 };
 
 export const fetchChatCompletion = async (params: {
@@ -108,7 +108,7 @@ export const getHTMLfromMarkdown = (markdown: string): string => {
 };
 
 export const logChatCompletion = async (params: {
-  chatHistory: LatestChatHistory;
+  chatHistory: ChatHistory;
   appId: string;
   spaceId?: string;
   keyFieldCode: string;
@@ -152,4 +152,17 @@ export const logChatCompletion = async (params: {
       },
     });
   }
+};
+
+export const getChatTitle = (message: ChatMessage): string => {
+  const { content } = message;
+  console.log({ message });
+  if (!content) {
+    return '空のメッセージ';
+  }
+  if (typeof content === 'string') {
+    return content.slice(0, 16);
+  }
+  const found = content.find((m) => m.type === 'text') as any | undefined;
+  return (found?.text ?? '空のメッセージ').slice(0, 16);
 };

@@ -1,51 +1,48 @@
-import { pluginConfigState } from '@/desktop/original-view/states/states';
-import React, { FC, useEffect, useRef, useState } from 'react';
-import { useRecoilValue } from 'recoil';
+import { getHTMLfromMarkdown } from '@/desktop/original-view/action';
+import { ChatMessage } from '@/lib/static';
+import React, { FC } from 'react';
 
 type Props = {
-  message: string;
-  typing?: boolean;
+  message: ChatMessage['content'];
   cursor?: boolean;
   className?: string;
-  speed?: number;
 };
 
-const Component: FC<Props> = ({ message, typing, speed = 20 }) => {
-  const [text, setText] = useState('');
-  const [typeEnd, setTypeEnd] = useState<boolean>(false);
-  const msgEl = useRef<HTMLDivElement>(null);
-  const pluginConfig = useRecoilValue(pluginConfigState);
-
-  // 指定された間隔でstateを更新する
-  useEffect(() => {
-    if (!typing || !pluginConfig?.enablesAnimation) {
-      return;
-    }
-    // マウント時の処理
-    const charItr = message[Symbol.iterator]();
-    let timerId: NodeJS.Timeout | null = null;
-
-    (function showChar() {
-      const nextChar = charItr.next();
-      if (nextChar.done) {
-        setTypeEnd(true);
-        return;
-      }
-      setText((current) => current + nextChar.value);
-      timerId = setTimeout(showChar, speed);
-    })();
-
-    // アンマウント時に念のためタイマー解除
-    return () => {
-      if (timerId) clearTimeout(timerId);
-    };
-  }, [typing]);
-
-  if (!typing || !pluginConfig?.enablesAnimation || typeEnd) {
-    return <div dangerouslySetInnerHTML={{ __html: message }} />;
+const Component: FC<Props> = ({ message }) => {
+  if (!message) {
+    return null;
   }
 
-  return <div ref={msgEl} dangerouslySetInnerHTML={{ __html: text }} />;
+  if (typeof message === 'string') {
+    const html = getHTMLfromMarkdown(message);
+    return (
+      <div
+        dangerouslySetInnerHTML={{ __html: html }}
+        className='[&>_*:first-of-type]:mt-0 [&>_*:last-of-type]:mb-0'
+      />
+    );
+  }
+
+  const text = message.find((m) => m.type === 'text')?.text || '';
+  const images = message.filter((m) => m.type === 'image_url');
+
+  return (
+    <div>
+      <div
+        dangerouslySetInnerHTML={{ __html: getHTMLfromMarkdown(text) }}
+        className='[&>_*:first-of-type]:mt-0 [&>_*:last-of-type]:mb-0'
+      />
+      {!!images.length && (
+        <div className='flex flex-wrap gap-2 mt-4'>
+          {images.map((image, i) => (
+            <div key={i} className='w-16 h-12 overflow-hidden'>
+              <img src={image.image_url?.url ?? ''} className='w-full h-full object-cover' />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Component;

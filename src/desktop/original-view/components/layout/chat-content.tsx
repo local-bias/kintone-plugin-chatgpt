@@ -1,6 +1,10 @@
 import styled from '@emotion/styled';
 
 export const ChatContent = styled.div`
+  &:nth-of-type(2n) {
+    background-color: #f9fafb;
+  }
+
   h1 {
     font-size: 24px;
     line-height: 2.25rem;

@@ -1,10 +1,12 @@
 import React, { FC } from 'react';
 import SendButton from './send-button';
 import Input from './input';
+import FileInput from './file-input';
 import NewChatButton from '../new-chat';
 import SendingOption from './sending-option';
 import RegenerateButton from './regenerate-button';
 import Examples from './examples';
+import Files from './files';
 
 const Component: FC = () => (
   <div className='z-10 sticky bottom-0 left-0 w-full bg-white'>
@@ -26,8 +28,12 @@ const Component: FC = () => (
           </div>
         </div>
       </div>
-      <div className='relative flex max-h-60 overflow-auto border border-solid border-gray-300 rounded-md'>
-        <Input />
+      <div className='relative max-h-60 overflow-auto border border-solid border-gray-300 rounded-md'>
+        <div className='flex'>
+          <Input />
+          <FileInput />
+        </div>
+        <Files />
       </div>
     </div>
   </div>

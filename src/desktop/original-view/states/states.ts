@@ -1,7 +1,6 @@
 import { restorePluginConfig } from '@/lib/plugin';
-import { ChatMessage, LatestChatHistory } from '@/lib/static';
+import { ChatMessage, ChatHistory } from '@/lib/static';
 import { DefaultValue, atom, selector } from 'recoil';
-import { getHTMLfromMarkdown } from '../action';
 
 const PREFIX = 'kintone';
 
@@ -43,6 +42,11 @@ export const inputTextState = atom<string>({
   default: '',
 });
 
+export const inputFilesState = atom<File[]>({
+  key: `${PREFIX}inputFilesState`,
+  default: [],
+});
+
 export const selectedAssistantIndexState = atom<number>({
   key: `${PREFIX}selectedAssistantIndexState`,
   default: 0,
@@ -71,10 +75,7 @@ const chatMessagesState = selector<ChatMessage[]>({
       return [];
     }
 
-    return selectedHistory.messages.map((message) => ({
-      ...message,
-      content: getHTMLfromMarkdown(message.content ?? ''),
-    }));
+    return selectedHistory.messages;
   },
 });
 
@@ -88,7 +89,7 @@ export const displayChatMessagesState = selector<ChatMessage[]>({
   },
 });
 
-export const chatHistoriesState = atom<LatestChatHistory[]>({
+export const chatHistoriesState = atom<ChatHistory[]>({
   key: `${PREFIX}chatHistoriesState`,
   default: [],
 });
@@ -108,7 +109,7 @@ export const apiErrorMessageState = atom<string>({
   default: '',
 });
 
-export const selectedHistoryState = selector<LatestChatHistory | null>({
+export const selectedHistoryState = selector<ChatHistory | null>({
   key: `${PREFIX}selectedHistoryState`,
   get: ({ get }) => {
     const chatHistory = get(chatHistoriesState);

@@ -28,7 +28,6 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
               <Message
                 message={message.content}
                 typing={message.role === 'assistant' && index === chatMessages.length - 1}
-                speed={message.content.length > 500 ? 5 : 10}
               />
             </MessageContainer>
           </ChatContent>
@@ -40,7 +39,7 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
                 <div className='flex justify-center overflow-hidden'>
                   <Loader size={32} />
                 </div>
-                <p className=''>回答を生成しています・・・</p>
+                <div className=''>回答を生成しています・・・</div>
               </div>
             </MessageContainer>
           </ChatContent>

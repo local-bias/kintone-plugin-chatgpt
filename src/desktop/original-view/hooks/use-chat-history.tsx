@@ -2,6 +2,7 @@ import { useRecoilCallback, useRecoilValue } from 'recoil';
 import {
   apiErrorMessageState,
   chatHistoriesState,
+  inputFilesState,
   inputTextState,
   pendingRequestsCountState,
   pluginConfigState,
@@ -12,9 +13,11 @@ import {
 import { deleteAllRecordsByQuery, isGuestSpace } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { useSnackbar } from 'notistack';
-import { createNewChatHistory } from '../action';
+import { createNewChatHistory, getChatTitle } from '../action';
 import { nanoid } from 'nanoid';
 import { ChatMessage } from '@/lib/static';
+import OpenAI from 'openai';
+import { getBase64EncodedImage } from '@/lib/image';
 
 export const useChatHistory = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -46,7 +49,7 @@ export const useChatHistory = () => {
             temperature: assistant.temperature,
             maxTokens: assistant.maxTokens,
             iconUrl: assistant.aiIcon,
-            title: message.content.slice(0, 16),
+            title: getChatTitle(message),
             messages: [],
           });
 
@@ -67,8 +70,30 @@ export const useChatHistory = () => {
     ({ reset, snapshot }) =>
       async () => {
         const content = await snapshot.getPromise(inputTextState);
-        await pushMessage({ role: 'user', content: content.replace(/\n/, '  \n') });
+        const files = await snapshot.getPromise(inputFilesState);
+        if (files) {
+          const imageUrlList = await Promise.all(
+            files.map(async (file) => getBase64EncodedImage(file))
+          );
+          const imageContents: OpenAI.ChatCompletionContentPartImage[] = imageUrlList.map(
+            (url) => ({
+              type: 'image_url',
+              image_url: {
+                url,
+                detail: 'auto',
+              },
+            })
+          );
+
+          await pushMessage({
+            role: 'user',
+            content: [{ type: 'text', text: content.replace(/\n/, '  \n') }, ...imageContents],
+          });
+        } else {
+          await pushMessage({ role: 'user', content: content.replace(/\n/, '  \n') });
+        }
         reset(inputTextState);
+        reset(inputFilesState);
       },
     []
   );

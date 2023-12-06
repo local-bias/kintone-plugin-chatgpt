@@ -12,25 +12,43 @@ export const URL_INQUIRY = 'https://form.konomi.app';
 export const URL_PROMOTION = 'https://promotion.konomi.app/kintone-plugin';
 export const URL_BANNER = 'https://promotion.konomi.app/kintone-plugin/sidebar';
 
-export const OPENAI_MODELS = ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k', 'gpt-4', 'gpt-4-1106-preview'];
+export const OPENAI_MODELS = [
+  'gpt-3.5-turbo',
+  'gpt-3.5-turbo-16k',
+  'gpt-4',
+  'gpt-4-1106-preview',
+  'gpt-4-vision-preview',
+];
 
-export type ChatMessage = {
-  role: OpenAI.Chat.ChatCompletionRole;
-  content: string;
+export const IMAGE_SUPPORTED_MODELS = ['gpt-4-vision-preview'];
+
+export type AnyChatHistory = ChatHistoryV1 | ChatHistoryV2 | ChatHistoryV3 | ChatHistoryV4;
+
+export type ChatHistory = ChatHistoryV4;
+
+export type ChatMessageRole = ChatHistory['messages'][number]['role'];
+
+export type ChatMessage = ChatHistory['messages'][number];
+
+type ChatHistoryV1 = {
+  version: 1;
+  id: string;
+  title: string;
+  messages: {
+    role: 'system' | 'user' | 'assistant';
+    content: string;
+  }[];
 };
-
-export type ChatHistory = ChatHistoryV1 | ChatHistoryV2 | ChatHistoryV3;
-
-export type LatestChatHistory = ChatHistoryV3;
-
-type ChatHistoryV1 = { version: 1; id: string; title: string; messages: ChatMessage[] };
 
 type ChatHistoryV2 = {
   version: 2;
   id: string;
   iconUrl: string;
   title: string;
-  messages: ChatMessage[];
+  messages: {
+    role: 'system' | 'user' | 'assistant';
+    content: string;
+  }[];
 };
 
 type ChatHistoryV3 = {
@@ -41,5 +59,23 @@ type ChatHistoryV3 = {
   maxTokens: number;
   iconUrl: string;
   title: string;
-  messages: ChatMessage[];
+  messages: {
+    role: 'system' | 'user' | 'assistant';
+    content: string;
+  }[];
+};
+
+type ChatHistoryV4 = {
+  version: 4;
+  id: string;
+  aiModel: string;
+  temperature: number;
+  maxTokens: number;
+  iconUrl: string;
+  title: string;
+  messages: (
+    | OpenAI.ChatCompletionSystemMessageParam
+    | OpenAI.ChatCompletionUserMessageParam
+    | OpenAI.ChatCompletionAssistantMessageParam
+  )[];
 };
