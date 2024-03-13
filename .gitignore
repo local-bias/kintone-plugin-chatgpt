@@ -109,3 +109,6 @@ dist/
 plugin/**/*.js
 plugin/**/*.css
 plugin/manifest.json
+plugin/config.html
+.plugin
+.accelerant
