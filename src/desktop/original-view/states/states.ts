@@ -1,5 +1,5 @@
 import { restorePluginConfig } from '@/lib/plugin';
-import { ChatMessage, ChatHistory } from '@/lib/static';
+import { ChatMessage, ChatHistory, URL_QUERY_CHAT_ID } from '@/lib/static';
 import { DefaultValue, atom, selector } from 'recoil';
 
 const PREFIX = 'kintone';
@@ -102,6 +102,21 @@ export const historiesFetchedState = atom<boolean>({
 export const selectedHistoryIdState = atom<string | null>({
   key: `${PREFIX}selectedHistoryIdState`,
   default: null,
+  effects: [
+    ({ onSet }) => {
+      onSet((newHistoryId, oldHistoryId) => {
+        if (newHistoryId === oldHistoryId) {
+          return;
+        }
+        // URLにchat_idを追加
+        const url = new URL(location.href);
+        if (newHistoryId) {
+          url.searchParams.set(URL_QUERY_CHAT_ID, newHistoryId);
+        }
+        history.replaceState(null, '', url.toString());
+      });
+    },
+  ],
 });
 
 export const apiErrorMessageState = atom<string>({

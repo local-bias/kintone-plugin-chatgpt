@@ -7,10 +7,17 @@ import ChatHistoryRecordsObserver from './components/functional/chat-history-rec
 import { SnackbarProvider } from 'notistack';
 import Layout from './components/layout';
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import { selectedHistoryIdState } from './states/states';
 
-const Component: FC = () => (
+type Props = { initChatId: string | null };
+
+const Component: FC<Props> = ({ initChatId }) => (
   <PluginErrorBoundary>
-    <RecoilRoot>
+    <RecoilRoot
+      initializeState={({ set }) => {
+        set(selectedHistoryIdState, initChatId);
+      }}
+    >
       <SnackbarProvider maxSnack={1}>
         <ChatHistoryRecordsObserver />
         <Layout>
