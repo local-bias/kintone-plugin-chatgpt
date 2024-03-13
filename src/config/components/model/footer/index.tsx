@@ -1,22 +1,19 @@
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { OPENAI_ENDPOINT_ROOT, VIEW_ROOT_ID } from '@/lib/static';
 import styled from '@emotion/styled';
-import { getViews, storeStorage, updateViews } from '@konomi-app/kintone-utilities';
+import { getAppId, getViews, storeStorage, updateViews } from '@konomi-app/kintone-utilities';
+import { PluginFooter } from '@konomi-app/kintone-utilities-react';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
+import { produce } from 'immer';
 import { useSnackbar } from 'notistack';
 import React, { FC, FCX, useCallback } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-
 import { apiKeyState, loadingState, storageState } from '../../../states/plugin';
-
 import ExportButton from './export-button';
 import ImportButton from './import-button';
 import ResetButton from './reset-button';
-import { PluginFooter } from '@konomi-app/kintone-utilities-react';
-import { getAppId } from '@lb-ribbit/kintone-xapp';
-import { produce } from 'immer';
-import { OPENAI_ENDPOINT_ROOT, VIEW_ROOT_ID } from '@/lib/static';
-import { GUEST_SPACE_ID } from '@/lib/global';
 
 type Props = {
   onSaveButtonClick: () => void;

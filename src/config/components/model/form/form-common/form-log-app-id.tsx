@@ -1,6 +1,6 @@
 import { allKintoneAppsState } from '@/config/states/kintone';
 import { logAppIdState, logAppSpaceIdState } from '@/config/states/plugin';
-import { App } from '@kintone/rest-api-client/lib/src/client/types';
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import React, { FC, memo, Suspense } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
@@ -11,7 +11,7 @@ const Component: FC = () => {
 
   const onAppChange = useRecoilCallback(
     ({ set }) =>
-      (app: App | null) => {
+      (app: kintoneAPI.App | null) => {
         if (!app) {
           return;
         }

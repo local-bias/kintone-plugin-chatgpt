@@ -1,12 +1,14 @@
-import { selector } from 'recoil';
+import { GUEST_SPACE_ID } from '@/lib/global';
 import {
-  getFormFields,
-  kintoneAPI,
   filterFieldProperties,
   getAllApps,
+  getAppId,
+  getFormFields,
   getViews,
+  kintoneAPI,
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
+import { selector } from 'recoil';
 import {
   logAppIdState,
   logAppSpaceIdState,
@@ -15,8 +17,6 @@ import {
   outputAppIdState,
   outputAppSpaceIdState,
 } from './plugin';
-import { getAppId } from '@lb-ribbit/kintone-xapp';
-import { GUEST_SPACE_ID } from '@/lib/global';
 
 const PREFIX = 'kintone';
 
