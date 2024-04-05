@@ -17,6 +17,8 @@ import { OpenAI } from 'openai';
 
 export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => {
   switch (chatHistory.version) {
+    case 4:
+      return chatHistory;
     case 3:
       return {
         ...chatHistory,
