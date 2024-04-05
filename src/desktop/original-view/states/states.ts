@@ -110,7 +110,7 @@ export const chatHistoriesPaginationMaxState = selector<number>({
 
 export const chatHistoriesPaginationIndexState = atom<number>({
   key: `${PREFIX}chatHistoriesPaginationIndexState`,
-  default: 0,
+  default: 1,
 });
 
 export const displayChatHistoriesState = selector<ChatHistory[]>({
@@ -120,7 +120,7 @@ export const displayChatHistoriesState = selector<ChatHistory[]>({
     const paginationIndex = get(chatHistoriesPaginationIndexState);
     const chunkSize = get(chatHistoriesPaginationChunkSizeState);
 
-    return chatHistories.slice(paginationIndex * chunkSize, (paginationIndex + 1) * chunkSize);
+    return chatHistories.slice((paginationIndex - 1) * chunkSize, paginationIndex * chunkSize);
   },
 });
 
