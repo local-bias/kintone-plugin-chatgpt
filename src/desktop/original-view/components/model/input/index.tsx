@@ -36,6 +36,9 @@ const Component: FC = () => (
         <Files />
       </div>
     </div>
+    <div className='text-center text-xs text-gray-600 mb-1'>
+      アシスタントは不正確な情報を表示することがあるため、生成された回答を再確認するようにしてください。
+    </div>
   </div>
 );
 
