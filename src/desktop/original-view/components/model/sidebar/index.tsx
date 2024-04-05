@@ -5,6 +5,7 @@ import { Drawer, Fab } from '@mui/material';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import { useRecoilValue } from 'recoil';
 import { isHistoryFabShownState } from '@/desktop/original-view/states/states';
+import Pagination from './pagination';
 
 const Component: FC = () => {
   const isHistoryFabShown = useRecoilValue(isHistoryFabShownState);
@@ -33,6 +34,7 @@ const Component: FC = () => {
             <NewChatButton />
           </div>
           <Histories />
+          <Pagination />
         </div>
       </Drawer>
     </>

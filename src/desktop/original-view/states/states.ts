@@ -94,6 +94,36 @@ export const chatHistoriesState = atom<ChatHistory[]>({
   default: [],
 });
 
+export const chatHistoriesPaginationChunkSizeState = atom<number>({
+  key: `${PREFIX}chatHistoriesPaginationChunkSizeState`,
+  default: 30,
+});
+
+export const chatHistoriesPaginationMaxState = selector<number>({
+  key: `${PREFIX}chatHistoriesPaginationMaxState`,
+  get: ({ get }) => {
+    const chatHistories = get(chatHistoriesState);
+    const chunkSize = get(chatHistoriesPaginationChunkSizeState);
+    return Math.ceil(chatHistories.length / chunkSize);
+  },
+});
+
+export const chatHistoriesPaginationIndexState = atom<number>({
+  key: `${PREFIX}chatHistoriesPaginationIndexState`,
+  default: 0,
+});
+
+export const displayChatHistoriesState = selector<ChatHistory[]>({
+  key: `${PREFIX}displayChatHistoriesState`,
+  get: ({ get }) => {
+    const chatHistories = get(chatHistoriesState);
+    const paginationIndex = get(chatHistoriesPaginationIndexState);
+    const chunkSize = get(chatHistoriesPaginationChunkSizeState);
+
+    return chatHistories.slice(paginationIndex * chunkSize, (paginationIndex + 1) * chunkSize);
+  },
+});
+
 export const historiesFetchedState = atom<boolean>({
   key: `${PREFIX}historiesFetchedState`,
   default: false,

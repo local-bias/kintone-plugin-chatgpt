@@ -1,4 +1,6 @@
 import {
+  chatHistoriesState,
+  displayChatHistoriesState,
   historiesFetchedState,
   loadingState,
   selectedHistoryIdState,
@@ -20,7 +22,8 @@ import styled from '@emotion/styled';
 import { useChatHistory } from '@/desktop/original-view/hooks/use-chat-history';
 
 const Component: FCX = ({ className }) => {
-  const { histories, setSelectedHistoryId, removeSelectedHistory } = useChatHistory();
+  const histories = useRecoilValue(displayChatHistoriesState);
+  const { setSelectedHistoryId, removeSelectedHistory } = useChatHistory();
   const historiesFetched = useRecoilValue(historiesFetchedState);
   const selectedHistoryId = useRecoilValue(selectedHistoryIdState);
   const loading = useRecoilValue(loadingState);
@@ -60,7 +63,17 @@ const Component: FCX = ({ className }) => {
           >
             <ListItemButton disabled={loading} onClick={() => setSelectedHistoryId(history.id)}>
               <ListItemIcon>
-                <ChatIcon />
+                {history.iconUrl ? (
+                  <img
+                    src={history.iconUrl}
+                    alt={history.title}
+                    loading='lazy'
+                    width={24}
+                    height={24}
+                  />
+                ) : (
+                  <ChatIcon />
+                )}
               </ListItemIcon>
               <ListItemText primary={history.title} />
               {selectedHistoryId === history.id && (
