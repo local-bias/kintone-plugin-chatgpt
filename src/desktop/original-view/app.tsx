@@ -20,7 +20,7 @@ const Component: FC<Props> = ({ initChatId }) => (
     >
       <SnackbarProvider maxSnack={1}>
         <ChatHistoryRecordsObserver />
-        <Layout>
+        <Layout className='🐸'>
           <div className='bg-white min-h-[calc(100vh_-_200px)]'>
             <Sidebar />
             <PluginErrorBoundary>
