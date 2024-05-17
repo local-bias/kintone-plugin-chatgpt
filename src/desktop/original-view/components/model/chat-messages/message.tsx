@@ -40,7 +40,7 @@ const Component: FC<Props> = ({ message }) => {
       {!!images.length && (
         <div className='flex flex-wrap gap-2 mt-4'>
           {images.map((image, i) => (
-            <div key={i} className='w-16 h-12 overflow-hidden'>
+            <div key={i} className='w-32 h-32 overflow-hidden'>
               <img src={image.image_url.url ?? ''} className='w-full h-full object-cover' />
             </div>
           ))}
