@@ -60,10 +60,20 @@ export const fetchChatCompletion = async (params: {
 
   process.env.NODE_ENV === 'development' && console.group("🧠 openai's API call");
 
+  let max_tokens = maxTokens === 0 ? undefined : maxTokens;
+
+  // 画像が含まれている場合はmax_tokensの指定が必須になりました
+  if (
+    !max_tokens &&
+    messages.some((m) => Array.isArray(m.content) && m.content.some((c) => c.type === 'image_url'))
+  ) {
+    max_tokens = 2048;
+  }
+
   const requestBody: OpenAI.Chat.ChatCompletionCreateParamsNonStreaming = {
     model,
     temperature,
-    max_tokens: maxTokens === 0 ? undefined : maxTokens,
+    max_tokens,
     messages,
   };
 
