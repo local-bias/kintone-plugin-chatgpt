@@ -62,7 +62,7 @@ export const fetchChatCompletion = async (params: {
 
   let max_tokens = maxTokens === 0 ? undefined : maxTokens;
 
-  // 画像が含まれている場合はmax_tokensの指定が必須になりました
+  // 画像が含まれている場合はmax_tokensの指定が必須
   if (
     !max_tokens &&
     messages.some((m) => Array.isArray(m.content) && m.content.some((c) => c.type === 'image_url'))
