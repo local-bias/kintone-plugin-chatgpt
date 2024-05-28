@@ -2,16 +2,16 @@
 const hp = 'https://konomi.app';
 const cdn = 'https://kintone-plugin.konomi.app';
 const key = 'chatgpt';
-const localhost = 'https://127.0.0.1:9152';
 
-/** @satisfies { import('@konomi-app/kintone-utilities').PluginConfig } */
+/** @satisfies { Plugin.Meta.Config } */
 export default /** @type { const } */ ({
   id: `ribbit-kintone-plugin-${key}`,
   pluginReleasePageUrl: 'https://ribbit.konomi.app/kintone-plugin/',
+  server: { port: 9152 },
   manifest: {
     base: {
       manifest_version: 1,
-      version: '4.16.0',
+      version: '4.16.2',
       type: 'APP',
       name: {
         en: 'ChatGPT integration plugin',
@@ -32,20 +32,6 @@ export default /** @type { const } */ ({
         js: [`${cdn}/common/config.js`],
         css: [`${cdn}/common/config.css`],
         required_params: [],
-      },
-    },
-    dev: {
-      desktop: {
-        js: [`${localhost}/dist/dev/desktop.js`],
-        css: [`${localhost}/dist/dev/desktop.css`],
-      },
-      mobile: {
-        js: [`${localhost}/dist/dev/desktop.js`],
-        css: [`${localhost}/dist/dev/desktop.css`],
-      },
-      config: {
-        js: [`${localhost}/dist/dev/config.js`],
-        css: [`${localhost}/dist/dev/config.css`],
       },
     },
     prod: {
