@@ -5,14 +5,9 @@
   "license": "MIT",
   "scripts": {
     "init": "plugin init && plugin genkey",
-    "build": "concurrently \"npm:build:*\" && plugin zip",
-    "build:js": "plugin build",
-    "build:css": "tailwindcss -i ./src/styles/global.css -o ./.plugin/contents/config.css -c ./tailwind.config.config.mjs --minify && tailwindcss -i ./src/styles/global.css -o ./.plugin/contents/desktop.css -c ./tailwind.config.desktop.mjs --minify",
-    "standalone": "concurrently \"npm:build:*\" && plugin zip --env standalone",
-    "dev": "concurrently \"npm:dev:*\"",
-    "dev:plugin": "plugin dev",
-    "dev:css-config": "tailwindcss -i ./src/styles/global.css -o ./.plugin/dev/config.css -c ./tailwind.config.config.mjs -w",
-    "dev:css-desktop": "tailwindcss -i ./src/styles/global.css -o ./.plugin/dev/desktop.css -c ./tailwind.config.desktop.mjs -w",
+    "build": "plugin build && plugin zip",
+    "standalone": "plugin build && plugin zip --env standalone",
+    "dev": "plugin dev",
     "lint": "eslint ./src --cache --ext .js,.ts,.tsx"
   },
   "browser": {
@@ -42,10 +37,8 @@
   },
   "devDependencies": {
     "@kintone/dts-gen": "8",
-    "@kintone/plugin-packer": "8",
     "@kintone/plugin-uploader": "9",
     "@konomi-app/k2": "*",
-    "@konomi-app/kbuild": "*",
     "@types/luxon": "3",
     "@types/marked": "^5",
     "@types/react": "18",
@@ -56,9 +49,6 @@
     "concurrently": "^8",
     "dotenv": "16",
     "eslint": "8",
-    "html-minifier": "^4",
-    "tailwindcss": "^3",
-    "ts-loader": "^9",
     "typescript": "5"
   },
   "prettier": {

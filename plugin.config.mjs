@@ -7,7 +7,16 @@ const key = 'chatgpt';
 export default /** @type { const } */ ({
   id: `ribbit-kintone-plugin-${key}`,
   pluginReleasePageUrl: 'https://ribbit.konomi.app/kintone-plugin/',
-  server: { port: 9152 },
+  server: {
+    port: 9152,
+  },
+  tailwind: {
+    css: 'src/styles/global.css',
+    config: {
+      desktop: 'tailwind.config.desktop.mjs',
+      config: 'tailwind.config.config.mjs',
+    },
+  },
   manifest: {
     base: {
       manifest_version: 1,
