@@ -1,10 +1,10 @@
 import OpenAI from 'openai';
-import manifest from '../../plugin/manifest.json';
+import config from 'plugin.config.mjs';
 
 export const OPENAI_ENDPOINT_ROOT = 'https://api.openai.com';
 export const OPENAI_ENDPOINT = `${OPENAI_ENDPOINT_ROOT}/v1/chat/completions`;
 
-export const PLUGIN_NAME = manifest.name.ja;
+export const PLUGIN_NAME = config.manifest.base.name.ja;
 
 export const VIEW_ROOT_ID = `ribbit-chatgpt-plugin-root`;
 
