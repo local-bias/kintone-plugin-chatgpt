@@ -28,7 +28,7 @@ const Component: FC = () => {
           </Fab>
         )}
       </div>
-      <Drawer anchor='left' open={open} onClose={onClose}>
+      <Drawer anchor='left' open={open} onClose={onClose} className='🐸'>
         <div className='w-[400px] max-w-[80vw] grid grid-rows-[auto_1fr] h-screen'>
           <div className='p-4'>
             <NewChatButton />
