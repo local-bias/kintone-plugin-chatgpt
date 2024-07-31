@@ -18,7 +18,7 @@ const Component: FCX = () => {
     <div className='py-8 px-4 max-w-content mx-auto'>
       <div className='mb-8'>使用するアシスタントを選択してください。</div>
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-x-4 gap-y-3 md:gap-y-6'>
-        {config.assistants.map((assistant, i) => (
+        {config.conditions.map((assistant, i) => (
           <div
             key={i}
             data-selected={i === assistantIndex ? '' : undefined}

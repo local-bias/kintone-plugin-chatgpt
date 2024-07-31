@@ -3,7 +3,9 @@ import styled from '@emotion/styled';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { MenuItem, Skeleton, TextField } from '@mui/material';
 import { customViewsState } from '@/config/states/kintone';
-import { viewIdState } from '@/config/states/plugin';
+import { getCommonPropertyState } from '@/config/states/plugin';
+
+const viewIdState = getCommonPropertyState('viewId');
 
 const Input: FC = () => {
   const views = useRecoilValue(customViewsState);

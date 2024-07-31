@@ -40,14 +40,14 @@ export const useKintoneApp = () => {
   const updateOutputApp = useRecoilCallback(
     ({ snapshot }) =>
       async () => {
-        const config = await snapshot.getPromise(pluginConfigState);
+        const { common } = await snapshot.getPromise(pluginConfigState);
 
         const {
           outputAppId: appId,
           outputAppSpaceId: spaceId,
           outputContentFieldCode: contentFieldCode,
           outputKeyFieldCode: keyFieldCode,
-        } = config;
+        } = common;
 
         if (!appId || !contentFieldCode || !keyFieldCode) {
           process.env.NODE_ENV === 'development' && console.warn('Content app is not configured');
@@ -63,13 +63,14 @@ export const useKintoneApp = () => {
     ({ snapshot }) =>
       async () => {
         const config = await snapshot.getPromise(pluginConfigState);
+        const { common } = config;
 
         const {
           logAppId: appId,
           logAppSpaceId: spaceId,
           logContentFieldCode: contentFieldCode,
           logKeyFieldCode: keyFieldCode,
-        } = config;
+        } = common;
 
         if (!appId || !contentFieldCode || !keyFieldCode) {
           process.env.NODE_ENV === 'development' && console.warn('Log app is not configured');

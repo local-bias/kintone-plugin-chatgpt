@@ -22,8 +22,8 @@ export const isWaitingForAIState = atom<boolean>({
 export const isHistoryFabShownState = selector<boolean>({
   key: `${PREFIX}isHistoryFabShownState`,
   get: ({ get }) => {
-    const config = get(pluginConfigState);
-    return !!config.outputAppId && !!config.outputKeyFieldCode && !!config.outputContentFieldCode;
+    const { common } = get(pluginConfigState);
+    return !!common.outputAppId && !!common.outputKeyFieldCode && !!common.outputContentFieldCode;
   },
 });
 
@@ -57,7 +57,7 @@ export const selectedAssistantState = selector<Plugin.Condition>({
   get: ({ get }) => {
     const config = get(pluginConfigState);
     const selectedAssistantIndex = get(selectedAssistantIndexState);
-    return config.assistants[selectedAssistantIndex];
+    return config.conditions[selectedAssistantIndex];
   },
 });
 

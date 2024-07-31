@@ -10,7 +10,8 @@ export const useInitializeRecords = () => {
   const initialize = useRecoilCallback(
     ({ set }) =>
       async (config: Plugin.Config) => {
-        const { outputAppId, outputAppSpaceId, outputContentFieldCode } = config;
+        const { common } = config;
+        const { outputAppId, outputAppSpaceId, outputContentFieldCode } = common;
         if (!outputAppId || !outputContentFieldCode) {
           set(historiesFetchedState, true);
           return;

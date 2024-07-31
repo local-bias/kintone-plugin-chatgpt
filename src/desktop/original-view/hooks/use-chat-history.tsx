@@ -38,7 +38,7 @@ export const useChatHistory = () => {
         const selectedHistory = await snapshot.getPromise(selectedHistoryState);
         const config = await snapshot.getPromise(pluginConfigState);
         const assistantIndex = await snapshot.getPromise(selectedAssistantIndexState);
-        const assistant = config.assistants[assistantIndex];
+        const assistant = config.conditions[assistantIndex];
 
         const historyId = selectedHistory?.id ?? nanoid();
         const history =
@@ -111,9 +111,8 @@ export const useChatHistory = () => {
         try {
           set(pendingRequestsCountState, (count) => count + 1);
           const id = (await snapshot.getPromise(selectedHistoryIdState))!;
-          const { outputAppId, outputKeyFieldCode, outputAppSpaceId } = await snapshot.getPromise(
-            pluginConfigState
-          );
+          const { common } = await snapshot.getPromise(pluginConfigState);
+          const { outputAppId, outputKeyFieldCode, outputAppSpaceId } = common;
 
           const isGuest = await isGuestSpace(outputAppId);
 

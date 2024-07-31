@@ -1,7 +1,6 @@
-import { createNewAiAssistant, restorePluginConfig } from '@/lib/plugin';
-import { OPENAI_ENDPOINT_ROOT, OPENAI_MODELS } from '@/lib/static';
-import { produce } from 'immer';
-import { atom, selector } from 'recoil';
+import { getUpdatedStorage, restorePluginConfig } from '@/lib/plugin';
+import { OPENAI_ENDPOINT_ROOT } from '@/lib/static';
+import { atom, DefaultValue, RecoilState, selector, selectorFamily } from 'recoil';
 
 const PREFIX = 'plugin';
 
@@ -13,6 +12,52 @@ export const storageState = atom<Plugin.Config>({
 export const loadingState = atom<boolean>({
   key: `${PREFIX}loadingState`,
   default: false,
+});
+
+export const selectedConditionIdState = atom<string | null>({
+  key: `${PREFIX}selectedConditionIdState`,
+  default: null,
+});
+
+export const commonSettingsShownState = selector<boolean>({
+  key: `${PREFIX}commonSettingsShownState`,
+  get: ({ get }) => {
+    return get(selectedConditionIdState) === null;
+  },
+});
+
+export const selectedConditionState = selector<Plugin.Condition>({
+  key: `${PREFIX}selectedConditionState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    const selectedConditionId = get(selectedConditionIdState);
+    return (
+      storage.conditions.find((condition) => condition.id === selectedConditionId) ??
+      storage.conditions[0]
+    );
+  },
+});
+
+export const conditionsState = selector<Plugin.Condition[]>({
+  key: `${PREFIX}conditionsState`,
+  get: ({ get }) => {
+    const storage = get(storageState);
+    return (storage?.conditions ?? []).map((condition) => {
+      if ('id' in condition) {
+        return condition;
+      }
+      // @ts-expect-error 定義通りであればidは必ず上書きされるが、そうでなかった場合を考慮
+      return { id: nanoid(), ...condition };
+    });
+  },
+  set: ({ set }, newValue) => {
+    if (newValue instanceof DefaultValue) {
+      return;
+    }
+    set(storageState, (current) => {
+      return { ...current, conditions: newValue };
+    });
+  },
 });
 
 export const tabIndexState = atom<number>({
@@ -28,349 +73,85 @@ export const apiKeyState = atom<string>({
   })(),
 });
 
-export const viewIdState = selector<string>({
-  key: `${PREFIX}viewIdState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.viewId ?? '';
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft!.viewId = newValue as string;
-      })
-    );
-  },
+const conditionPropertyState = selectorFamily<
+  Plugin.Condition[keyof Plugin.Condition],
+  keyof Plugin.Condition
+>({
+  key: `${PREFIX}conditionPropertyState`,
+  get:
+    (key) =>
+    ({ get }) => {
+      return get(selectedConditionState)[key];
+    },
+  set:
+    (key) =>
+    ({ get, set }, newValue) => {
+      const conditionId = get(selectedConditionState).id;
+      set(storageState, (current) => {
+        if (newValue instanceof DefaultValue) {
+          return current;
+        }
+        const conditionIndex = current.conditions.findIndex(
+          (condition) => condition.id === conditionId
+        );
+        return getUpdatedStorage(current, { conditionIndex, key, value: newValue });
+      });
+    },
 });
 
-export const outputAppIdState = selector<string>({
-  key: `${PREFIX}outputAppIdState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.outputAppId ?? '';
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft!.outputAppId = newValue as string;
-      })
-    );
-  },
+export const commonPropertyState = selectorFamily<
+  Plugin.Common[keyof Plugin.Common],
+  keyof Plugin.Common
+>({
+  key: `${PREFIX}commonPropertyState`,
+  get:
+    (key) =>
+    ({ get }) => {
+      return get(storageState).common[key];
+    },
+  set:
+    (key) =>
+    ({ set }, newValue) => {
+      set(storageState, (current) => {
+        if (newValue instanceof DefaultValue) {
+          return current;
+        }
+        return {
+          ...current,
+          common: {
+            ...current.common,
+            [key]: newValue,
+          },
+        };
+      });
+    },
 });
 
-export const outputAppSpaceIdState = selector<string | undefined>({
-  key: `${PREFIX}outputAppSpaceIdState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.outputAppSpaceId;
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.outputAppSpaceId = newValue as string | undefined;
-      })
-    );
-  },
-});
+export const getCommonPropertyState = <T extends keyof Plugin.Common>(property: T) =>
+  commonPropertyState(property) as unknown as RecoilState<Plugin.Common[T]>;
 
-export const outputKeyFieldCodeState = selector<string>({
-  key: `${PREFIX}outputKeyFieldCodeState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.outputKeyFieldCode ?? '';
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft!.outputKeyFieldCode = newValue as string;
-      })
-    );
-  },
-});
+export const getConditionPropertyState = <T extends keyof Plugin.Condition>(property: T) =>
+  conditionPropertyState(property) as unknown as RecoilState<Plugin.Condition[T]>;
 
-export const outputContentFieldCodeState = selector<string>({
-  key: `${PREFIX}outputContentFieldCodeState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.outputContentFieldCode ?? '';
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft!.outputContentFieldCode = newValue as string;
-      })
-    );
-  },
-});
+export const viewIdState = getCommonPropertyState('viewId');
+export const outputAppIdState = getCommonPropertyState('outputAppId');
+export const outputAppSpaceIdState = getCommonPropertyState('outputAppSpaceId');
+export const outputKeyFieldCodeState = getCommonPropertyState('outputKeyFieldCode');
+export const outputContentFieldCodeState = getCommonPropertyState('outputContentFieldCode');
+export const logAppIdState = getCommonPropertyState('logAppId');
+export const logAppSpaceIdState = getCommonPropertyState('logAppSpaceId');
+export const logKeyFieldCodeState = getCommonPropertyState('logKeyFieldCode');
+export const logContentFieldCodeState = getCommonPropertyState('logContentFieldCode');
+export const enablesAnimationState = getCommonPropertyState('enablesAnimation');
+export const enablesEnterState = getCommonPropertyState('enablesEnter');
+export const enablesShiftEnterState = getCommonPropertyState('enablesShiftEnter');
 
-export const logAppIdState = selector<string>({
-  key: `${PREFIX}logAppIdState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.logAppId ?? '';
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft!.logAppId = newValue as string;
-      })
-    );
-  },
-});
-
-export const logAppSpaceIdState = selector<string | undefined>({
-  key: `${PREFIX}logAppSpaceIdState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.logAppSpaceId;
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.logAppSpaceId = newValue as string | undefined;
-      })
-    );
-  },
-});
-
-export const logKeyFieldCodeState = selector<string>({
-  key: `${PREFIX}logKeyFieldCodeState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.logKeyFieldCode ?? '';
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft!.logKeyFieldCode = newValue as string;
-      })
-    );
-  },
-});
-
-export const logContentFieldCodeState = selector<string>({
-  key: `${PREFIX}logContentFieldCodeState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.logContentFieldCode ?? '';
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.logContentFieldCode = newValue as string;
-      })
-    );
-  },
-});
-
-export const enablesAnimationState = selector<boolean>({
-  key: `${PREFIX}enablesAnimationState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.enablesAnimation ?? false;
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.enablesAnimation = newValue as boolean;
-      })
-    );
-  },
-});
-
-export const enablesEnterState = selector<boolean>({
-  key: `${PREFIX}enablesEnterState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.enablesEnter ?? false;
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.enablesEnter = newValue as boolean;
-      })
-    );
-  },
-});
-
-export const enablesShiftEnterState = selector<boolean>({
-  key: `${PREFIX}enablesShiftEnterState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.enablesShiftEnter ?? false;
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.enablesShiftEnter = newValue as boolean;
-      })
-    );
-  },
-});
-
-export const assistantsState = selector<Plugin.Condition[]>({
-  key: `${PREFIX}assistantsState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.assistants ?? [createNewAiAssistant()];
-  },
-  set: ({ set }, newValue) => {
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.assistants = newValue as Plugin.Condition[];
-      })
-    );
-  },
-});
-
-export const assistantLengthState = selector<number>({
-  key: `${PREFIX}assistantLengthState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage.assistants.length;
-  },
-});
-
-export const assistantIndexState = selector<number>({
-  key: `${PREFIX}assistantIndexState`,
-  get: ({ get }) => {
-    const tabIndex = get(tabIndexState);
-    return tabIndex === 0 ? 0 : tabIndex - 1;
-  },
-});
-
-export const assistantNameState = selector<string>({
-  key: `${PREFIX}assistantNameState`,
-  get: ({ get }) => {
-    const index = get(assistantIndexState);
-    const storage = get(storageState);
-    return storage.assistants[index].name ?? '';
-  },
-  set: ({ get, set }, newValue) => {
-    const index = get(assistantIndexState);
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.assistants[index].name = newValue as string;
-      })
-    );
-  },
-});
-
-export const assistantDescriptionState = selector<string>({
-  key: `${PREFIX}assistantDescriptionState`,
-  get: ({ get }) => {
-    const index = get(assistantIndexState);
-    const storage = get(storageState);
-    return storage.assistants[index].description ?? '';
-  },
-  set: ({ get, set }, newValue) => {
-    const index = get(assistantIndexState);
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.assistants[index].description = newValue as string;
-      })
-    );
-  },
-});
-
-export const aiModelState = selector<string>({
-  key: `${PREFIX}aiModelState`,
-  get: ({ get }) => {
-    const index = get(assistantIndexState);
-    const storage = get(storageState);
-    return storage.assistants[index].aiModel ?? OPENAI_MODELS[0];
-  },
-  set: ({ get, set }, newValue) => {
-    const index = get(assistantIndexState);
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.assistants[index].aiModel = newValue as string;
-      })
-    );
-  },
-});
-
-export const aiIconState = selector<string>({
-  key: `${PREFIX}aiIconState`,
-  get: ({ get }) => {
-    const index = get(assistantIndexState);
-    const storage = get(storageState);
-    return storage.assistants[index].aiIcon ?? '';
-  },
-  set: ({ get, set }, newValue) => {
-    const index = get(assistantIndexState);
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.assistants[index].aiIcon = newValue as string;
-      })
-    );
-  },
-});
-
-export const assistantExamplesState = selector<string[]>({
-  key: `${PREFIX}assistantExamplesState`,
-  get: ({ get }) => {
-    const index = get(assistantIndexState);
-    const storage = get(storageState);
-    return storage.assistants[index].examples;
-  },
-  set: ({ get, set }, newValue) => {
-    const index = get(assistantIndexState);
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.assistants[index].examples = newValue as string[];
-      })
-    );
-  },
-});
-
-export const maxTokensState = selector<string>({
-  key: `${PREFIX}maxTokensState`,
-  get: ({ get }) => {
-    const index = get(assistantIndexState);
-    const storage = get(storageState);
-    return String(storage.assistants[index].maxTokens ?? 0);
-  },
-  set: ({ get, set }, newValue) => {
-    const index = get(assistantIndexState);
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.assistants[index].maxTokens = Number(newValue);
-      })
-    );
-  },
-});
-
-export const temperatureState = selector<number>({
-  key: `${PREFIX}temperatureState`,
-  get: ({ get }) => {
-    const index = get(assistantIndexState);
-    const storage = get(storageState);
-    return storage.assistants[index].temperature ?? 0.7;
-  },
-  set: ({ get, set }, newValue) => {
-    const index = get(assistantIndexState);
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.assistants[index].temperature = newValue as number;
-      })
-    );
-  },
-});
-
-export const systemPromptState = selector<string>({
-  key: `${PREFIX}systemPromptState`,
-  get: ({ get }) => {
-    const index = get(assistantIndexState);
-    const storage = get(storageState);
-    return storage.assistants[index].systemPrompt ?? '';
-  },
-  set: ({ get, set }, newValue) => {
-    const index = get(assistantIndexState);
-    set(storageState, (current) =>
-      produce(current, (draft) => {
-        draft.assistants[index].systemPrompt = newValue as string;
-      })
-    );
-  },
-});
+export const assistantsState = conditionsState;
+export const assistantNameState = getConditionPropertyState('name');
+export const assistantDescriptionState = getConditionPropertyState('description');
+export const aiModelState = getConditionPropertyState('aiModel');
+export const aiIconState = getConditionPropertyState('aiIcon');
+export const assistantExamplesState = getConditionPropertyState('examples');
+export const maxTokensState = getConditionPropertyState('maxTokens');
+export const temperatureState = getConditionPropertyState('temperature');
+export const systemPromptState = getConditionPropertyState('systemPrompt');

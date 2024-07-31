@@ -2,15 +2,11 @@ import React, { FC } from 'react';
 import CommonForm from './form-common';
 import AssistantForm from './form-assistants';
 import { useRecoilValue } from 'recoil';
-import { tabIndexState } from '@/config/states/plugin';
+import { commonSettingsShownState } from '@/config/states/plugin';
 
 const Component: FC = () => {
-  const tabIndex = useRecoilValue(tabIndexState);
-
-  if (tabIndex === 0) {
-    return <CommonForm />;
-  }
-  return <AssistantForm />;
+  const commonSettingsShown = useRecoilValue(commonSettingsShownState);
+  return commonSettingsShown ? <CommonForm /> : <AssistantForm />;
 };
 
 export default Component;

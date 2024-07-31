@@ -21,7 +21,7 @@ const Component: FC = () => {
     <AutocompleteKintoneField
       label='キー情報を格納するフィールド'
       fields={fields}
-      fieldCode={fieldCode}
+      fieldCode={fieldCode ?? ''}
       onChange={onFieldChange}
     />
   );

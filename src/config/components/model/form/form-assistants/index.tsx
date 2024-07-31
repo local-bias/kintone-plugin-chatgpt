@@ -14,6 +14,7 @@ import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
+  RecoilNumber,
 } from '@konomi-app/kintone-utilities-react';
 import DeleteButton from './delete-button';
 
@@ -113,7 +114,7 @@ const Component: FC = () => {
           </a>
           をご確認ください。
         </PluginFormDescription>
-        <FormText type='number' state={maxTokensState} label='返答の長さの最大値' width={200} />
+        <RecoilNumber state={maxTokensState} label='返答の長さの最大値' width={200} />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>例文の設定</PluginFormTitle>

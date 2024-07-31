@@ -6,9 +6,9 @@ import React, { ChangeEventHandler, FC, KeyboardEventHandler } from 'react';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
 
 const Component: FC = () => {
-  const config = useRecoilValue(pluginConfigState);
+  const { common } = useRecoilValue(pluginConfigState);
   const input = useRecoilValue(inputTextState);
-  const { enablesEnter, enablesShiftEnter } = config;
+  const { enablesEnter, enablesShiftEnter } = common;
   const { sendMessage } = useMessageController();
   const { pushUserMessage } = useChatHistory();
 

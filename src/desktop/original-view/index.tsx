@@ -9,7 +9,7 @@ let cachedRoot: Root | null = null;
 
 listener.add(['app.record.index.show'], (event) => {
   const config = restorePluginConfig();
-  if (!config || config?.viewId !== String(event.viewId)) {
+  if (config.common.viewId !== String(event.viewId)) {
     return event;
   }
 

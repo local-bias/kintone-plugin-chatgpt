@@ -1,23 +1,27 @@
 import { restoreStorage } from '@konomi-app/kintone-utilities';
 import { OPENAI_MODELS } from './static';
 import { PLUGIN_ID } from './global';
+import { nanoid } from 'nanoid';
+import { produce } from 'immer';
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): Plugin.Config => ({
-  version: 4,
-  viewId: '',
-  outputAppId: '',
-  outputKeyFieldCode: '',
-  outputContentFieldCode: '',
-  logAppId: '',
-  logKeyFieldCode: '',
-  logContentFieldCode: '',
-  enablesAnimation: false,
-  enablesEnter: false,
-  enablesShiftEnter: false,
-  assistants: [createNewAiAssistant()],
+  version: 5,
+  common: {
+    viewId: '',
+    outputAppId: '',
+    outputKeyFieldCode: '',
+    outputContentFieldCode: '',
+    logAppId: '',
+    logKeyFieldCode: '',
+    logContentFieldCode: '',
+    enablesAnimation: false,
+    enablesEnter: false,
+    enablesShiftEnter: false,
+  },
+  conditions: [createNewAiAssistant()],
 });
 
 /**
@@ -59,6 +63,16 @@ export const migrateConfig = (storage: Plugin.AnyConfig): Plugin.Config => {
         assistants: storage.assistants.map((assistant) => ({ ...assistant, examples: [''] })),
       });
     case 4:
+      const { version, assistants, ...rest } = storage;
+      return migrateConfig({
+        version: 5,
+        common: rest,
+        conditions: assistants.map((assistant) => ({
+          ...assistant,
+          id: nanoid(),
+        })),
+      });
+    case 5:
     default: // `default` -> `config.js`と`desktop.js`のバージョンが一致していない場合に通る可能性があるため必要
       return storage;
   }
@@ -73,6 +87,7 @@ export const restorePluginConfig = (): Plugin.Config => {
 };
 
 export const createNewAiAssistant = (): Plugin.Condition => ({
+  id: nanoid(),
   name: '',
   description: '',
   aiModel: OPENAI_MODELS[0],
@@ -82,3 +97,17 @@ export const createNewAiAssistant = (): Plugin.Condition => ({
   maxTokens: 0,
   examples: [''],
 });
+
+export const getUpdatedStorage = <T extends keyof Plugin.Condition>(
+  storage: Plugin.Config,
+  props: {
+    conditionIndex: number;
+    key: T;
+    value: Plugin.Condition[T];
+  }
+) => {
+  const { conditionIndex, key, value } = props;
+  return produce(storage, (draft) => {
+    draft.conditions[conditionIndex][key] = value;
+  });
+};

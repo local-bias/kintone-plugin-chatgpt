@@ -12,7 +12,7 @@ const Component: FC = () => {
   const pluginConfig = useRecoilValue(pluginConfigState);
   const assitantIndex = useRecoilValue(selectedAssistantIndexState);
 
-  const src = selectedHistory?.iconUrl ?? pluginConfig.assistants[assitantIndex].aiIcon;
+  const src = selectedHistory?.iconUrl ?? pluginConfig.conditions[assitantIndex].aiIcon;
 
   if (src) {
     return <img className='object-cover w-full h-full' src={src} />;

@@ -1,16 +1,15 @@
 declare namespace Plugin {
   /** 🔌 プラグインがアプリ単位で保存する設定情報 */
-  type Config = ConfigV4;
+  type Config = ConfigV5;
 
   /** 🔌 プラグインの共通設定 */
-  // type Common = Config['common'];
+  type Common = Config['common'];
 
   /** 🔌 プラグインの詳細設定 */
-  // type Condition = Config['conditions'][number];
-  type Condition = Config['assistants'][number];
+  type Condition = Config['conditions'][number];
 
   /** 🔌 過去全てのバージョンを含むプラグインの設定情報 */
-  type AnyConfig = ConfigV1 | ConfigV2 | ConfigV3 | ConfigV4;
+  type AnyConfig = ConfigV1 | ConfigV2 | ConfigV3 | ConfigV4 | ConfigV5;
 
   type AiAssistantPropsV2 = {
     name: string;
@@ -36,7 +35,7 @@ declare namespace Plugin {
   type ConfigV5 = {
     version: 5;
     common: Omit<ConfigV4, 'version' | 'assistants'>;
-    conditions: ConfigV4['assistants'];
+    conditions: (ConfigV4['assistants'][number] & { id: string })[];
   };
 
   type ConfigV4 = {

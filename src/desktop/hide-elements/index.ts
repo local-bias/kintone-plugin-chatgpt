@@ -3,8 +3,8 @@ import { restorePluginConfig } from '@/lib/plugin';
 import { css } from '@emotion/css';
 
 listener.add(['app.record.index.show'], (event) => {
-  const config = restorePluginConfig();
-  const { viewId } = config;
+  const { common } = restorePluginConfig();
+  const { viewId } = common;
 
   if (event.viewId !== Number(viewId)) {
     return event;

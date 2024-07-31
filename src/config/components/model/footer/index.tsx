@@ -86,7 +86,7 @@ const Container: FC = () => {
           });
 
           const newViews = produce(views, (draft) => {
-            const viewId = storage?.viewId;
+            const viewId = storage.common.viewId;
             for (const view of Object.values(draft)) {
               if (view.id === viewId && view.type === 'CUSTOM') {
                 view.html = `<div id='${VIEW_ROOT_ID}'></div>`;

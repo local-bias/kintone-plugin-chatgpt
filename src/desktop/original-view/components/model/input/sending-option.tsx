@@ -3,8 +3,8 @@ import React, { FC, memo } from 'react';
 import { useRecoilValue } from 'recoil';
 
 const Component: FC = () => {
-  const config = useRecoilValue(pluginConfigState);
-  const { enablesEnter, enablesShiftEnter } = config;
+  const { common } = useRecoilValue(pluginConfigState);
+  const { enablesEnter, enablesShiftEnter } = common;
 
   if (enablesEnter) {
     return <div>Enterキーで送信</div>;
