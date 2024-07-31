@@ -20,7 +20,7 @@ export default /** @type { const } */ ({
   manifest: {
     base: {
       manifest_version: 1,
-      version: '4.16.2',
+      version: '4.17.0',
       type: 'APP',
       name: {
         en: 'ChatGPT integration plugin',
