@@ -60,11 +60,6 @@ export const conditionsState = selector<Plugin.Condition[]>({
   },
 });
 
-export const tabIndexState = atom<number>({
-  key: `${PREFIX}tabIndexState`,
-  default: 0,
-});
-
 export const apiKeyState = atom<string>({
   key: `${PREFIX}apiKeyState`,
   default: (() => {

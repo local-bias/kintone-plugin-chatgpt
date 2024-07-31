@@ -1,28 +1,35 @@
-import React, { FC } from 'react';
-import { useRecoilState } from 'recoil';
+import React, { FC, memo } from 'react';
+import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { produce } from 'immer';
 import { PluginConditionDeleteButton } from '@konomi-app/kintone-utilities-react';
-import { assistantsState, tabIndexState } from '@/config/states/plugin';
+import { selectedConditionIdState, storageState } from '../../../../states/plugin';
+import { useSnackbar } from 'notistack';
 
 const Container: FC = () => {
-  const [tabIndex, setTabIndex] = useRecoilState(tabIndexState);
-  const [assistants, setAssistants] = useRecoilState(assistantsState);
-  const assistantIndex = tabIndex - 1;
+  const { enqueueSnackbar } = useSnackbar();
+  const storage = useRecoilValue(storageState);
 
-  if (assistants.length === 1 || assistantIndex < 0) {
+  const onClick = useRecoilCallback(
+    ({ reset, set, snapshot }) =>
+      async () => {
+        const id = await snapshot.getPromise(selectedConditionIdState);
+        set(storageState, (_, _storage = _!) =>
+          produce(_storage, (draft) => {
+            const index = draft.conditions.findIndex((condition) => condition.id === id);
+            draft.conditions.splice(index, 1);
+          })
+        );
+        reset(selectedConditionIdState);
+        enqueueSnackbar('設定を削除しました', { variant: 'success' });
+      },
+    []
+  );
+
+  if ((storage?.conditions.length ?? 0) < 2) {
     return null;
   }
-
-  const onClick = () => {
-    setAssistants((assistants) =>
-      produce(assistants, (draft) => {
-        draft.splice(assistantIndex, 1);
-      })
-    );
-    setTabIndex((i) => i - 1);
-  };
 
   return <PluginConditionDeleteButton {...{ onClick }} />;
 };
 
-export default Container;
+export default memo(Container);
