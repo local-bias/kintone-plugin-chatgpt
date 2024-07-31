@@ -5,7 +5,7 @@ import { atom, selector } from 'recoil';
 
 const PREFIX = 'plugin';
 
-export const storageState = atom<kintone.plugin.LatestStorage>({
+export const storageState = atom<Plugin.Config>({
   key: `${PREFIX}storageState`,
   default: restorePluginConfig(),
 });
@@ -208,7 +208,7 @@ export const enablesShiftEnterState = selector<boolean>({
   },
 });
 
-export const assistantsState = selector<kintone.plugin.AiAssistantProps[]>({
+export const assistantsState = selector<Plugin.Condition[]>({
   key: `${PREFIX}assistantsState`,
   get: ({ get }) => {
     const storage = get(storageState);
@@ -217,7 +217,7 @@ export const assistantsState = selector<kintone.plugin.AiAssistantProps[]>({
   set: ({ set }, newValue) => {
     set(storageState, (current) =>
       produce(current, (draft) => {
-        draft.assistants = newValue as kintone.plugin.AiAssistantProps[];
+        draft.assistants = newValue as Plugin.Condition[];
       })
     );
   },

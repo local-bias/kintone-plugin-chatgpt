@@ -9,7 +9,7 @@ export const useInitializeRecords = () => {
 
   const initialize = useRecoilCallback(
     ({ set }) =>
-      async (config: kintone.plugin.LatestStorage) => {
+      async (config: Plugin.Config) => {
         const { outputAppId, outputAppSpaceId, outputContentFieldCode } = config;
         if (!outputAppId || !outputContentFieldCode) {
           set(historiesFetchedState, true);

@@ -4,7 +4,7 @@ import { DefaultValue, atom, selector } from 'recoil';
 
 const PREFIX = 'kintone';
 
-export const pluginConfigState = atom<kintone.plugin.LatestStorage>({
+export const pluginConfigState = atom<Plugin.Config>({
   key: `${PREFIX}pluginConfigState`,
   default: restorePluginConfig(),
 });
@@ -52,7 +52,7 @@ export const selectedAssistantIndexState = atom<number>({
   default: 0,
 });
 
-export const selectedAssistantState = selector<kintone.plugin.AiAssistantProps>({
+export const selectedAssistantState = selector<Plugin.Condition>({
   key: `${PREFIX}selectedAssistantState`,
   get: ({ get }) => {
     const config = get(pluginConfigState);
