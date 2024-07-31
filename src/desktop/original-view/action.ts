@@ -17,13 +17,9 @@ import { OpenAI } from 'openai';
 
 export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => {
   switch (chatHistory.version) {
-    case 4:
-      return chatHistory;
-    case 3:
-      return {
-        ...chatHistory,
-        version: 4,
-      };
+    case undefined:
+    case 1:
+      return migrateChatHistory({ ...chatHistory, version: 2, iconUrl: '' });
     case 2:
       return {
         ...chatHistory,
@@ -32,17 +28,11 @@ export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => 
         temperature: 0.7,
         maxTokens: 0,
       };
-    case undefined:
+    case 3:
+      return migrateChatHistory({ ...chatHistory, version: 4 });
     default:
-    case 1:
-      return {
-        ...chatHistory,
-        version: 4,
-        iconUrl: '',
-        aiModel: OPENAI_MODELS[0],
-        temperature: 0.7,
-        maxTokens: 0,
-      };
+    case 4:
+      return chatHistory;
   }
 };
 
