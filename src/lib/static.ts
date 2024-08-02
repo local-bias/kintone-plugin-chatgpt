@@ -14,6 +14,7 @@ export const URL_BANNER = 'https://promotion.konomi.app/kintone-plugin/sidebar';
 
 export const OPENAI_MODELS = [
   'gpt-4o',
+  'gpt-4o-mini',
   'gpt-4-turbo',
   'gpt-4-vision-preview',
   'gpt-4',
@@ -21,7 +22,12 @@ export const OPENAI_MODELS = [
   'gpt-3.5-turbo',
 ];
 
-export const IMAGE_SUPPORTED_MODELS = ['gpt-4-vision-preview', 'gpt-4-turbo', 'gpt-4o'];
+export const IMAGE_SUPPORTED_MODELS = [
+  'gpt-4-vision-preview',
+  'gpt-4-turbo',
+  'gpt-4o',
+  'gpt-4o-mini',
+];
 
 export const URL_QUERY_CHAT_ID = 'chat_id';
 
