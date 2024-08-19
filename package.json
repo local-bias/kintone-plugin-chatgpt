@@ -28,7 +28,7 @@
     "@mui/icons-material": "^5.16.6",
     "@mui/material": "^5.16.6",
     "immer": "^10.1.1",
-    "lucide-react": "^0.417.0",
+    "lucide-react": "^0.419.0",
     "luxon": "^3.4.4",
     "marked": "^13.0.3",
     "nanoid": "^5.0.7",
@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@kintone/dts-gen": "^8.0.12",
-    "@konomi-app/k2": "^1.4.0",
+    "@konomi-app/k2": "^1.4.2",
     "@types/luxon": "^3.4.2",
     "@types/marked": "^6.0.0",
     "@types/react": "^18.3.3",
