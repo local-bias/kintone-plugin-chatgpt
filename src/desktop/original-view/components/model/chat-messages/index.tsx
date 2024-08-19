@@ -12,6 +12,8 @@ import ErrorMessage from './error-message';
 import Empty from './empty';
 import { ChatContent } from '../../layout/chat-content';
 import { Loader } from '@konomi-app/ui-react';
+import { ChatMessageProvider } from '@/desktop/original-view/contexts/chat-message';
+import Commands from './commands';
 
 const Component: FCX<PropsWithChildren> = ({ className }) => {
   const chatMessages = useRecoilValue(displayChatMessagesState);
@@ -23,11 +25,15 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
       {chatMessages.length === 0 && <Empty />}
       <div className='messages'>
         {chatMessages.map((message, index) => (
-          <ChatContent key={index}>
-            <MessageContainer role={message.role}>
-              <Message message={message.content} />
-            </MessageContainer>
-          </ChatContent>
+          <ChatMessageProvider key={index} message={message}>
+            <ChatContent className='group/message grid grid-cols-[1fr_900px_1fr] [&>div]:w-full'>
+              <div></div>
+              <MessageContainer role={message.role}>
+                <Message message={message.content} />
+              </MessageContainer>
+              <Commands />
+            </ChatContent>
+          </ChatMessageProvider>
         ))}
         {isWaitingForAI && (
           <ChatContent>
@@ -51,13 +57,6 @@ const StyledComponent = styled(Component)`
   display: flex;
   flex-direction: column;
   min-height: calc(100vh - 200px);
-
-  .messages {
-    width: 100%;
-    .message-container:nth-of-type(2n) {
-      background-color: #0000000a;
-    }
-  }
 `;
 
 export default StyledComponent;
