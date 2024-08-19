@@ -1,9 +1,16 @@
 //@ts-check
 import common from './tailwind.config.common.mjs';
 
-/** @type { import("tailwindcss").Config } */
+/** @type { import('tailwindcss').Config } */
 export default {
   ...common,
   important: '.🐸',
-  content: ['./src/lib/**/*.{ts,js,jsx,tsx}', './src/desktop/**/*.{ts,js,jsx,tsx}'],
+  corePlugins: {
+    preflight: false,
+  },
+  content: [
+    './src/components/**/*.{ts,tsx}',
+    './src/lib/**/*.{ts,tsx}',
+    './src/desktop/**/*.{ts,tsx}',
+  ],
 };
