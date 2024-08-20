@@ -1,8 +1,19 @@
-import { useChatMessage } from '@/desktop/original-view/contexts/chat-message';
+import {
+  useChatMessage,
+  useRegenerateChatMessage,
+} from '@/desktop/original-view/contexts/chat-message';
 import { Tooltip } from '@mui/material';
-import { Check, Clipboard, Pencil, X } from 'lucide-react';
+import { Check, Clipboard, Pencil, X, RotateCw } from 'lucide-react';
 import OpenAI from 'openai';
-import React, { useEffect, type FC } from 'react';
+import React, { forwardRef, HTMLAttributes, useEffect, type FC } from 'react';
+
+const IconWrapper = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>((props, ref) => (
+  <div
+    {...props}
+    ref={ref}
+    className='bg-white/70 opacity-0 pointer-events-none group-hover/message:opacity-100 group-hover/message:pointer-events-auto cursor-pointer transition-all grid place-items-center sticky top-16 z-10 w-8 h-8 rounded shadow hover:shadow-md text-gray-400 hover:text-blue-500'
+  />
+));
 
 const Copy: FC = () => {
   const { message } = useChatMessage();
@@ -39,12 +50,9 @@ const Copy: FC = () => {
   return (
     <>
       <Tooltip title={copied ? 'コピーしました！' : 'クリップボードにコピー'}>
-        <div
-          onClick={onCopyButtonClick}
-          className='opacity-0 pointer-events-none group-hover/message:opacity-100 group-hover/message:pointer-events-auto cursor-pointer transition-all grid place-items-center sticky top-16 z-10 w-8 h-8 rounded shadow hover:shadow-md text-gray-400 hover:text-blue-500'
-        >
+        <IconWrapper onClick={onCopyButtonClick}>
           {copied ? <Check className='w-4 h-4' /> : <Clipboard className='w-4 h-4' />}
-        </div>
+        </IconWrapper>
       </Tooltip>
     </>
   );
@@ -60,12 +68,28 @@ const Edit: FC = () => {
   return (
     <>
       <Tooltip title={isEditing ? '編集を中断する' : 'このメッセージからやり直す'}>
-        <div
-          onClick={toggleIsEditing}
-          className='opacity-0 pointer-events-none group-hover/message:opacity-100 group-hover/message:pointer-events-auto cursor-pointer transition-all grid place-items-center sticky top-16 z-10 w-8 h-8 rounded shadow hover:shadow-md text-gray-400 hover:text-blue-500'
-        >
+        <IconWrapper onClick={toggleIsEditing}>
           {isEditing ? <X className='w-4 h-4' /> : <Pencil className='w-4 h-4' />}
-        </div>
+        </IconWrapper>
+      </Tooltip>
+    </>
+  );
+};
+
+const Regenerate: FC = () => {
+  const { message } = useChatMessage();
+  const { regenerate } = useRegenerateChatMessage();
+
+  if (message.role !== 'assistant') {
+    return null;
+  }
+
+  return (
+    <>
+      <Tooltip title='このメッセージを再生成'>
+        <IconWrapper onClick={regenerate}>
+          <RotateCw className='w-4 h-4' />
+        </IconWrapper>
       </Tooltip>
     </>
   );
@@ -75,6 +99,7 @@ const Component: FC = () => (
   <div className='p-4'>
     <div className='hidden lg:flex gap-2'>
       <Edit />
+      <Regenerate />
       <Copy />
     </div>
   </div>
