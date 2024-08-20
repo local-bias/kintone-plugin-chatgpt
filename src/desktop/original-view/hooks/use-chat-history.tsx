@@ -55,7 +55,7 @@ export const useChatHistory = () => {
 
         const updatedHistory = produce(history, (draft) => {
           if (draft.messages.length === 0 && assistant.systemPrompt) {
-            draft.messages.push({ role: 'system', content: assistant.systemPrompt });
+            draft.messages.push({ id: nanoid(), role: 'system', content: assistant.systemPrompt });
           }
           draft.messages.push(message);
         });
@@ -86,11 +86,12 @@ export const useChatHistory = () => {
           );
 
           await pushMessage({
+            id: nanoid(),
             role: 'user',
             content: [{ type: 'text', text: content.replace(/\n/, '  \n') }, ...imageContents],
           });
         } else {
-          await pushMessage({ role: 'user', content: content.replace(/\n/, '  \n') });
+          await pushMessage({ id: nanoid(), role: 'user', content: content.replace(/\n/, '  \n') });
         }
         reset(inputTextState);
         reset(inputFilesState);
@@ -100,7 +101,7 @@ export const useChatHistory = () => {
 
   const pushAssistantMessage = useRecoilCallback(
     () => async (content: string) => {
-      await pushMessage({ role: 'assistant', content });
+      await pushMessage({ id: nanoid(), role: 'assistant', content });
     },
     []
   );

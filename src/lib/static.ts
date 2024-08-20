@@ -31,13 +31,23 @@ export const IMAGE_SUPPORTED_MODELS = [
 
 export const URL_QUERY_CHAT_ID = 'chat_id';
 
-export type AnyChatHistory = ChatHistoryV1 | ChatHistoryV2 | ChatHistoryV3 | ChatHistoryV4;
+export type AnyChatHistory =
+  | ChatHistoryV1
+  | ChatHistoryV2
+  | ChatHistoryV3
+  | ChatHistoryV4
+  | ChatHistoryV5;
 
-export type ChatHistory = ChatHistoryV4;
+export type ChatHistory = ChatHistoryV5;
 
 export type ChatMessageRole = ChatHistory['messages'][number]['role'];
 
 export type ChatMessage = ChatHistory['messages'][number];
+
+type ChatHistoryV5 = Omit<ChatHistoryV4, 'version' | 'messages'> & {
+  version: 5;
+  messages: (ChatHistoryV4['messages'][number] & { id: string })[];
+};
 
 type ChatHistoryV4 = Omit<ChatHistoryV3, 'version' | 'messages'> & {
   version: 4;

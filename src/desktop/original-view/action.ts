@@ -13,6 +13,7 @@ import {
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
 import { marked } from 'marked';
+import { nanoid } from 'nanoid';
 import { OpenAI } from 'openai';
 
 export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => {
@@ -21,23 +22,29 @@ export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => 
     case 1:
       return migrateChatHistory({ ...chatHistory, version: 2, iconUrl: '' });
     case 2:
-      return {
+      return migrateChatHistory({
         ...chatHistory,
-        version: 4,
+        version: 3,
         aiModel: OPENAI_MODELS[0],
         temperature: 0.7,
         maxTokens: 0,
-      };
+      });
     case 3:
       return migrateChatHistory({ ...chatHistory, version: 4 });
-    default:
     case 4:
+      return migrateChatHistory({
+        ...chatHistory,
+        version: 5,
+        messages: chatHistory.messages.map((m) => ({ ...m, id: nanoid() })),
+      });
+    case 5:
+    default:
       return chatHistory;
   }
 };
 
 export const createNewChatHistory = (params: Omit<ChatHistory, 'version'>): ChatHistory => {
-  return { version: 4, ...params };
+  return { version: 5, ...params };
 };
 
 export const fetchChatCompletion = async (params: {

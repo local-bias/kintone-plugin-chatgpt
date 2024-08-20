@@ -24,8 +24,8 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
     <div className={className}>
       {chatMessages.length === 0 && <Empty />}
       <div className='messages'>
-        {chatMessages.map((message, index) => (
-          <ChatMessageProvider key={index} message={message}>
+        {chatMessages.map((message) => (
+          <ChatMessageProvider key={message.id} message={message}>
             <ChatContent className='group/message grid grid-cols-[1fr_900px_1fr] [&>div]:w-full'>
               <div></div>
               <MessageContainer role={message.role}>
