@@ -7,9 +7,15 @@ import SendingOption from './sending-option';
 import RegenerateButton from './regenerate-button';
 import Examples from './examples';
 import Files from './files';
+import { cn } from '@/lib/utils';
+import { isMobile } from '@konomi-app/kintone-utilities';
 
 const Component: FC = () => (
-  <div className='z-10 sticky bottom-0 left-0 w-full bg-white'>
+  <div
+    className={cn('z-10 sticky bottom-0 left-0 w-full bg-white', {
+      'fixed left-1/2 w-[100dvw] -translate-x-1/2': isMobile(),
+    })}
+  >
     <div className='flex flex-col py-2 px-4 gap-3 max-w-content mx-auto'>
       <Examples />
       <div className='flex justify-between items-end gap-8'>
@@ -36,7 +42,7 @@ const Component: FC = () => (
         <Files />
       </div>
     </div>
-    <div className='text-center text-xs text-gray-600 mb-1'>
+    <div className='text-center text-[10px] md:text-xs text-gray-500 mb-1'>
       アシスタントは不正確な情報を表示することがあるため、生成された回答を再確認するようにしてください。
     </div>
   </div>
