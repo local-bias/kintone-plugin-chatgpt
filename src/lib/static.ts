@@ -39,6 +39,27 @@ export type ChatMessageRole = ChatHistory['messages'][number]['role'];
 
 export type ChatMessage = ChatHistory['messages'][number];
 
+type ChatHistoryV4 = Omit<ChatHistoryV3, 'version' | 'messages'> & {
+  version: 4;
+  messages: (
+    | OpenAI.ChatCompletionSystemMessageParam
+    | OpenAI.ChatCompletionUserMessageParam
+    | OpenAI.ChatCompletionAssistantMessageParam
+  )[];
+};
+
+type ChatHistoryV3 = Omit<ChatHistoryV2, 'version'> & {
+  version: 3;
+  aiModel: string;
+  temperature: number;
+  maxTokens: number;
+};
+
+type ChatHistoryV2 = Omit<ChatHistoryV1, 'version'> & {
+  version: 2;
+  iconUrl: string;
+};
+
 type ChatHistoryV1 = {
   version: 1;
   id: string;
@@ -47,44 +68,4 @@ type ChatHistoryV1 = {
     role: 'system' | 'user' | 'assistant';
     content: string;
   }[];
-};
-
-type ChatHistoryV2 = {
-  version: 2;
-  id: string;
-  iconUrl: string;
-  title: string;
-  messages: {
-    role: 'system' | 'user' | 'assistant';
-    content: string;
-  }[];
-};
-
-type ChatHistoryV3 = {
-  version: 3;
-  id: string;
-  aiModel: string;
-  temperature: number;
-  maxTokens: number;
-  iconUrl: string;
-  title: string;
-  messages: {
-    role: 'system' | 'user' | 'assistant';
-    content: string;
-  }[];
-};
-
-type ChatHistoryV4 = {
-  version: 4;
-  id: string;
-  aiModel: string;
-  temperature: number;
-  maxTokens: number;
-  iconUrl: string;
-  title: string;
-  messages: (
-    | OpenAI.ChatCompletionSystemMessageParam
-    | OpenAI.ChatCompletionUserMessageParam
-    | OpenAI.ChatCompletionAssistantMessageParam
-  )[];
 };
