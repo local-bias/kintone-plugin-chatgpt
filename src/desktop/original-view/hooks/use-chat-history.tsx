@@ -4,13 +4,14 @@ import {
   chatHistoriesState,
   inputFilesState,
   inputTextState,
+  isHistoryDrawerOpenState,
   pendingRequestsCountState,
   pluginConfigState,
   selectedAssistantIndexState,
   selectedHistoryIdState,
   selectedHistoryState,
 } from '../states/states';
-import { deleteAllRecordsByQuery, isGuestSpace } from '@konomi-app/kintone-utilities';
+import { deleteAllRecordsByQuery, isGuestSpace, isMobile } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { useSnackbar } from 'notistack';
 import { createNewChatHistory, getChatTitle } from '../action';
@@ -28,6 +29,9 @@ export const useChatHistory = () => {
       (historyId: string) => {
         set(selectedHistoryIdState, historyId);
         reset(apiErrorMessageState);
+        if (isMobile()) {
+          reset(isHistoryDrawerOpenState);
+        }
       },
     []
   );

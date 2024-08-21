@@ -3,23 +3,34 @@ import NewChatButton from '../new-chat';
 import Histories from './histories';
 import { Drawer, Fab } from '@mui/material';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
-import { useRecoilValue } from 'recoil';
-import { isHistoryFabShownState } from '@/desktop/original-view/states/states';
+import { useRecoilCallback, useRecoilValue } from 'recoil';
+import {
+  isHistoryDrawerOpenState,
+  isHistoryFabShownState,
+} from '@/desktop/original-view/states/states';
 import Pagination from './pagination';
 import { cn } from '@/lib/utils';
 import { isMobile } from '@konomi-app/kintone-utilities';
 
 const Component: FC = () => {
   const isHistoryFabShown = useRecoilValue(isHistoryFabShownState);
-  const [open, setOpen] = React.useState(false);
+  const isHistoryDrawerOpen = useRecoilValue(isHistoryDrawerOpenState);
 
-  const onIconClick = () => {
-    setOpen(true);
-  };
+  const onIconClick = useRecoilCallback(
+    ({ set }) =>
+      () => {
+        set(isHistoryDrawerOpenState, (prev) => !prev);
+      },
+    []
+  );
 
-  const onClose = () => {
-    setOpen(false);
-  };
+  const onClose = useRecoilCallback(
+    ({ set }) =>
+      () => {
+        set(isHistoryDrawerOpenState, false);
+      },
+    []
+  );
 
   return (
     <>
@@ -35,7 +46,7 @@ const Component: FC = () => {
           </Fab>
         )}
       </div>
-      <Drawer anchor='left' open={open} onClose={onClose} className='🐸'>
+      <Drawer anchor='left' open={isHistoryDrawerOpen} onClose={onClose} className='🐸'>
         <div className='w-[400px] max-w-[80vw] grid grid-rows-[auto_1fr] h-screen'>
           <div className='p-4'>
             <NewChatButton />

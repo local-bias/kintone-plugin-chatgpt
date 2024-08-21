@@ -27,6 +27,11 @@ export const isHistoryFabShownState = selector<boolean>({
   },
 });
 
+export const isHistoryDrawerOpenState = atom<boolean>({
+  key: `${PREFIX}isHistoryDrawerOpenState`,
+  default: false,
+});
+
 export const loadingState = selector<boolean>({
   key: `${PREFIX}loadingState`,
   get: ({ get }) => {
