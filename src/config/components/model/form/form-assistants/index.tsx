@@ -7,7 +7,6 @@ import {
   systemPromptState,
 } from '@/config/states/plugin';
 import AiModelForm from './ai-model';
-import FormText from '@/lib/components/form-text';
 import TemperatureForm from './temperature';
 import ExamplesForm from './examples';
 import {
@@ -15,6 +14,7 @@ import {
   PluginFormSection,
   PluginFormTitle,
   RecoilNumber,
+  RecoilText,
 } from '@konomi-app/kintone-utilities-react';
 import DeleteButton from './delete-button';
 
@@ -27,7 +27,7 @@ const Component: FC = () => {
         <PluginFormDescription last>
           ユーザーがどの役割のAIを使用するかを判断するために使用されます。
         </PluginFormDescription>
-        <FormText
+        <RecoilText
           state={assistantNameState}
           label='アシスタント名'
           placeholder='ChatGPT'
@@ -39,7 +39,7 @@ const Component: FC = () => {
         <PluginFormDescription last>
           アシスタントがどういった役割を持っているのか説明文を追加します。
         </PluginFormDescription>
-        <FormText
+        <RecoilText
           state={assistantDescriptionState}
           multiline
           fullWidth
@@ -79,7 +79,7 @@ const Component: FC = () => {
         <PluginFormDescription last>
           このアプリで使用するAIに、予め設定された役割を割り当てることができます。
         </PluginFormDescription>
-        <FormText
+        <RecoilText
           state={systemPromptState}
           multiline
           rows={6}
@@ -94,7 +94,7 @@ const Component: FC = () => {
         <PluginFormDescription last>
           AIが回答した際のアイコンを、設定した画像に変更することができます。
         </PluginFormDescription>
-        <FormText state={aiIconState} label='AIのアイコン' width={520} placeholder='https://' />
+        <RecoilText state={aiIconState} label='AIのアイコン' width={520} placeholder='https://' />
       </PluginFormSection>
 
       <PluginFormSection>
