@@ -6,6 +6,8 @@ import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import { useRecoilValue } from 'recoil';
 import { isHistoryFabShownState } from '@/desktop/original-view/states/states';
 import Pagination from './pagination';
+import { cn } from '@/lib/utils';
+import { isMobile } from '@konomi-app/kintone-utilities';
 
 const Component: FC = () => {
   const isHistoryFabShown = useRecoilValue(isHistoryFabShownState);
@@ -21,7 +23,12 @@ const Component: FC = () => {
 
   return (
     <>
-      <div className='fixed left-8 bottom-8 z-50'>
+      <div
+        className={cn('fixed left-8 z-50', {
+          '-top-2 left-[calc(50%-50dvw-8px)]': isMobile(),
+          'bottom-8': !isMobile(),
+        })}
+      >
         {isHistoryFabShown && (
           <Fab onClick={onIconClick} color='primary'>
             <ViewHeadlineIcon />

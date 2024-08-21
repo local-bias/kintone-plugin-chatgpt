@@ -32,7 +32,7 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
       <div className='messages'>
         {chatMessages.map((message) => (
           <ChatMessageProvider key={message.id} message={message}>
-            <ChatContent className='group/message grid grid-cols-[1fr_900px_1fr] [&>div]:w-full'>
+            <ChatContent className='group/message grid grid-cols-1 lg:grid-cols-[1fr_900px_1fr] [&>div]:w-full'>
               <div></div>
               <MessageContainer role={message.role}>
                 <Message message={message.content} />
