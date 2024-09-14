@@ -2,10 +2,10 @@ import React, { FC } from 'react';
 import { TextField, Autocomplete } from '@mui/material';
 import { OPENAI_MODELS } from '@/lib/static';
 import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { aiModelState } from '@/config/states/plugin';
+import { getConditionPropertyState } from '@/config/states/plugin';
 
 const Component: FC = () => {
-  const aiModel = useRecoilValue(aiModelState);
+  const aiModel = useRecoilValue(getConditionPropertyState('aiModel'));
 
   const onModelChange = useRecoilCallback(
     ({ set }) =>
@@ -13,7 +13,7 @@ const Component: FC = () => {
         if (!model) {
           return;
         }
-        set(aiModelState, model);
+        set(getConditionPropertyState('aiModel'), model);
       },
     []
   );

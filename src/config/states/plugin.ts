@@ -144,7 +144,6 @@ export const enablesShiftEnterState = getCommonPropertyState('enablesShiftEnter'
 export const assistantsState = conditionsState;
 export const assistantNameState = getConditionPropertyState('name');
 export const assistantDescriptionState = getConditionPropertyState('description');
-export const aiModelState = getConditionPropertyState('aiModel');
 export const aiIconState = getConditionPropertyState('aiIcon');
 export const assistantExamplesState = getConditionPropertyState('examples');
 export const maxTokensState = getConditionPropertyState('maxTokens');
