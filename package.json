@@ -26,6 +26,7 @@
     "@konomi-app/ui-react": "^1.1.1",
     "@mui/icons-material": "^6.1.0",
     "@mui/material": "^6.1.0",
+    "ai": "^3.3.37",
     "immer": "^10.1.1",
     "lucide-react": "^0.441.0",
     "luxon": "^3.5.0",
