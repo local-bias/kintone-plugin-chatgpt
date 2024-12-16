@@ -1,18 +1,24 @@
-import { useRecoilCallback } from 'recoil';
-import { pluginConfigState, selectedHistoryState } from '../states/states';
+import { pluginCommonConfigAtom } from '@/desktop/public-state';
 import { upsertRecord, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
+import { useAtomCallback } from 'jotai/utils';
+import { useCallback } from 'react';
+import { selectedHistoryAtom } from '../states/states';
 
 export const useKintoneApp = () => {
-  const updateApp = useRecoilCallback(
-    ({ snapshot }) =>
-      async (params: {
-        appId: string;
-        keyFieldCode: string;
-        contentFieldCode: string;
-        spaceId?: string;
-      }) => {
+  const updateApp = useAtomCallback(
+    useCallback(
+      async (
+        get,
+        set,
+        params: {
+          appId: string;
+          keyFieldCode: string;
+          contentFieldCode: string;
+          spaceId?: string;
+        }
+      ) => {
         const { appId, keyFieldCode, contentFieldCode, spaceId } = params;
-        const selectedHistory = await snapshot.getPromise(selectedHistoryState);
+        const selectedHistory = get(selectedHistoryAtom);
         if (!selectedHistory) {
           throw new Error('チャットが選択されていません');
         }
@@ -34,52 +40,48 @@ export const useKintoneApp = () => {
           },
         });
       },
-    []
+      []
+    )
   );
 
-  const updateOutputApp = useRecoilCallback(
-    ({ snapshot }) =>
-      async () => {
-        const { common } = await snapshot.getPromise(pluginConfigState);
+  const updateOutputApp = useAtomCallback(
+    useCallback(async (get) => {
+      const common = get(pluginCommonConfigAtom);
 
-        const {
-          outputAppId: appId,
-          outputAppSpaceId: spaceId,
-          outputContentFieldCode: contentFieldCode,
-          outputKeyFieldCode: keyFieldCode,
-        } = common;
+      const {
+        outputAppId: appId,
+        outputAppSpaceId: spaceId,
+        outputContentFieldCode: contentFieldCode,
+        outputKeyFieldCode: keyFieldCode,
+      } = common;
 
-        if (!appId || !contentFieldCode || !keyFieldCode) {
-          process.env.NODE_ENV === 'development' && console.warn('Content app is not configured');
-          return;
-        }
+      if (!appId || !contentFieldCode || !keyFieldCode) {
+        process.env.NODE_ENV === 'development' && console.warn('Content app is not configured');
+        return;
+      }
 
-        await updateApp({ appId, keyFieldCode, contentFieldCode, spaceId });
-      },
-    []
+      await updateApp({ appId, keyFieldCode, contentFieldCode, spaceId });
+    }, [])
   );
 
-  const updateLogApp = useRecoilCallback(
-    ({ snapshot }) =>
-      async () => {
-        const config = await snapshot.getPromise(pluginConfigState);
-        const { common } = config;
+  const updateLogApp = useAtomCallback(
+    useCallback(async (get) => {
+      const common = get(pluginCommonConfigAtom);
 
-        const {
-          logAppId: appId,
-          logAppSpaceId: spaceId,
-          logContentFieldCode: contentFieldCode,
-          logKeyFieldCode: keyFieldCode,
-        } = common;
+      const {
+        logAppId: appId,
+        logAppSpaceId: spaceId,
+        logContentFieldCode: contentFieldCode,
+        logKeyFieldCode: keyFieldCode,
+      } = common;
 
-        if (!appId || !contentFieldCode || !keyFieldCode) {
-          process.env.NODE_ENV === 'development' && console.warn('Log app is not configured');
-          return;
-        }
+      if (!appId || !contentFieldCode || !keyFieldCode) {
+        process.env.NODE_ENV === 'development' && console.warn('Log app is not configured');
+        return;
+      }
 
-        await updateApp({ appId, keyFieldCode, contentFieldCode, spaceId });
-      },
-    []
+      await updateApp({ appId, keyFieldCode, contentFieldCode, spaceId });
+    }, [])
   );
 
   return { updateOutputApp, updateLogApp };

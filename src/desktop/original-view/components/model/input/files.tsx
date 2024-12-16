@@ -1,18 +1,14 @@
-import { inputFilesState } from '@/desktop/original-view/states/states';
+import { inputFilesAtom } from '@/desktop/original-view/states/states';
 import { Chip } from '@mui/material';
+import { useAtom } from 'jotai';
 import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
 
 const Component: FC = () => {
-  const files = useRecoilValue(inputFilesState);
+  const [files, setFiles] = useAtom(inputFilesAtom);
 
-  const onFileDelete = useRecoilCallback(
-    ({ set }) =>
-      (index: number) => {
-        set(inputFilesState, (files) => files.filter((_, i) => i !== index));
-      },
-    []
-  );
+  const onFileDelete = (index: number) => {
+    setFiles((files) => files.filter((_, i) => i !== index));
+  };
 
   if (!files.length) {
     return null;

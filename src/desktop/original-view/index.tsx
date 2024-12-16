@@ -1,11 +1,12 @@
-import { URL_QUERY_CHAT_ID, VIEW_ROOT_ID } from '@/lib/static';
-import { Root, createRoot } from 'react-dom/client';
-import App from './app';
-import React from 'react';
 import { listener } from '@/lib/listener';
 import { restorePluginConfig } from '@/lib/plugin';
-
-let cachedRoot: Root | null = null;
+import { URL_QUERY_CHAT_ID, VIEW_ROOT_ID } from '@/lib/static';
+import { store } from '@/lib/store';
+import { ComponentManager } from '@konomi-app/kintone-utilities-react';
+import React from 'react';
+import { initializeRecords } from './actions/initialize-records';
+import App from './app';
+import { selectedHistoryIdAtom } from './states/states';
 
 listener.add(['app.record.index.show'], (event) => {
   const config = restorePluginConfig();
@@ -13,19 +14,19 @@ listener.add(['app.record.index.show'], (event) => {
     return event;
   }
 
-  if (!cachedRoot) {
-    const rootElement = document.getElementById(VIEW_ROOT_ID);
-    if (!rootElement) {
-      return event;
-    }
-    cachedRoot = createRoot(rootElement);
-  }
+  initializeRecords();
 
   // urlからchat_idを取得
   const url = new URL(location.href);
   const chatId = url.searchParams.get(URL_QUERY_CHAT_ID);
+  store.set(selectedHistoryIdAtom, chatId);
 
-  cachedRoot.render(<App initChatId={chatId} />);
+  const componentManager = ComponentManager.getInstance();
+
+  componentManager.renderComponent({
+    id: VIEW_ROOT_ID,
+    component: <App />,
+  });
 
   return event;
 });

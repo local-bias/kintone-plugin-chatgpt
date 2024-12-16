@@ -1,19 +1,16 @@
-import { Button } from '@mui/material';
-import React, { FC } from 'react';
+import { loadingAtom, selectedHistoryIdAtom } from '@/desktop/original-view/states/states';
 import AddIcon from '@mui/icons-material/Add';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { loadingState, selectedHistoryIdState } from '@/desktop/original-view/states/states';
+import { Button } from '@mui/material';
+import { useAtomValue, useSetAtom } from 'jotai';
+import React, { FC } from 'react';
 
 const Component: FC = () => {
-  const loading = useRecoilValue(loadingState);
+  const loading = useAtomValue(loadingAtom);
+  const setHistoryId = useSetAtom(selectedHistoryIdAtom);
 
-  const onClick = useRecoilCallback(
-    ({ set }) =>
-      () => {
-        set(selectedHistoryIdState, null);
-      },
-    []
-  );
+  const onClick = () => {
+    setHistoryId(null);
+  };
 
   return (
     <Button

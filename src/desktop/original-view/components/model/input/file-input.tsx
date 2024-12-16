@@ -1,17 +1,15 @@
-import { inputFilesState, selectedAssistantState } from '@/desktop/original-view/states/states';
-import React, { ChangeEventHandler, FC } from 'react';
-import { useRecoilCallback, useRecoilValue, useSetRecoilState } from 'recoil';
-import { PhotoIcon } from '@heroicons/react/24/outline';
+import { inputFilesAtom, selectedPluginConditionAtom } from '@/desktop/original-view/states/states';
 import { IMAGE_SUPPORTED_MODELS } from '@/lib/static';
+import { PhotoIcon } from '@heroicons/react/24/outline';
+import { useAtomValue, useSetAtom } from 'jotai';
+import React, { ChangeEventHandler, FC } from 'react';
 
 const Component: FC = () => {
-  const onFileAdd: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
-    ({ set }) =>
-      (event) => {
-        set(inputFilesState, Array.from(event.target.files ?? []));
-      },
-    []
-  );
+  const setFiles = useSetAtom(inputFilesAtom);
+
+  const onFileAdd: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setFiles(Array.from(event.target.files ?? []));
+  };
 
   return (
     <div className='p-2 h-full sticky top-0'>
@@ -34,9 +32,9 @@ const Component: FC = () => {
 };
 
 const Container: FC = () => {
-  const assistant = useRecoilValue(selectedAssistantState);
+  const condition = useAtomValue(selectedPluginConditionAtom);
 
-  if (!IMAGE_SUPPORTED_MODELS.includes(assistant.aiModel)) {
+  if (!IMAGE_SUPPORTED_MODELS.includes(condition.aiModel)) {
     return null;
   }
 

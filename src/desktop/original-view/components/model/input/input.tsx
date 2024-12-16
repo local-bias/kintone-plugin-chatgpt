@@ -1,24 +1,20 @@
 import { useMessageController } from '@/desktop/original-view/hooks/message-controller';
 import { useChatHistory } from '@/desktop/original-view/hooks/use-chat-history';
-import { inputTextState, pluginConfigState } from '@/desktop/original-view/states/states';
-import { TextField } from '@mui/material';
+import { inputTextAtom } from '@/desktop/original-view/states/states';
+import { pluginCommonConfigAtom } from '@/desktop/public-state';
+import { useAtom, useAtomValue } from 'jotai';
 import React, { ChangeEventHandler, FC, KeyboardEventHandler } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
 
 const Component: FC = () => {
-  const { common } = useRecoilValue(pluginConfigState);
-  const input = useRecoilValue(inputTextState);
-  const { enablesEnter, enablesShiftEnter } = common;
+  const commonConfig = useAtomValue(pluginCommonConfigAtom);
+  const [input, setInput] = useAtom(inputTextAtom);
+  const { enablesEnter, enablesShiftEnter } = commonConfig;
   const { sendMessage } = useMessageController();
   const { pushUserMessage } = useChatHistory();
 
-  const onChange: ChangeEventHandler<HTMLTextAreaElement> = useRecoilCallback(
-    ({ set }) =>
-      (event) => {
-        set(inputTextState, event.target.value);
-      },
-    []
-  );
+  const onChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
+    setInput(e.target.value);
+  };
 
   const onKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = async (event) => {
     const isEnter = event.key === 'Enter';

@@ -1,185 +1,108 @@
-import { restorePluginConfig } from '@/lib/plugin';
-import { ChatMessage, ChatHistory, URL_QUERY_CHAT_ID } from '@/lib/static';
-import { DefaultValue, atom, selector } from 'recoil';
+import { pluginCommonConfigAtom, pluginConditionsAtom } from '@/desktop/public-state';
+import { ChatHistory, ChatMessage, URL_QUERY_CHAT_ID } from '@/lib/static';
+import { atom } from 'jotai';
+import { withAtomEffect } from 'jotai-effect';
 
-const PREFIX = 'kintone';
+export const pendingRequestCountAtom = atom(0);
 
-export const pluginConfigState = atom<Plugin.Config>({
-  key: `${PREFIX}pluginConfigState`,
-  default: restorePluginConfig(),
+export const isWaitingForAIAtom = atom(false);
+
+export const loadingAtom = atom(
+  (get) => get(pendingRequestCountAtom) > 0 || get(isWaitingForAIAtom)
+);
+
+export const isHistoryFabShownAtom = atom((get) => {
+  const common = get(pluginCommonConfigAtom);
+  return !!common.outputAppId && !!common.outputKeyFieldCode && !!common.outputContentFieldCode;
 });
 
-export const pendingRequestsCountState = atom<number>({
-  key: `${PREFIX}pendingRequestsCountState`,
-  default: 0,
+export const isHistoryDrawerOpenAtom = atom(false);
+
+export const inputTextAtom = atom<string>('');
+export const inputFilesAtom = atom<File[]>([]);
+
+export const selectedPluginConditionIdAtom = atom<string | null>(null);
+export const selectedPluginConditionAtom = atom<Plugin.Condition>((get) => {
+  const conditions = get(pluginConditionsAtom);
+  const conditionId = get(selectedPluginConditionIdAtom);
+  return conditions.find((condition) => condition.id === conditionId) ?? conditions[0];
 });
 
-export const isWaitingForAIState = atom<boolean>({
-  key: `${PREFIX}isWaitingForAIState`,
-  default: false,
+export const chatHistoriesAtom = atom<ChatHistory[]>([]);
+
+const chatMessagesAtom = atom<ChatMessage[]>((get) => {
+  const chatHistory = get(chatHistoriesAtom);
+  const selectedHistoryId = get(selectedHistoryIdAtom);
+  if (!selectedHistoryId) {
+    return [];
+  }
+
+  const selectedHistory = chatHistory.find((history) => history.id === selectedHistoryId);
+  if (!selectedHistory) {
+    return [];
+  }
+
+  return selectedHistory.messages;
+});
+export const displayingChatMessagesAtom = atom<ChatMessage[]>((get) => {
+  const chatMessages = get(chatMessagesAtom);
+  return chatMessages.filter((message) => message.role === 'user' || message.role === 'assistant');
 });
 
-export const isHistoryFabShownState = selector<boolean>({
-  key: `${PREFIX}isHistoryFabShownState`,
-  get: ({ get }) => {
-    const { common } = get(pluginConfigState);
-    return !!common.outputAppId && !!common.outputKeyFieldCode && !!common.outputContentFieldCode;
-  },
+const chatHistoriesPaginationChunkSizeAtom = atom(30);
+export const chatHistoriesPaginationMaxAtom = atom((get) => {
+  const chatHistories = get(chatHistoriesAtom);
+  const chunkSize = get(chatHistoriesPaginationChunkSizeAtom);
+  return Math.ceil(chatHistories.length / chunkSize);
 });
 
-export const isHistoryDrawerOpenState = atom<boolean>({
-  key: `${PREFIX}isHistoryDrawerOpenState`,
-  default: false,
+export const chatHistoriesPaginationIndexAtom = atom(1);
+
+export const displayChatHistoriesAtom = atom<ChatHistory[]>((get) => {
+  const chatHistories = get(chatHistoriesAtom);
+  const paginationIndex = get(chatHistoriesPaginationIndexAtom);
+  const chunkSize = get(chatHistoriesPaginationChunkSizeAtom);
+
+  return chatHistories.slice((paginationIndex - 1) * chunkSize, paginationIndex * chunkSize);
 });
 
-export const loadingState = selector<boolean>({
-  key: `${PREFIX}loadingState`,
-  get: ({ get }) => {
-    const pendingRequestsCount = get(pendingRequestsCountState);
-    const isWaitingForAI = get(isWaitingForAIState);
+export const historiesFetchedAtom = atom(false);
 
-    return pendingRequestsCount > 0 || isWaitingForAI;
-  },
+export const selectedHistoryIdAtom = withAtomEffect(atom<string | null>(null), (get) => {
+  const selectedHistoryId = get(selectedHistoryIdAtom);
+  console.log(`✨ selected history id changed: ${selectedHistoryId}`);
+  const url = new URL(location.href);
+  if (!selectedHistoryId) {
+    url.searchParams.delete(URL_QUERY_CHAT_ID);
+  }
+  if (selectedHistoryId) {
+    url.searchParams.set(URL_QUERY_CHAT_ID, selectedHistoryId);
+  }
+  history.replaceState(null, '', url.toString());
 });
 
-export const inputTextState = atom<string>({
-  key: `${PREFIX}inputTextState`,
-  default: '',
-});
+export const apiErrorMessageAtom = atom<string | null>(null);
 
-export const inputFilesState = atom<File[]>({
-  key: `${PREFIX}inputFilesState`,
-  default: [],
-});
-
-export const selectedAssistantIndexState = atom<number>({
-  key: `${PREFIX}selectedAssistantIndexState`,
-  default: 0,
-});
-
-export const selectedAssistantState = selector<Plugin.Condition>({
-  key: `${PREFIX}selectedAssistantState`,
-  get: ({ get }) => {
-    const config = get(pluginConfigState);
-    const selectedAssistantIndex = get(selectedAssistantIndexState);
-    return config.conditions[selectedAssistantIndex];
-  },
-});
-
-const chatMessagesState = selector<ChatMessage[]>({
-  key: `${PREFIX}chatMessagesState`,
-  get: ({ get }) => {
-    const chatHistory = get(chatHistoriesState);
-    const selectedHistoryId = get(selectedHistoryIdState);
-    if (!selectedHistoryId) {
-      return [];
-    }
-
-    const selectedHistory = chatHistory.find((history) => history.id === selectedHistoryId);
-    if (!selectedHistory) {
-      return [];
-    }
-
-    return selectedHistory.messages;
-  },
-});
-
-export const displayChatMessagesState = selector<ChatMessage[]>({
-  key: `${PREFIX}displayChatMessagesState`,
-  get: ({ get }) => {
-    const chatMessages = get(chatMessagesState);
-    return chatMessages.filter(
-      (message) => message.role === 'user' || message.role === 'assistant'
-    );
-  },
-});
-
-export const chatHistoriesState = atom<ChatHistory[]>({
-  key: `${PREFIX}chatHistoriesState`,
-  default: [],
-});
-
-export const chatHistoriesPaginationChunkSizeState = atom<number>({
-  key: `${PREFIX}chatHistoriesPaginationChunkSizeState`,
-  default: 30,
-});
-
-export const chatHistoriesPaginationMaxState = selector<number>({
-  key: `${PREFIX}chatHistoriesPaginationMaxState`,
-  get: ({ get }) => {
-    const chatHistories = get(chatHistoriesState);
-    const chunkSize = get(chatHistoriesPaginationChunkSizeState);
-    return Math.ceil(chatHistories.length / chunkSize);
-  },
-});
-
-export const chatHistoriesPaginationIndexState = atom<number>({
-  key: `${PREFIX}chatHistoriesPaginationIndexState`,
-  default: 1,
-});
-
-export const displayChatHistoriesState = selector<ChatHistory[]>({
-  key: `${PREFIX}displayChatHistoriesState`,
-  get: ({ get }) => {
-    const chatHistories = get(chatHistoriesState);
-    const paginationIndex = get(chatHistoriesPaginationIndexState);
-    const chunkSize = get(chatHistoriesPaginationChunkSizeState);
-
-    return chatHistories.slice((paginationIndex - 1) * chunkSize, paginationIndex * chunkSize);
-  },
-});
-
-export const historiesFetchedState = atom<boolean>({
-  key: `${PREFIX}historiesFetchedState`,
-  default: false,
-});
-
-export const selectedHistoryIdState = atom<string | null>({
-  key: `${PREFIX}selectedHistoryIdState`,
-  default: null,
-  effects: [
-    ({ onSet }) => {
-      onSet((newHistoryId, oldHistoryId) => {
-        if (newHistoryId === oldHistoryId) {
-          return;
-        }
-        // URLにchat_idを追加
-        const url = new URL(location.href);
-        if (newHistoryId) {
-          url.searchParams.set(URL_QUERY_CHAT_ID, newHistoryId);
-        }
-        history.replaceState(null, '', url.toString());
-      });
-    },
-  ],
-});
-
-export const apiErrorMessageState = atom<string>({
-  key: `${PREFIX}apiErrorMessageState`,
-  default: '',
-});
-
-export const selectedHistoryState = selector<ChatHistory | null>({
-  key: `${PREFIX}selectedHistoryState`,
-  get: ({ get }) => {
-    const chatHistory = get(chatHistoriesState);
-    const selectedHistoryId = get(selectedHistoryIdState);
+export const selectedHistoryAtom = atom<ChatHistory | null, ChatHistory[], void>(
+  (get) => {
+    const chatHistory = get(chatHistoriesAtom);
+    const selectedHistoryId = get(selectedHistoryIdAtom);
     if (!selectedHistoryId) {
       return null;
     }
     const selectedHistory = chatHistory.find((history) => history.id === selectedHistoryId);
     return selectedHistory ?? null;
   },
-  set: ({ set }, newHistory) => {
-    if (!newHistory || newHistory instanceof DefaultValue) {
+  (get, set, newValue) => {
+    if (!newValue) {
       return;
     }
-    set(chatHistoriesState, (prev) => {
-      const index = prev.findIndex((history) => history.id === newHistory.id);
+    set(chatHistoriesAtom, (prev) => {
+      const index = prev.findIndex((history) => history.id === newValue.id);
       if (index === -1) {
-        return [newHistory, ...prev];
+        return [newValue, ...prev];
       }
-      return prev.map((history, i) => (i === index ? newHistory : history));
+      return prev.map((history, i) => (i === index ? newValue : history));
     });
-  },
-});
+  }
+);

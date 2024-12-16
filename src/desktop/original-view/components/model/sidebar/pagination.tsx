@@ -1,22 +1,18 @@
 import {
-  chatHistoriesPaginationIndexState,
-  chatHistoriesPaginationMaxState,
+  chatHistoriesPaginationIndexAtom,
+  chatHistoriesPaginationMaxAtom,
 } from '@/desktop/original-view/states/states';
 import { Pagination } from '@mui/material';
+import { useAtom, useAtomValue } from 'jotai';
 import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
 
 const Component: FC = () => {
-  const paginationIndex = useRecoilValue(chatHistoriesPaginationIndexState);
-  const paginationMax = useRecoilValue(chatHistoriesPaginationMaxState);
+  const [paginationIndex, setPaginationIndex] = useAtom(chatHistoriesPaginationIndexAtom);
+  const paginationMax = useAtomValue(chatHistoriesPaginationMaxAtom);
 
-  const onChange = useRecoilCallback(
-    ({ set }) =>
-      (_: any, index: number) => {
-        set(chatHistoriesPaginationIndexState, index);
-      },
-    []
-  );
+  const onChange = (_: unknown, index: number) => {
+    setPaginationIndex(index);
+  };
 
   return (
     <div className='p-2'>

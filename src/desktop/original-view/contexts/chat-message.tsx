@@ -1,9 +1,9 @@
 import { ChatMessage } from '@/lib/static';
-import React, { createContext, useContext, ReactNode } from 'react';
-import { useRecoilCallback } from 'recoil';
+import { useAtomCallback } from 'jotai/utils';
+import React, { createContext, ReactNode, useCallback, useContext } from 'react';
 import invariant from 'tiny-invariant';
-import { selectedHistoryState } from '../states/states';
 import { useMessageController } from '../hooks/message-controller';
+import { selectedHistoryAtom } from '../states/states';
 
 type ChatMessageContextType = {
   message: ChatMessage;
@@ -42,11 +42,11 @@ export const useRegenerateChatMessage = () => {
   const { message } = useChatMessage();
   const { sendMessage } = useMessageController();
 
-  const regenerate = useRecoilCallback(
-    ({ set, snapshot }) =>
-      async () => {
+  const regenerate = useAtomCallback(
+    useCallback(
+      async (get, set) => {
         const messageId = message.id;
-        const chatHistory = await snapshot.getPromise(selectedHistoryState);
+        const chatHistory = get(selectedHistoryAtom);
         if (!chatHistory) {
           return;
         }
@@ -57,11 +57,12 @@ export const useRegenerateChatMessage = () => {
 
         const newMessages = chatHistory.messages.slice(0, index);
 
-        set(selectedHistoryState, { ...chatHistory, messages: newMessages });
+        set(selectedHistoryAtom, { ...chatHistory, messages: newMessages });
 
         sendMessage();
       },
-    [message]
+      [message]
+    )
   );
 
   return { regenerate };

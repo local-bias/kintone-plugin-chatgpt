@@ -1,10 +1,13 @@
+import { useChatHistory } from '@/desktop/original-view/hooks/use-chat-history';
 import {
-  chatHistoriesState,
-  displayChatHistoriesState,
-  historiesFetchedState,
-  loadingState,
-  selectedHistoryIdState,
+  displayChatHistoriesAtom,
+  historiesFetchedAtom,
+  loadingAtom,
+  selectedHistoryIdAtom,
 } from '@/desktop/original-view/states/states';
+import styled from '@emotion/styled';
+import ChatIcon from '@mui/icons-material/Chat';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
   IconButton,
   List,
@@ -14,19 +17,15 @@ import {
   ListItemText,
   Skeleton,
 } from '@mui/material';
+import { useAtomValue } from 'jotai';
 import React, { FCX } from 'react';
-import { useRecoilValue } from 'recoil';
-import ChatIcon from '@mui/icons-material/Chat';
-import DeleteIcon from '@mui/icons-material/Delete';
-import styled from '@emotion/styled';
-import { useChatHistory } from '@/desktop/original-view/hooks/use-chat-history';
 
 const Component: FCX = ({ className }) => {
-  const histories = useRecoilValue(displayChatHistoriesState);
+  const histories = useAtomValue(displayChatHistoriesAtom);
   const { setSelectedHistoryId, removeSelectedHistory } = useChatHistory();
-  const historiesFetched = useRecoilValue(historiesFetchedState);
-  const selectedHistoryId = useRecoilValue(selectedHistoryIdState);
-  const loading = useRecoilValue(loadingState);
+  const historiesFetched = useAtomValue(historiesFetchedAtom);
+  const selectedHistoryId = useAtomValue(selectedHistoryIdAtom);
+  const loading = useAtomValue(loadingAtom);
 
   if (!historiesFetched) {
     return (

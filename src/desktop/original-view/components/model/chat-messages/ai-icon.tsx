@@ -1,18 +1,16 @@
+import {
+  selectedHistoryAtom,
+  selectedPluginConditionAtom,
+} from '@/desktop/original-view/states/states';
+import { useAtomValue } from 'jotai';
 import React, { FC } from 'react';
 import { ChatGPTIcon } from '../../ui/chatgpt-icon';
-import { useRecoilValue } from 'recoil';
-import {
-  pluginConfigState,
-  selectedAssistantIndexState,
-  selectedHistoryState,
-} from '@/desktop/original-view/states/states';
 
 const Component: FC = () => {
-  const selectedHistory = useRecoilValue(selectedHistoryState);
-  const pluginConfig = useRecoilValue(pluginConfigState);
-  const assitantIndex = useRecoilValue(selectedAssistantIndexState);
+  const selectedHistory = useAtomValue(selectedHistoryAtom);
+  const selectedCondition = useAtomValue(selectedPluginConditionAtom);
 
-  const src = selectedHistory?.iconUrl ?? pluginConfig.conditions[assitantIndex].aiIcon;
+  const src = selectedHistory?.iconUrl ?? selectedCondition.aiIcon;
 
   if (src) {
     return <img className='object-cover w-full h-full' src={src} />;

@@ -1,36 +1,24 @@
+import {
+  isHistoryDrawerOpenAtom,
+  isHistoryFabShownAtom,
+} from '@/desktop/original-view/states/states';
+import { cn } from '@/lib/utils';
+import { isMobile } from '@konomi-app/kintone-utilities';
+import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
+import { Drawer, Fab } from '@mui/material';
+import { useAtom, useAtomValue } from 'jotai';
 import React, { FC } from 'react';
 import NewChatButton from '../new-chat';
 import Histories from './histories';
-import { Drawer, Fab } from '@mui/material';
-import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import {
-  isHistoryDrawerOpenState,
-  isHistoryFabShownState,
-} from '@/desktop/original-view/states/states';
 import Pagination from './pagination';
-import { cn } from '@/lib/utils';
-import { isMobile } from '@konomi-app/kintone-utilities';
 
 const Component: FC = () => {
-  const isHistoryFabShown = useRecoilValue(isHistoryFabShownState);
-  const isHistoryDrawerOpen = useRecoilValue(isHistoryDrawerOpenState);
+  const isHistoryFabShown = useAtomValue(isHistoryFabShownAtom);
+  const [isHistoryDrawerOpen, setHistoryDrawerOpen] = useAtom(isHistoryDrawerOpenAtom);
 
-  const onIconClick = useRecoilCallback(
-    ({ set }) =>
-      () => {
-        set(isHistoryDrawerOpenState, (prev) => !prev);
-      },
-    []
-  );
+  const onIconClick = () => setHistoryDrawerOpen((p) => !p);
 
-  const onClose = useRecoilCallback(
-    ({ set }) =>
-      () => {
-        set(isHistoryDrawerOpenState, false);
-      },
-    []
-  );
+  const onClose = () => setHistoryDrawerOpen(false);
 
   return (
     <>

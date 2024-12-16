@@ -1,10 +1,10 @@
-import { pluginConfigState } from '@/desktop/original-view/states/states';
+import { pluginCommonConfigAtom } from '@/desktop/public-state';
+import { useAtomValue } from 'jotai';
 import React, { FC, memo } from 'react';
-import { useRecoilValue } from 'recoil';
 
 const Component: FC = () => {
-  const { common } = useRecoilValue(pluginConfigState);
-  const { enablesEnter, enablesShiftEnter } = common;
+  const commonConfig = useAtomValue(pluginCommonConfigAtom);
+  const { enablesEnter, enablesShiftEnter } = commonConfig;
 
   if (enablesEnter) {
     return <div>Enterキーで送信</div>;

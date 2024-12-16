@@ -1,15 +1,15 @@
 import { ChatMessageProvider } from '@/desktop/original-view/contexts/chat-message';
 import {
-  apiErrorMessageState,
-  displayChatMessagesState,
-  isWaitingForAIState,
+  apiErrorMessageAtom,
+  displayingChatMessagesAtom,
+  isWaitingForAIAtom,
 } from '@/desktop/original-view/states/states';
 import { cn } from '@/lib/utils';
 import styled from '@emotion/styled';
 import { isMobile } from '@konomi-app/kintone-utilities';
 import { Loader } from '@konomi-app/ui-react';
+import { useAtomValue } from 'jotai';
 import React, { FCX, PropsWithChildren } from 'react';
-import { useRecoilValue } from 'recoil';
 import { ChatContent } from '../../layout/chat-content';
 import Commands from './commands';
 import Empty from './empty';
@@ -18,9 +18,9 @@ import Message from './message';
 import MessageContainer from './message-container';
 
 const Component: FCX<PropsWithChildren> = ({ className }) => {
-  const chatMessages = useRecoilValue(displayChatMessagesState);
-  const isWaitingForAI = useRecoilValue(isWaitingForAIState);
-  const apiErrorMessage = useRecoilValue(apiErrorMessageState);
+  const chatMessages = useAtomValue(displayingChatMessagesAtom);
+  const isWaitingForAI = useAtomValue(isWaitingForAIAtom);
+  const apiErrorMessage = useAtomValue(apiErrorMessageAtom);
 
   return (
     <div

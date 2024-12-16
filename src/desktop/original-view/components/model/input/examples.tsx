@@ -1,24 +1,21 @@
 import {
-  displayChatMessagesState,
-  inputTextState,
-  selectedAssistantState,
+  displayingChatMessagesAtom,
+  inputTextAtom,
+  selectedPluginConditionAtom,
 } from '@/desktop/original-view/states/states';
-import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/solid';
+import { useAtomValue, useSetAtom } from 'jotai';
+import React, { FC } from 'react';
 
 const Component: FC = () => {
-  const assistant = useRecoilValue(selectedAssistantState);
+  const condition = useAtomValue(selectedPluginConditionAtom);
+  const setInput = useSetAtom(inputTextAtom);
 
-  const examples = assistant.examples.filter((ex) => ex);
+  const examples = condition.examples.filter((ex) => ex);
 
-  const onClick = useRecoilCallback(
-    ({ set }) =>
-      async (example: string) => {
-        set(inputTextState, example);
-      },
-    []
-  );
+  const onClick = (example: string) => {
+    setInput(example);
+  };
 
   if (!examples.length) {
     return null;
@@ -45,7 +42,7 @@ const Component: FC = () => {
 };
 
 const Container: FC = () => {
-  const messages = useRecoilValue(displayChatMessagesState);
+  const messages = useAtomValue(displayingChatMessagesAtom);
 
   if (messages.length) {
     return null;

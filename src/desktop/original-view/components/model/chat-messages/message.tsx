@@ -1,15 +1,16 @@
 import { getHTMLfromMarkdown } from '@/desktop/original-view/action';
 import { useChatMessage } from '@/desktop/original-view/contexts/chat-message';
 import { useMessageController } from '@/desktop/original-view/hooks/message-controller';
-import { loadingState, selectedHistoryState } from '@/desktop/original-view/states/states';
+import { loadingAtom, selectedHistoryAtom } from '@/desktop/original-view/states/states';
 import { getTextFromMessageContent } from '@/lib/chatgpt';
 import { ChatHistory, ChatMessage } from '@/lib/static';
 import SendIcon from '@mui/icons-material/Send';
 import { Button, TextField } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
 import OpenAI from 'openai';
-import React, { FC, useState } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import React, { FC, useCallback, useState } from 'react';
 
 type Props = {
   message: ChatMessage['content'];
@@ -18,7 +19,7 @@ type Props = {
 };
 
 const EditMode: FC<Props> = () => {
-  const loading = useRecoilValue(loadingState);
+  const loading = useAtomValue(loadingAtom);
   const { message, toggleIsEditing } = useChatMessage();
   const [text, setText] = useState(getTextFromMessageContent(message.content));
   const { sendMessage } = useMessageController();
@@ -28,11 +29,11 @@ const EditMode: FC<Props> = () => {
     setText(e.target.value);
   };
 
-  const resend = useRecoilCallback(
-    ({ set, snapshot }) =>
-      async () => {
+  const resend = useAtomCallback(
+    useCallback(
+      async (get, set) => {
         const messageId = message.id;
-        const history = await snapshot.getPromise(selectedHistoryState);
+        const history = get(selectedHistoryAtom);
         const messages = history?.messages ?? [];
         const index = messages.findIndex((m) => m.id === messageId);
         if (!history || index === -1) {
@@ -45,12 +46,13 @@ const EditMode: FC<Props> = () => {
           { ...messages[index], content: text },
         ];
 
-        set(selectedHistoryState, { ...history, messages: newMessages });
+        set(selectedHistoryAtom, { ...history, messages: newMessages });
         sendMessage();
 
         toggleIsEditing();
       },
-    [text, toggleIsEditing, message]
+      [text, toggleIsEditing, message]
+    )
   );
 
   return (

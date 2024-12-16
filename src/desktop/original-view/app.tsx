@@ -1,19 +1,14 @@
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import { store } from '@/lib/store';
+import { Provider } from 'jotai';
+import { SnackbarProvider } from 'notistack';
 import React, { FC } from 'react';
-import { RecoilRoot } from 'recoil';
-import Sidebar from './components/model/sidebar';
+import Layout from './components/layout';
 import ChatMessages from './components/model/chat-messages';
 import Input from './components/model/input';
-import { SnackbarProvider } from 'notistack';
-import Layout from './components/layout';
-import { PluginErrorBoundary } from '@/lib/components/error-boundary';
-import { selectedHistoryIdState } from './states/states';
-import { useInitializeRecords } from './hooks/use-initialize-records';
-
-type Props = { initChatId: string | null };
+import Sidebar from './components/model/sidebar';
 
 const Component: FC = () => {
-  useInitializeRecords();
-
   return (
     <>
       <Sidebar />
@@ -27,13 +22,9 @@ const Component: FC = () => {
   );
 };
 
-const Container: FC<Props> = ({ initChatId }) => (
-  <PluginErrorBoundary>
-    <RecoilRoot
-      initializeState={({ set }) => {
-        set(selectedHistoryIdState, initChatId);
-      }}
-    >
+const Container: FC = () => (
+  <Provider store={store}>
+    <PluginErrorBoundary>
       <SnackbarProvider maxSnack={1}>
         <Layout className='🐸'>
           <div className='bg-white min-h-[calc(100vh_-_200px)]'>
@@ -41,8 +32,8 @@ const Container: FC<Props> = ({ initChatId }) => (
           </div>
         </Layout>
       </SnackbarProvider>
-    </RecoilRoot>
-  </PluginErrorBoundary>
+    </PluginErrorBoundary>
+  </Provider>
 );
 
 export default Container;

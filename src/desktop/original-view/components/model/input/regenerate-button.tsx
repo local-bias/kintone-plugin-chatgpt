@@ -1,25 +1,30 @@
 import { useMessageController } from '@/desktop/original-view/hooks/message-controller';
-import { loadingState, selectedHistoryState } from '@/desktop/original-view/states/states';
+import { loadingAtom, selectedHistoryAtom } from '@/desktop/original-view/states/states';
 import { Button } from '@mui/material';
-import React, { FC, memo } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
+import React, { FC, memo, useCallback } from 'react';
 
 const Component: FC = () => {
   const { sendMessage } = useMessageController();
-  const loading = useRecoilValue(loadingState);
+  const loading = useAtomValue(loadingAtom);
 
-  const onClick = useRecoilCallback(
-    ({ set }) =>
-      async () => {
-        set(selectedHistoryState, (p, prev = p!) => {
-          if (prev.messages[prev.messages.length - 1].role !== 'assistant') {
-            return prev;
-          }
-          return { ...prev, messages: prev.messages.slice(0, prev.messages.length - 1) };
-        });
-        await sendMessage();
-      },
-    []
+  const onClick = useAtomCallback(
+    useCallback(async (get, set) => {
+      const current = get(selectedHistoryAtom);
+      if (!current) {
+        return;
+      }
+      if (current.messages[current.messages.length - 1].role !== 'assistant') {
+        return;
+      }
+      const newValue = {
+        ...current,
+        messages: current.messages.slice(0, current.messages.length - 1),
+      };
+      set(selectedHistoryAtom, newValue);
+      await sendMessage();
+    }, [])
   );
 
   return (
@@ -30,7 +35,7 @@ const Component: FC = () => {
 };
 
 const Container: FC = () => {
-  const selectedHistory = useRecoilValue(selectedHistoryState);
+  const selectedHistory = useAtomValue(selectedHistoryAtom);
 
   if (!selectedHistory) {
     return null;
