@@ -1,7 +1,7 @@
 import { pluginCommonConfigAtom, pluginConditionsAtom } from '@/desktop/public-state';
 import { ChatHistory, ChatMessage, URL_QUERY_CHAT_ID } from '@/lib/static';
 import { atom } from 'jotai';
-import { withAtomEffect } from 'jotai-effect';
+import { atomEffect } from 'jotai-effect';
 
 export const pendingRequestCountAtom = atom(0);
 
@@ -68,7 +68,8 @@ export const displayChatHistoriesAtom = atom<ChatHistory[]>((get) => {
 
 export const historiesFetchedAtom = atom(false);
 
-export const selectedHistoryIdAtom = withAtomEffect(atom<string | null>(null), (get) => {
+export const selectedHistoryIdAtom = atom<string | null>(null);
+export const urlSearchParamsEffect = atomEffect((get) => {
   const selectedHistoryId = get(selectedHistoryIdAtom);
   console.log(`✨ selected history id changed: ${selectedHistoryId}`);
   const url = new URL(location.href);
