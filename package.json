@@ -25,6 +25,7 @@
     "@konomi-app/ui": "^2.2.4",
     "@konomi-app/ui-react": "^1.1.1",
     "@langchain/core": "^0.3.23",
+    "@langchain/openai": "^0.3.14",
     "@mui/icons-material": "^6.1.0",
     "@mui/material": "^6.1.0",
     "ai": "^3.3.37",
