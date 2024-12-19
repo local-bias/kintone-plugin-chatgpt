@@ -7,6 +7,9 @@ import React from 'react';
 import { initializeRecords } from './actions/initialize-records';
 import App from './app';
 import { selectedHistoryIdAtom } from './states/states';
+import { nanoid } from 'nanoid';
+
+const ROOT_ID = nanoid();
 
 listener.add(['app.record.index.show'], (event) => {
   const config = restorePluginConfig();
@@ -24,8 +27,9 @@ listener.add(['app.record.index.show'], (event) => {
   const componentManager = ComponentManager.getInstance();
 
   componentManager.renderComponent({
-    id: VIEW_ROOT_ID,
+    id: ROOT_ID,
     component: <App />,
+    parentElement: document.getElementById(VIEW_ROOT_ID) ?? undefined,
   });
 
   return event;
