@@ -13,6 +13,7 @@ const Component: FC = () => {
         if (!model) {
           return;
         }
+        console.log('model', model);
         set(getConditionPropertyState('aiModel'), model);
       },
     []
@@ -21,12 +22,19 @@ const Component: FC = () => {
   return (
     <Autocomplete
       value={aiModel}
+      freeSolo
       sx={{ width: '350px' }}
       options={OPENAI_MODELS}
       getOptionLabel={(option) => option}
       onChange={onModelChange}
       renderInput={(params) => (
-        <TextField {...params} label='モデル名' variant='outlined' color='primary' />
+        <TextField
+          {...params}
+          label='モデル名'
+          onChange={(e) => onModelChange(null, e.target.value)}
+          variant='outlined'
+          color='primary'
+        />
       )}
     />
   );

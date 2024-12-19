@@ -52,10 +52,12 @@ const Component: FC = () => {
       <PluginFormSection>
         <PluginFormTitle>使用するAIモデル*</PluginFormTitle>
         <div>
-          <PluginFormDescription>OpenAIが提供しているAIモデルの設定。</PluginFormDescription>
           <PluginFormDescription>
-            使用するモデルによって、発生する料金が変化します。詳細は
+            OpenAIが提供しているAIモデルの設定。使用するモデルによって、発生する料金が変化します。詳細は
             <a href='https://openai.com/pricing'>OpenAIの料金表</a>をご確認ください。
+          </PluginFormDescription>
+          <PluginFormDescription>
+            ファインチューニングされたモデルをお持ちの場合や、選択肢にないモデルを使用されたい場合は、直接入力することで使用することができます。
           </PluginFormDescription>
           <PluginFormDescription last>
             <span className='text-red-600'>
