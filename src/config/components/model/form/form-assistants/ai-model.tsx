@@ -13,7 +13,6 @@ const Component: FC = () => {
         if (!model) {
           return;
         }
-        console.log('model', model);
         set(getConditionPropertyState('aiModel'), model);
       },
     []
