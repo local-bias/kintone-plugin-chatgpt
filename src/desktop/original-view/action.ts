@@ -1,8 +1,9 @@
-import { PLUGIN_ID } from '@/lib/global';
+import { kintoneApiFetch } from '@/lib/api';
+import { isProd } from '@/lib/global';
 import {
   AnyChatHistory,
-  ChatMessage,
   ChatHistory,
+  ChatMessage,
   OPENAI_ENDPOINT,
   OPENAI_MODELS,
 } from '@/lib/static';
@@ -77,21 +78,23 @@ export const fetchChatCompletion = async (params: {
   process.env.NODE_ENV === 'development' && console.time("openai's API call");
   process.env.NODE_ENV === 'development' && console.log('OpenAI - APIリクエスト', requestBody);
 
-  const [responseBody, responseCode, responseHeader] = await kintone.plugin.app.proxy(
-    PLUGIN_ID,
-    OPENAI_ENDPOINT,
-    'POST',
-    {},
-    requestBody
-  );
+  const response = await kintoneApiFetch(OPENAI_ENDPOINT, {
+    method: 'POST',
+    body: JSON.stringify(requestBody),
+  });
 
-  process.env.NODE_ENV === 'development' && console.timeEnd("openai's API call");
-  process.env.NODE_ENV === 'development' &&
-    console.log('OpenAI - APIレスポンス', { responseBody, responseCode, responseHeader });
+  !isProd && console.timeEnd("openai's API call");
 
-  const chatCompletion: OpenAI.Chat.ChatCompletion = JSON.parse(responseBody);
+  const chatCompletion: OpenAI.Chat.ChatCompletion = await response.json();
 
-  if (responseCode !== 200) {
+  !isProd &&
+    console.log('OpenAI - APIレスポンス', {
+      responseBody: chatCompletion,
+      responseCode: response.status,
+      responseHeader: response.headers,
+    });
+
+  if (response.status !== 200) {
     const errorResponse = chatCompletion as any;
     if (errorResponse?.error?.message) {
       throw new Error(errorResponse.error.message);
@@ -100,9 +103,6 @@ export const fetchChatCompletion = async (params: {
       'APIの呼び出しに失敗しました。再度実行しても失敗する場合は、管理者にお問い合わせください。'
     );
   }
-
-  process.env.NODE_ENV === 'development' &&
-    console.log({ chatCompletion, responseCode, responseHeader });
 
   process.env.NODE_ENV === 'development' &&
     console.log(`このやり取りで${chatCompletion.usage?.total_tokens}トークン消費しました`);
