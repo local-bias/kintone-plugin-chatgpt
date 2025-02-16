@@ -1,4 +1,5 @@
 import OpenAI from 'openai';
+import { ChatModel } from 'openai/resources';
 import config from 'plugin.config.mjs';
 
 export const OPENAI_ENDPOINT_ROOT = 'https://api.openai.com';
@@ -18,9 +19,12 @@ export const OPENAI_MODELS = [
   'gpt-4-turbo',
   'gpt-4-vision-preview',
   'gpt-4',
+  'o3-mini',
+  'o1',
+  'o1-mini',
   'gpt-3.5-turbo-16k',
   'gpt-3.5-turbo',
-];
+] satisfies ChatModel[];
 
 export const IMAGE_SUPPORTED_MODELS = [
   'gpt-4-vision-preview',
