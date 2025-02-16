@@ -100,11 +100,10 @@ export const useChatHistory = () => {
     }, [])
   );
 
-  const pushAssistantMessage = useRecoilCallback(
-    () => async (content: string) => {
+  const pushAssistantMessage = useAtomCallback(
+    useCallback(async (_, __, content: string) => {
       await pushMessage({ id: nanoid(), role: 'assistant', content });
-    },
-    []
+    }, [])
   );
 
   const removeSelectedHistory = useAtomCallback(
@@ -115,7 +114,7 @@ export const useChatHistory = () => {
         if (!id) {
           return;
         }
-        const common = useAtomValue(pluginCommonConfigAtom);
+        const common = get(pluginCommonConfigAtom);
         const { outputAppId, outputKeyFieldCode, outputAppSpaceId } = common;
 
         const isGuest = await isGuestSpace(outputAppId);
