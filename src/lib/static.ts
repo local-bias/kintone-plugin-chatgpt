@@ -33,6 +33,15 @@ export const IMAGE_SUPPORTED_MODELS = [
   'gpt-4o-mini',
 ];
 
+export const O1_SERIES_MODELS = [
+  'o1',
+  'o1-2024-12-17',
+  'o1-preview',
+  'o1-preview-2024-09-12',
+  'o3-mini',
+  'o3-mini-2025-01-31',
+] satisfies ChatModel[];
+
 export const URL_QUERY_CHAT_ID = 'chat_id';
 
 export type AnyChatHistory =
