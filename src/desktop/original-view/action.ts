@@ -6,6 +6,7 @@ import {
   ChatMessage,
   OPENAI_ENDPOINT,
   OPENAI_MODELS,
+  O1_SERIES_MODELS,
 } from '@/lib/static';
 import {
   addRecord,
@@ -71,9 +72,13 @@ export const fetchChatCompletion = async (params: {
   const requestBody: OpenAI.Chat.ChatCompletionCreateParamsNonStreaming = {
     model,
     temperature,
-    max_tokens,
+    max_completion_tokens: max_tokens,
     messages,
   };
+  if (O1_SERIES_MODELS.includes(model as any)) {
+    delete requestBody.temperature;
+    requestBody.reasoning_effort = 'low';
+  }
 
   process.env.NODE_ENV === 'development' && console.time("openai's API call");
   process.env.NODE_ENV === 'development' && console.log('OpenAI - APIリクエスト', requestBody);
