@@ -10,6 +10,9 @@ export default /** @type { const } */ ({
   server: {
     port: 9152,
   },
+  lint: {
+    build: false,
+  },
   tailwind: {
     css: 'src/styles/global.css',
     config: {
@@ -20,7 +23,7 @@ export default /** @type { const } */ ({
   manifest: {
     base: {
       manifest_version: 1,
-      version: '4.21.0',
+      version: '4.22.0',
       type: 'APP',
       name: {
         en: 'ChatGPT integration plugin',
