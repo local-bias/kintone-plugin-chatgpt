@@ -83,7 +83,6 @@ export const useChatHistory = () => {
           type: 'image_url',
           image_url: {
             url,
-            detail: 'auto',
           },
         }));
 
