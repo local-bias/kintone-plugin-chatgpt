@@ -68,12 +68,20 @@ export const fetchChatCompletion = async (params: {
   ) {
     max_tokens = 2048;
   }
+  const sendingMessages = messages.map<OpenAI.Chat.Completions.ChatCompletionMessageParam>((m) => {
+    // 一部のリクエストでは、idを含めているとエラーになるため、idを削除する
+    const { id, ...rest } = m;
+    return rest;
+  });
 
   const requestBody: OpenAI.Chat.ChatCompletionCreateParamsNonStreaming = {
     model,
     temperature,
     max_completion_tokens: max_tokens,
-    messages,
+    messages: sendingMessages,
+    response_format: {
+      type: 'text',
+    },
   };
   if (O1_SERIES_MODELS.includes(model as any)) {
     delete requestBody.temperature;
@@ -85,6 +93,9 @@ export const fetchChatCompletion = async (params: {
 
   const response = await kintoneApiFetch(OPENAI_ENDPOINT, {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
     body: JSON.stringify(requestBody),
   });
 
