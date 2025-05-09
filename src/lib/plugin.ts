@@ -8,7 +8,7 @@ import { produce } from 'immer';
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): Plugin.Config => ({
-  version: 5,
+  version: 6,
   common: {
     viewId: '',
     outputAppId: '',
@@ -33,7 +33,7 @@ export const migrateConfig = (storage: Plugin.AnyConfig): Plugin.Config => {
   const { version } = storage;
   switch (version) {
     case undefined:
-    case 1:
+    case 1: {
       return migrateConfig({
         ...storage,
         version: 4,
@@ -42,7 +42,8 @@ export const migrateConfig = (storage: Plugin.AnyConfig): Plugin.Config => {
         enablesShiftEnter: false,
         assistants: [createNewAiAssistant()],
       });
-    case 2:
+    }
+    case 2: {
       return migrateConfig({
         ...storage,
         version: 4,
@@ -56,13 +57,15 @@ export const migrateConfig = (storage: Plugin.AnyConfig): Plugin.Config => {
           examples: [''],
         })),
       });
-    case 3:
+    }
+    case 3: {
       return migrateConfig({
         ...storage,
         version: 4,
         assistants: storage.assistants.map((assistant) => ({ ...assistant, examples: [''] })),
       });
-    case 4:
+    }
+    case 4: {
       const { version, assistants, ...rest } = storage;
       return migrateConfig({
         version: 5,
@@ -72,9 +75,21 @@ export const migrateConfig = (storage: Plugin.AnyConfig): Plugin.Config => {
           id: nanoid(),
         })),
       });
-    case 5:
-    default: // `default` -> `config.js`と`desktop.js`のバージョンが一致していない場合に通る可能性があるため必要
+    }
+    case 5: {
+      return migrateConfig({
+        ...storage,
+        conditions: storage.conditions.map((condition) => ({
+          allowImageUpload: true,
+          ...condition,
+        })),
+        version: 6,
+      });
+    }
+    case 6:
+    default: {
       return storage;
+    }
   }
 };
 
@@ -96,6 +111,7 @@ export const createNewAiAssistant = (): Plugin.Condition => ({
   systemPrompt: '',
   maxTokens: 0,
   examples: [''],
+  allowImageUpload: true,
 });
 
 export const getUpdatedStorage = <T extends keyof Plugin.Condition>(

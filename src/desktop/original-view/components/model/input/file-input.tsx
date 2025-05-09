@@ -1,5 +1,4 @@
 import { inputFilesAtom, selectedPluginConditionAtom } from '@/desktop/original-view/states/states';
-import { IMAGE_SUPPORTED_MODELS } from '@/lib/static';
 import { PhotoIcon } from '@heroicons/react/24/outline';
 import { useAtomValue, useSetAtom } from 'jotai';
 import React, { ChangeEventHandler, FC } from 'react';
@@ -33,11 +32,9 @@ const Component: FC = () => {
 
 const Container: FC = () => {
   const condition = useAtomValue(selectedPluginConditionAtom);
-
-  if (!IMAGE_SUPPORTED_MODELS.includes(condition.aiModel)) {
+  if (!condition.allowImageUpload) {
     return null;
   }
-
   return <Component />;
 };
 

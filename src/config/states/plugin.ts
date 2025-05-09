@@ -149,3 +149,4 @@ export const assistantExamplesState = getConditionPropertyState('examples');
 export const maxTokensState = getConditionPropertyState('maxTokens');
 export const temperatureState = getConditionPropertyState('temperature');
 export const systemPromptState = getConditionPropertyState('systemPrompt');
+export const allowImageUploadState = getConditionPropertyState('allowImageUpload');

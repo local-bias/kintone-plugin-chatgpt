@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import {
   aiIconState,
+  allowImageUploadState,
   assistantDescriptionState,
   assistantNameState,
   maxTokensState,
@@ -14,6 +15,7 @@ import {
   PluginFormSection,
   PluginFormTitle,
   RecoilNumber,
+  RecoilSwitch,
   RecoilText,
 } from '@konomi-app/kintone-utilities-react';
 import DeleteButton from './delete-button';
@@ -97,6 +99,28 @@ const Component: FC = () => {
           AIが回答した際のアイコンを、設定した画像に変更することができます。
         </PluginFormDescription>
         <RecoilText state={aiIconState} label='AIのアイコン' width={520} placeholder='https://' />
+      </PluginFormSection>
+
+      <PluginFormSection>
+        <PluginFormTitle>画像読み込み</PluginFormTitle>
+        <PluginFormDescription>
+          このアシスタントにテキストに加えて、画像の読み取りを許可するかどうかを設定します。
+        </PluginFormDescription>
+        <PluginFormDescription last>
+          <span className='text-red-600'>
+            使用するAIモデルによっては、この設定を有効にしても画像の読み取りができない場合があります。
+          </span>
+          AIモデル毎の対応状況は、
+          <a
+            href='https://platform.openai.com/docs/models'
+            target='_blank'
+            rel='noopener noreferrer'
+          >
+            OpenAIのドキュメント
+          </a>
+          をご確認ください。
+        </PluginFormDescription>
+        <RecoilSwitch state={allowImageUploadState} label='画像の読み込みを有効にする' />
       </PluginFormSection>
 
       <PluginFormSection>
