@@ -14,33 +14,17 @@ export const URL_PROMOTION = 'https://promotion.konomi.app/kintone-plugin';
 export const URL_BANNER = 'https://promotion.konomi.app/kintone-plugin/sidebar';
 
 export const OPENAI_MODELS = [
+  'gpt-4.1',
+  'gpt-4.1-mini',
+  'gpt-4.1-nano',
   'gpt-4o',
   'gpt-4o-mini',
-  'gpt-4-turbo',
-  'gpt-4-vision-preview',
   'gpt-4',
+  'o4-mini',
   'o3-mini',
-  'o1',
-  'o1-mini',
-  'gpt-3.5-turbo-16k',
-  'gpt-3.5-turbo',
 ] satisfies ChatModel[];
 
-export const IMAGE_SUPPORTED_MODELS = [
-  'gpt-4-vision-preview',
-  'gpt-4-turbo',
-  'gpt-4o',
-  'gpt-4o-mini',
-];
-
-export const O1_SERIES_MODELS = [
-  'o1',
-  'o1-2024-12-17',
-  'o1-preview',
-  'o1-preview-2024-09-12',
-  'o3-mini',
-  'o3-mini-2025-01-31',
-] satisfies ChatModel[];
+export const O1_SERIES_MODELS = ['o1', 'o1-preview', 'o3-mini', 'o4-mini'] satisfies ChatModel[];
 
 export const URL_QUERY_CHAT_ID = 'chat_id';
 
