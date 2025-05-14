@@ -1,5 +1,6 @@
 import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
 import { getNewCondition, isPluginConditionMet } from '@/lib/plugin';
+import { PluginCondition } from '@/schema/plugin-config';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
 import { useAtom } from 'jotai';
 import { useSnackbar } from 'notistack';
@@ -9,7 +10,7 @@ const Sidebar: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [conditions, setConditions] = useAtom(pluginConditionsAtom);
   const [selectedConditionId, setSelectedConditionId] = useAtom(selectedConditionIdAtom);
-  const label = useCallback((params: { condition: Plugin.Condition; index: number }) => {
+  const label = useCallback((params: { condition: PluginCondition; index: number }) => {
     const { condition, index } = params;
     return (
       <div>
@@ -19,7 +20,7 @@ const Sidebar: FC = () => {
     );
   }, []);
 
-  const onSelectedConditionChange = (condition: Plugin.Condition | null) => {
+  const onSelectedConditionChange = (condition: PluginCondition | null) => {
     setSelectedConditionId(condition?.id ?? null);
   };
 

@@ -1,7 +1,9 @@
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import { t } from '@/lib/i18n';
 import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
 import { OPENAI_ENDPOINT_ROOT, PLUGIN_NAME, VIEW_ROOT_ID } from '@/lib/static';
 import { handleLoadingEndAtom, handleLoadingStartAtom } from '@/lib/w-ui';
+import { PluginCommonConfig, PluginConfig } from '@/schema/plugin-config';
 import {
   getViews,
   onFileLoad,
@@ -10,15 +12,14 @@ import {
 } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { atom } from 'jotai';
+import { atomWithDefault } from 'jotai/utils';
 import { enqueueSnackbar } from 'notistack';
 import { ChangeEvent, ReactNode, SetStateAction } from 'react';
 import invariant from 'tiny-invariant';
-import { usePluginAtoms } from './w-plugin';
-import { atomWithDefault } from 'jotai/utils';
 import { currentAppIdAtom } from './kintone';
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
+import { usePluginAtoms } from './w-plugin';
 
-export const pluginConfigAtom = atom<Plugin.Config>(restorePluginConfig());
+export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 
 export const handlePluginConfigResetAtom = atom(null, (_, set) => {
   set(pluginConfigAtom, createConfig());
@@ -42,12 +43,12 @@ export const apiKeyState = atomWithDefault<string>(() => {
   return proxyConfig?.headers.Authorization.replace('Bearer ', '') ?? '';
 });
 
-const getCommonPropertyAtom = <T extends keyof Plugin.Common>(property: T) =>
+const getCommonPropertyAtom = <T extends keyof PluginCommonConfig>(property: T) =>
   atom(
     (get) => {
       return get(commonConfigAtom)[property];
     },
-    (_, set, newValue: SetStateAction<Plugin.Common[T]>) => {
+    (_, set, newValue: SetStateAction<PluginCommonConfig[T]>) => {
       set(commonConfigAtom, (common) =>
         produce(common, (draft) => {
           draft[property] = typeof newValue === 'function' ? newValue(draft[property]) : newValue;

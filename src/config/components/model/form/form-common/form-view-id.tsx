@@ -16,8 +16,8 @@ const Input: FC = () => {
 
   return (
     <TextField select label='一覧の名前' value={viewId} {...{ onChange }}>
-      {Object.entries(views).map(([name, { id }], i) => (
-        <MenuItem key={i} value={id}>
+      {Object.entries(views).map(([name, list], i) => (
+        <MenuItem key={i} value={list?.id}>
           {name}
         </MenuItem>
       ))}

@@ -1,5 +1,6 @@
 import { pluginCommonConfigAtom, pluginConditionsAtom } from '@/desktop/public-state';
 import { ChatHistory, ChatMessage, URL_QUERY_CHAT_ID } from '@/lib/static';
+import { PluginCondition } from '@/schema/plugin-config';
 import { deleteAllRecordsByQuery, isGuestSpace, isMobile } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { atom } from 'jotai';
@@ -26,7 +27,7 @@ export const inputTextAtom = atom<string>('');
 export const inputFilesAtom = atom<File[]>([]);
 
 export const selectedPluginConditionIdAtom = atom<string | null>(null);
-export const selectedPluginConditionAtom = atom<Plugin.Condition>((get) => {
+export const selectedPluginConditionAtom = atom<PluginCondition>((get) => {
   const conditions = get(pluginConditionsAtom);
   const conditionId = get(selectedPluginConditionIdAtom);
   return conditions.find((condition) => condition.id === conditionId) ?? conditions[0];

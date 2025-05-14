@@ -140,6 +140,7 @@ const Component: FC = () => {
           </a>
           をご確認ください。
         </PluginFormDescription>
+        {/* @ts-ignore */}
         <JotaiText type='number' atom={maxTokensAtom} label='返答の長さの最大値' width={200} />
       </PluginFormSection>
       <PluginFormSection>
