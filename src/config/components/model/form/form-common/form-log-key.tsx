@@ -1,21 +1,18 @@
 import { logAppTextPropertiesWithoutContentState } from '@/config/states/kintone';
-import { logKeyFieldCodeState } from '@/config/states/plugin';
+import { logKeyFieldCodeAtom } from '@/config/states/plugin';
 import { Skeleton } from '@mui/material';
-import React, { FC, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { FC, memo, Suspense } from 'react';
 import { AutocompleteKintoneField } from './autocomplete-field-input';
 
-const Component: FC = () => {
-  const fields = useRecoilValue(logAppTextPropertiesWithoutContentState);
-  const fieldCode = useRecoilValue(logKeyFieldCodeState);
+const handleFieldChangeAtom = atom(null, (_, set, value: string) => {
+  set(logKeyFieldCodeAtom, value);
+});
 
-  const onFieldChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(logKeyFieldCodeState, value);
-      },
-    []
-  );
+const Component: FC = () => {
+  const fields = useAtomValue(logAppTextPropertiesWithoutContentState);
+  const fieldCode = useAtomValue(logKeyFieldCodeAtom);
+  const onFieldChange = useSetAtom(handleFieldChangeAtom);
 
   return (
     <AutocompleteKintoneField

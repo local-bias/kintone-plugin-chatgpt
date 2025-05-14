@@ -1,49 +1,43 @@
-import { assistantExamplesState } from '@/config/states/plugin';
-import { IconButton, TextField, Tooltip } from '@mui/material';
-import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { assistantExamplesAtom } from '@/config/states/plugin';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { IconButton, TextField, Tooltip } from '@mui/material';
 import { produce } from 'immer';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { ChangeEvent, FC } from 'react';
+
+const handleExampleChangeAtom = atom(
+  null,
+  (_, set, event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
+    set(assistantExamplesAtom, (prev) =>
+      produce(prev, (draft) => {
+        draft[index] = event.target.value;
+      })
+    );
+  }
+);
+
+const handleExampleAddAtom = atom(null, (_, set, index: number) => {
+  set(assistantExamplesAtom, (prev) =>
+    produce(prev, (draft) => {
+      draft.splice(index + 1, 0, '');
+    })
+  );
+});
+
+const handleExampleDeleteAtom = atom(null, (_, set, index: number) => {
+  set(assistantExamplesAtom, (prev) =>
+    produce(prev, (draft) => {
+      draft.splice(index, 1);
+    })
+  );
+});
 
 const Component: FC = () => {
-  const examples = useRecoilValue(assistantExamplesState);
-
-  const onChange = useRecoilCallback(
-    ({ set }) =>
-      async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>, index: number) => {
-        set(assistantExamplesState, (prev) =>
-          produce(prev, (draft) => {
-            draft[index] = event.target.value;
-          })
-        );
-      },
-    []
-  );
-
-  const addRow = useRecoilCallback(
-    ({ set }) =>
-      async (index: number) => {
-        set(assistantExamplesState, (prev) =>
-          produce(prev, (draft) => {
-            draft.splice(index + 1, 0, '');
-          })
-        );
-      },
-    []
-  );
-
-  const deleteRow = useRecoilCallback(
-    ({ set }) =>
-      async (index: number) => {
-        set(assistantExamplesState, (prev) =>
-          produce(prev, (draft) => {
-            draft.splice(index, 1);
-          })
-        );
-      },
-    []
-  );
+  const examples = useAtomValue(assistantExamplesAtom);
+  const onChange = useSetAtom(handleExampleChangeAtom);
+  const addRow = useSetAtom(handleExampleAddAtom);
+  const deleteRow = useSetAtom(handleExampleDeleteAtom);
 
   return (
     <div className='flex flex-col gap-4'>

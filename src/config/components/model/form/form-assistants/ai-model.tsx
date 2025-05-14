@@ -1,22 +1,19 @@
-import React, { FC } from 'react';
-import { TextField, Autocomplete } from '@mui/material';
+import { aiModelAtom } from '@/config/states/plugin';
 import { OPENAI_MODELS } from '@/lib/static';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { getConditionPropertyState } from '@/config/states/plugin';
+import { Autocomplete, TextField } from '@mui/material';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { FC } from 'react';
+
+const handleModelChangeAtom = atom(null, (_, set, __: unknown, value: string | null) => {
+  if (!value) {
+    return;
+  }
+  set(aiModelAtom, value);
+});
 
 const Component: FC = () => {
-  const aiModel = useRecoilValue(getConditionPropertyState('aiModel'));
-
-  const onModelChange = useRecoilCallback(
-    ({ set }) =>
-      (_: any, model: string | null) => {
-        if (!model) {
-          return;
-        }
-        set(getConditionPropertyState('aiModel'), model);
-      },
-    []
-  );
+  const aiModel = useAtomValue(aiModelAtom);
+  const onModelChange = useSetAtom(handleModelChangeAtom);
 
   return (
     <Autocomplete

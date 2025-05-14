@@ -1,17 +1,16 @@
 import {
   apiKeyState,
-  enablesAnimationState,
-  enablesEnterState,
-  enablesShiftEnterState,
+  enablesAnimationAtom,
+  enablesEnterAtom,
+  enablesShiftEnterAtom,
 } from '@/config/states/plugin';
+import { JotaiSwitch, JotaiText } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
-  RecoilSwitch,
-  RecoilText,
 } from '@konomi-app/kintone-utilities-react';
-import React, { FCX } from 'react';
+import { FCX } from 'react';
 import LogAppIdForm from './form-log-app-id';
 import LogContentForm from './form-log-content';
 import LogKeyForm from './form-log-key';
@@ -31,8 +30,8 @@ const Component: FCX = () => {
             キーの発行は<a href='https://platform.openai.com/account/api-keys'>こちらから</a>
             可能です。
           </PluginFormDescription>
-          <RecoilText
-            state={apiKeyState}
+          <JotaiText
+            atom={apiKeyState}
             variant='outlined'
             label='APIキー'
             placeholder='sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
@@ -98,16 +97,16 @@ const Component: FCX = () => {
           送信用のショートカットを設定することができます。
         </PluginFormDescription>
         <div className='mb-4'>
-          <RecoilSwitch state={enablesEnterState} label='Enterキーで送信' />
+          <JotaiSwitch atom={enablesEnterAtom} label='Enterキーで送信' />
         </div>
-        <RecoilSwitch state={enablesShiftEnterState} label='Shift + Enterキーで送信' />
+        <JotaiSwitch atom={enablesShiftEnterAtom} label='Shift + Enterキーで送信' />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>アニメーションの設定</PluginFormTitle>
         <PluginFormDescription last>
           このオプションを有効にすると、AIの返答をアニメーションで表示することができます。
         </PluginFormDescription>
-        <RecoilSwitch state={enablesAnimationState} label='アニメーションを有効にする' />
+        <JotaiSwitch atom={enablesAnimationAtom} label='アニメーションを有効にする' />
       </PluginFormSection>
     </div>
   );

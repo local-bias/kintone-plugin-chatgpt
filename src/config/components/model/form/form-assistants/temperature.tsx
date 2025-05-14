@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
+import { temperatureAtom } from '@/config/states/plugin';
 import { Slider } from '@mui/material';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { temperatureState } from '@/config/states/plugin';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { FC } from 'react';
 
 const marks = [
   {
@@ -14,20 +14,17 @@ const marks = [
   },
 ];
 
-const Component: FC = () => {
-  const temperature = useRecoilValue(temperatureState);
+const handleTemperatureChangeAtom = atom(null, (_, set, __: unknown, value: number | number[]) => {
+  if (typeof value === 'number') {
+    set(temperatureAtom, value);
+    return;
+  }
+  set(temperatureAtom, value[0]);
+});
 
-  const onTemperatureChange = useRecoilCallback(
-    ({ set }) =>
-      (_: any, t: number | number[]) => {
-        if (typeof t === 'number') {
-          set(temperatureState, t);
-          return;
-        }
-        set(temperatureState, t[0]);
-      },
-    []
-  );
+const Component: FC = () => {
+  const temperature = useAtomValue(temperatureAtom);
+  const onTemperatureChange = useSetAtom(handleTemperatureChangeAtom);
 
   return (
     <div className='px-12 pt-8 w-[400px]'>

@@ -1,21 +1,18 @@
-import { outputKeyFieldCodeState } from '@/config/states/plugin';
-import { Skeleton } from '@mui/material';
-import React, { FC, FCX, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { AutocompleteKintoneField } from './autocomplete-field-input';
 import { outputAppSingleLineTextPropertiesState } from '@/config/states/kintone';
+import { outputKeyFieldCodeAtom } from '@/config/states/plugin';
+import { Skeleton } from '@mui/material';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { FC, FCX, memo, Suspense } from 'react';
+import { AutocompleteKintoneField } from './autocomplete-field-input';
+
+const handleFieldChangeAtom = atom(null, (_, set, value: string) => {
+  set(outputKeyFieldCodeAtom, value);
+});
 
 const Component: FCX = () => {
-  const fields = useRecoilValue(outputAppSingleLineTextPropertiesState);
-  const fieldCode = useRecoilValue(outputKeyFieldCodeState);
-
-  const onFieldChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(outputKeyFieldCodeState, value);
-      },
-    []
-  );
+  const fields = useAtomValue(outputAppSingleLineTextPropertiesState);
+  const fieldCode = useAtomValue(outputKeyFieldCodeAtom);
+  const onFieldChange = useSetAtom(handleFieldChangeAtom);
 
   return (
     <AutocompleteKintoneField

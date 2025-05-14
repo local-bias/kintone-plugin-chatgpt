@@ -1,6 +1,7 @@
-import { useChatHistory } from '@/desktop/original-view/hooks/use-chat-history';
 import {
   displayChatHistoriesAtom,
+  handleChatHistoryDeleteAtom,
+  handleHistoryIdSelectAtom,
   historiesFetchedAtom,
   loadingAtom,
   selectedHistoryIdAtom,
@@ -17,12 +18,13 @@ import {
   ListItemText,
   Skeleton,
 } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import React, { FCX } from 'react';
 
 const Component: FCX = ({ className }) => {
   const histories = useAtomValue(displayChatHistoriesAtom);
-  const { setSelectedHistoryId, removeSelectedHistory } = useChatHistory();
+  const setSelectedHistoryId = useSetAtom(handleHistoryIdSelectAtom);
+  const removeSelectedHistory = useSetAtom(handleChatHistoryDeleteAtom);
   const historiesFetched = useAtomValue(historiesFetchedAtom);
   const selectedHistoryId = useAtomValue(selectedHistoryIdAtom);
   const loading = useAtomValue(loadingAtom);

@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
-import CommonForm from './form-common';
+import { isConditionIdUnselectedAtom } from '@/config/states/plugin';
+import { useAtomValue } from 'jotai';
+import { FC } from 'react';
 import AssistantForm from './form-assistants';
-import { useRecoilValue } from 'recoil';
-import { commonSettingsShownState } from '@/config/states/plugin';
+import CommonForm from './form-common';
 
 const Component: FC = () => {
-  const commonSettingsShown = useRecoilValue(commonSettingsShownState);
+  const commonSettingsShown = useAtomValue(isConditionIdUnselectedAtom);
   return commonSettingsShown ? <CommonForm /> : <AssistantForm />;
 };
 

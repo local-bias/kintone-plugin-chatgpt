@@ -1,23 +1,18 @@
-import React, { ChangeEventHandler, FC, FCX, memo, Suspense } from 'react';
-import styled from '@emotion/styled';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { MenuItem, Skeleton, TextField } from '@mui/material';
 import { customViewsState } from '@/config/states/kintone';
-import { getCommonPropertyState } from '@/config/states/plugin';
+import { viewIdAtom } from '@/config/states/plugin';
+import styled from '@emotion/styled';
+import { MenuItem, Skeleton, TextField } from '@mui/material';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { ChangeEvent, FC, FCX, memo, Suspense } from 'react';
 
-const viewIdState = getCommonPropertyState('viewId');
+const handleViewIdChangeAtom = atom(null, (_, set, event: ChangeEvent<HTMLInputElement>) => {
+  set(viewIdAtom, event.target.value);
+});
 
 const Input: FC = () => {
-  const views = useRecoilValue(customViewsState);
-  const viewId = useRecoilValue(viewIdState);
-
-  const onChange: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
-    ({ set }) =>
-      (e) => {
-        set(viewIdState, e.target.value);
-      },
-    []
-  );
+  const views = useAtomValue(customViewsState);
+  const viewId = useAtomValue(viewIdAtom);
+  const onChange = useSetAtom(handleViewIdChangeAtom);
 
   return (
     <TextField select label='一覧の名前' value={viewId} {...{ onChange }}>

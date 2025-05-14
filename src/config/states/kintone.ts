@@ -1,4 +1,4 @@
-import { GUEST_SPACE_ID } from '@/lib/global';
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import {
   filterFieldProperties,
   getAllApps,
@@ -8,70 +8,60 @@ import {
   kintoneAPI,
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
-import { selector } from 'recoil';
+import { atom } from 'jotai';
 import {
-  logAppIdState,
-  logAppSpaceIdState,
-  logContentFieldCodeState,
-  logKeyFieldCodeState,
-  outputAppIdState,
-  outputAppSpaceIdState,
+  logAppIdAtom,
+  logAppSpaceIdAtom,
+  logContentFieldCodeAtom,
+  logKeyFieldCodeAtom,
+  outputAppIdAtom,
+  outputAppSpaceIdAtom,
 } from './plugin';
+import { pickBy } from 'remeda';
 
-const PREFIX = 'kintone';
-
-export const allKintoneAppsState = selector({
-  key: `${PREFIX}allKintoneAppsState`,
-  get: async () => {
-    const apps = await getAllApps({
-      guestSpaceId: GUEST_SPACE_ID,
-      debug: process?.env?.NODE_ENV === 'development',
-    });
-    return apps;
-  },
+export const currentAppIdAtom = atom(() => {
+  const app = getAppId();
+  if (!app) {
+    throw new Error('App ID not found');
+  }
+  return app;
 });
 
-export const allAppViewsState = selector<Record<string, kintoneAPI.view.Response>>({
-  key: `${PREFIX}allAppViewsState`,
-  get: async () => {
-    const app = getAppId();
-    if (!app) {
-      throw new Error('アプリのフィールド情報が取得できませんでした');
-    }
+export const allKintoneAppsState = atom(async () => {
+  const apps = await getAllApps({
+    guestSpaceId: GUEST_SPACE_ID,
+    debug: isDev,
+  });
+  return apps;
+});
+
+export const allAppViewsState = atom<Promise<Record<string, kintoneAPI.view.Response>>>(
+  async (get) => {
+    const app = get(currentAppIdAtom);
 
     const { views } = await getViews({
       app,
       preview: true,
       guestSpaceId: GUEST_SPACE_ID,
-      debug: process?.env?.NODE_ENV === 'development',
+      debug: isDev,
     });
     return views;
-  },
+  }
+);
+
+export const customViewsState = atom(async (get) => {
+  const allViews = await get(allAppViewsState);
+  return pickBy(allViews, (view) => view.type === 'CUSTOM');
 });
 
-export const customViewsState = selector({
-  key: `${PREFIX}customViewsState`,
-  get: async ({ get }) => {
-    const allViews = get(allAppViewsState);
+export const outputAppPropertiesState = atom<Promise<kintoneAPI.FieldProperty[]>>(async (get) => {
+  const appId = get(outputAppIdAtom);
+  if (!appId) {
+    return [];
+  }
+  const appSpaceId = get(outputAppSpaceIdAtom);
 
-    const filtered = Object.entries(allViews).filter(([_, view]) => view.type === 'CUSTOM');
-
-    return filtered.reduce<Record<string, kintoneAPI.view.Response>>(
-      (acc, [name, view]) => ({ ...acc, [name]: view }),
-      {}
-    );
-  },
-});
-
-export const outputAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}outputAppPropertiesState`,
-  get: async ({ get }) => {
-    const appId = get(outputAppIdState);
-    if (!appId) {
-      return [];
-    }
-    const appSpaceId = get(outputAppSpaceIdState);
-
+  try {
     const { properties } = await withSpaceIdFallback({
       spaceId: appSpaceId,
       func: getFormFields,
@@ -81,48 +71,46 @@ export const outputAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
         debug: process.env.NODE_ENV === 'development',
       },
     });
-
     const filtered = filterFieldProperties(
       properties,
       (field) => !['GROUP', 'SUBTABLE'].includes(field.type)
     );
 
     return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
-  },
+  } catch (error) {
+    return [];
+  }
 });
 
-export const outputAppSingleLineTextPropertiesState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}outputAppSingleLineTextPropertiesState`,
-  get: async ({ get }) => {
-    const allProperties = get(outputAppPropertiesState);
+export const outputAppSingleLineTextPropertiesState = atom<Promise<kintoneAPI.FieldProperty[]>>(
+  async (get) => {
+    const allProperties = await get(outputAppPropertiesState);
     return allProperties
       .filter((field) => field.type === 'SINGLE_LINE_TEXT')
       .filter((singleLineField) => (singleLineField as kintoneAPI.property.SingleLineText).unique);
-  },
-});
+  }
+);
 
-export const outputAppTextPropertiesState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}outputAppTextPropertiesState`,
-  get: async ({ get }) => {
-    const allProperties = get(outputAppPropertiesState);
+export const outputAppTextPropertiesState = atom<Promise<kintoneAPI.FieldProperty[]>>(
+  async (get) => {
+    const allProperties = await get(outputAppPropertiesState);
     return allProperties.filter(
       (field) =>
         field.type === 'RICH_TEXT' ||
         field.type === 'MULTI_LINE_TEXT' ||
         field.type === 'SINGLE_LINE_TEXT'
     );
-  },
-});
+  }
+);
 
-export const logAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}logAppPropertiesState`,
-  get: async ({ get }) => {
-    const appId = get(logAppIdState);
-    if (!appId) {
-      return [];
-    }
-    const appSpaceId = get(logAppSpaceIdState);
+export const logAppPropertiesState = atom<Promise<kintoneAPI.FieldProperty[]>>(async (get) => {
+  const appId = get(logAppIdAtom);
+  if (!appId) {
+    return [];
+  }
+  const appSpaceId = get(logAppSpaceIdAtom);
 
+  try {
     const { properties } = await withSpaceIdFallback({
       spaceId: appSpaceId,
       func: getFormFields,
@@ -132,43 +120,39 @@ export const logAppPropertiesState = selector<kintoneAPI.FieldProperty[]>({
         debug: process.env.NODE_ENV === 'development',
       },
     });
-
     const filtered = filterFieldProperties(
       properties,
       (field) => !['GROUP', 'SUBTABLE'].includes(field.type)
     );
 
     return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
-  },
+  } catch (error) {
+    return [];
+  }
 });
 
-export const logAppTextPropertiesState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}logAppTextPropertiesState`,
-  get: async ({ get }) => {
-    const allProperties = get(logAppPropertiesState);
-    return allProperties.filter(
-      (field) =>
-        field.type === 'RICH_TEXT' ||
-        field.type === 'MULTI_LINE_TEXT' ||
-        field.type === 'SINGLE_LINE_TEXT'
-    );
-  },
+export const logAppTextPropertiesState = atom<Promise<kintoneAPI.FieldProperty[]>>(async (get) => {
+  const allProperties = await get(logAppPropertiesState);
+  return allProperties.filter(
+    (field) =>
+      field.type === 'RICH_TEXT' ||
+      field.type === 'MULTI_LINE_TEXT' ||
+      field.type === 'SINGLE_LINE_TEXT'
+  );
 });
 
-export const logAppTextPropertiesWithoutContentState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}logAppTextPropertiesWithoutContentState`,
-  get: async ({ get }) => {
-    const allProperties = get(logAppTextPropertiesState);
-    const contentFieldCode = get(logContentFieldCodeState);
+export const logAppTextPropertiesWithoutContentState = atom<Promise<kintoneAPI.FieldProperty[]>>(
+  async (get) => {
+    const allProperties = await get(logAppTextPropertiesState);
+    const contentFieldCode = get(logContentFieldCodeAtom);
     return allProperties.filter((field) => field.code !== contentFieldCode);
-  },
-});
+  }
+);
 
-export const logAppTextPropertiesWithoutKeyState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}logAppTextPropertiesWithoutKeyState`,
-  get: async ({ get }) => {
-    const allProperties = get(logAppTextPropertiesState);
-    const keyFieldCode = get(logKeyFieldCodeState);
+export const logAppTextPropertiesWithoutKeyState = atom<Promise<kintoneAPI.FieldProperty[]>>(
+  async (get) => {
+    const allProperties = await get(logAppTextPropertiesState);
+    const keyFieldCode = get(logKeyFieldCodeAtom);
     return allProperties.filter((field) => field.code !== keyFieldCode);
-  },
-});
+  }
+);

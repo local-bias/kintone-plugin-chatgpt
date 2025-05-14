@@ -1,41 +1,23 @@
-import { pluginCommonConfigAtom } from '@/desktop/public-state';
 import { getBase64EncodedImage } from '@/lib/image';
 import { ChatMessage } from '@/lib/static';
-import { deleteAllRecordsByQuery, isGuestSpace, isMobile } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { nanoid } from 'nanoid';
-import { useSnackbar } from 'notistack';
 import OpenAI from 'openai';
 import { useCallback } from 'react';
-import { useRecoilCallback } from 'recoil';
 import { createNewChatHistory, getChatTitle } from '../action';
 import {
-  apiErrorMessageAtom,
   chatHistoriesAtom,
   inputFilesAtom,
   inputTextAtom,
-  isHistoryDrawerOpenAtom,
-  pendingRequestCountAtom,
   selectedHistoryAtom,
   selectedHistoryIdAtom,
   selectedPluginConditionAtom,
 } from '../states/states';
 
 export const useChatHistory = () => {
-  const { enqueueSnackbar } = useSnackbar();
   const histories = useAtomValue(chatHistoriesAtom);
-
-  const setSelectedHistoryId = useAtomCallback(
-    useCallback((get, set, historyId: string) => {
-      set(selectedHistoryIdAtom, historyId);
-      set(apiErrorMessageAtom, null);
-      if (isMobile()) {
-        set(isHistoryDrawerOpenAtom, false);
-      }
-    }, [])
-  );
 
   const pushMessage = useAtomCallback(
     useCallback(async (get, set, message: ChatMessage) => {
@@ -105,48 +87,9 @@ export const useChatHistory = () => {
     }, [])
   );
 
-  const removeSelectedHistory = useAtomCallback(
-    useCallback(async (get, set) => {
-      try {
-        set(pendingRequestCountAtom, (count) => count + 1);
-        const id = get(selectedHistoryIdAtom);
-        if (!id) {
-          return;
-        }
-        const common = get(pluginCommonConfigAtom);
-        const { outputAppId, outputKeyFieldCode, outputAppSpaceId } = common;
-
-        const isGuest = await isGuestSpace(outputAppId);
-
-        const query = `${outputKeyFieldCode} = "${id}"`;
-
-        await deleteAllRecordsByQuery({
-          app: outputAppId,
-          query,
-          debug: process.env.NODE_ENV === 'development',
-          guestSpaceId: isGuest ? outputAppSpaceId : undefined,
-        });
-
-        set(chatHistoriesAtom, (_histories) =>
-          produce(_histories, (draft) => {
-            const index = draft.findIndex((history) => history.id === id);
-            draft.splice(index, 1);
-          })
-        );
-
-        set(selectedHistoryIdAtom, null);
-        enqueueSnackbar('履歴を削除しました', { variant: 'success' });
-      } finally {
-        set(pendingRequestCountAtom, (count) => count - 1);
-      }
-    }, [])
-  );
-
   return {
     histories,
     pushUserMessage,
     pushAssistantMessage,
-    setSelectedHistoryId,
-    removeSelectedHistory,
   };
 };

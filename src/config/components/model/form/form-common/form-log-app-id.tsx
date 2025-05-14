@@ -1,25 +1,22 @@
 import { allKintoneAppsState } from '@/config/states/kintone';
-import { logAppIdState, logAppSpaceIdState } from '@/config/states/plugin';
+import { logAppIdAtom, logAppSpaceIdAtom } from '@/config/states/plugin';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
-import React, { FC, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { FC, memo, Suspense } from 'react';
+
+const handleAppChangeAtom = atom(null, (_, set, app: kintoneAPI.App | null) => {
+  if (!app) {
+    return;
+  }
+  set(logAppIdAtom, app.appId);
+  set(logAppSpaceIdAtom, app.spaceId ?? undefined);
+});
 
 const Component: FC = () => {
-  const allApps = useRecoilValue(allKintoneAppsState);
-  const appId = useRecoilValue(logAppIdState);
-
-  const onAppChange = useRecoilCallback(
-    ({ set }) =>
-      (app: kintoneAPI.App | null) => {
-        if (!app) {
-          return;
-        }
-        set(logAppIdState, app.appId);
-        set(logAppSpaceIdState, app.spaceId ?? undefined);
-      },
-    []
-  );
+  const allApps = useAtomValue(allKintoneAppsState);
+  const appId = useAtomValue(logAppIdAtom);
+  const onAppChange = useSetAtom(handleAppChangeAtom);
 
   return (
     <Autocomplete

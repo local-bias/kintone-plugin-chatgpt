@@ -1,7 +1,11 @@
 import { pluginCommonConfigAtom, pluginConditionsAtom } from '@/desktop/public-state';
 import { ChatHistory, ChatMessage, URL_QUERY_CHAT_ID } from '@/lib/static';
+import { deleteAllRecordsByQuery, isGuestSpace, isMobile } from '@konomi-app/kintone-utilities';
+import { produce } from 'immer';
 import { atom } from 'jotai';
 import { atomEffect } from 'jotai-effect';
+import { atomWithReset, RESET } from 'jotai/utils';
+import { enqueueSnackbar } from 'notistack';
 
 export const pendingRequestCountAtom = atom(0);
 
@@ -82,7 +86,50 @@ export const urlSearchParamsEffect = atomEffect((get) => {
   history.replaceState(null, '', url.toString());
 });
 
-export const apiErrorMessageAtom = atom<string | null>(null);
+export const apiErrorMessageAtom = atomWithReset<string | null>(null);
+
+export const handleHistoryIdSelectAtom = atom(null, (_, set, historyId: string) => {
+  set(selectedHistoryIdAtom, historyId);
+  set(apiErrorMessageAtom, RESET);
+  if (isMobile()) {
+    set(isHistoryDrawerOpenAtom, false);
+  }
+});
+
+export const handleChatHistoryDeleteAtom = atom(null, async (get, set) => {
+  try {
+    set(pendingRequestCountAtom, (count) => count + 1);
+    const id = get(selectedHistoryIdAtom);
+    if (!id) {
+      return;
+    }
+    const common = get(pluginCommonConfigAtom);
+    const { outputAppId, outputKeyFieldCode, outputAppSpaceId } = common;
+
+    const isGuest = await isGuestSpace(outputAppId);
+
+    const query = `${outputKeyFieldCode} = "${id}"`;
+
+    await deleteAllRecordsByQuery({
+      app: outputAppId,
+      query,
+      debug: process.env.NODE_ENV === 'development',
+      guestSpaceId: isGuest ? outputAppSpaceId : undefined,
+    });
+
+    set(chatHistoriesAtom, (_histories) =>
+      produce(_histories, (draft) => {
+        const index = draft.findIndex((history) => history.id === id);
+        draft.splice(index, 1);
+      })
+    );
+
+    set(selectedHistoryIdAtom, null);
+    enqueueSnackbar('履歴を削除しました', { variant: 'success' });
+  } finally {
+    set(pendingRequestCountAtom, (count) => count - 1);
+  }
+});
 
 export const selectedHistoryAtom = atom<ChatHistory | null, ChatHistory[], void>(
   (get) => {

@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import {
-  aiIconState,
-  allowImageUploadState,
-  assistantDescriptionState,
-  assistantNameState,
-  maxTokensState,
-  systemPromptState,
+  aiIconAtom,
+  allowImageUploadAtom,
+  assistantDescriptionAtom,
+  assistantNameAtom,
+  maxTokensAtom,
+  systemPromptAtom,
 } from '@/config/states/plugin';
 import AiModelForm from './ai-model';
 import TemperatureForm from './temperature';
@@ -14,11 +14,9 @@ import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
-  RecoilNumber,
-  RecoilSwitch,
-  RecoilText,
 } from '@konomi-app/kintone-utilities-react';
-import DeleteButton from './delete-button';
+import DeleteButton from './condition-delete-button';
+import { JotaiSwitch, JotaiText } from '@konomi-app/kintone-utilities-jotai';
 
 const Component: FC = () => {
   return (
@@ -29,8 +27,8 @@ const Component: FC = () => {
         <PluginFormDescription last>
           ユーザーがどの役割のAIを使用するかを判断するために使用されます。
         </PluginFormDescription>
-        <RecoilText
-          state={assistantNameState}
+        <JotaiText
+          atom={assistantNameAtom}
           label='アシスタント名'
           placeholder='ChatGPT'
           width={520}
@@ -41,10 +39,11 @@ const Component: FC = () => {
         <PluginFormDescription last>
           アシスタントがどういった役割を持っているのか説明文を追加します。
         </PluginFormDescription>
-        <RecoilText
-          state={assistantDescriptionState}
+        <JotaiText
+          atom={assistantDescriptionAtom}
           multiline
           fullWidth
+          sx={{ width: '100%' }}
           rows={4}
           label='アシスタントの説明'
           placeholder='ChatGPTは、OpenAIが提供するAIを使用して、ユーザーとの対話を行うことができます。'
@@ -83,10 +82,11 @@ const Component: FC = () => {
         <PluginFormDescription last>
           このアプリで使用するAIに、予め設定された役割を割り当てることができます。
         </PluginFormDescription>
-        <RecoilText
-          state={systemPromptState}
+        <JotaiText
+          atom={systemPromptAtom}
           multiline
           rows={6}
+          sx={{ width: '100%' }}
           fullWidth
           label='AIの役割'
           placeholder='あなたはITコンサルタントです。質問に対して、ITサービスを活用して適切に解決方法を提案してください。口調はあまり固すぎない敬語で話してください。'
@@ -98,7 +98,7 @@ const Component: FC = () => {
         <PluginFormDescription last>
           AIが回答した際のアイコンを、設定した画像に変更することができます。
         </PluginFormDescription>
-        <RecoilText state={aiIconState} label='AIのアイコン' width={520} placeholder='https://' />
+        <JotaiText atom={aiIconAtom} label='AIのアイコン' width={520} placeholder='https://' />
       </PluginFormSection>
 
       <PluginFormSection>
@@ -120,7 +120,7 @@ const Component: FC = () => {
           </a>
           をご確認ください。
         </PluginFormDescription>
-        <RecoilSwitch state={allowImageUploadState} label='画像の読み込みを有効にする' />
+        <JotaiSwitch atom={allowImageUploadAtom} label='画像の読み込みを有効にする' />
       </PluginFormSection>
 
       <PluginFormSection>
@@ -140,7 +140,7 @@ const Component: FC = () => {
           </a>
           をご確認ください。
         </PluginFormDescription>
-        <RecoilNumber state={maxTokensState} label='返答の長さの最大値' width={200} />
+        <JotaiText type='number' atom={maxTokensAtom} label='返答の長さの最大値' width={200} />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>例文の設定</PluginFormTitle>
