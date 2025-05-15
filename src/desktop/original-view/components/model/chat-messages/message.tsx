@@ -80,12 +80,7 @@ const Component: FC<Props> = ({ message }) => {
 
   if (typeof message === 'string') {
     const html = getHTMLfromMarkdown(message);
-    return (
-      <div
-        dangerouslySetInnerHTML={{ __html: html }}
-        className='[&>_*:first-of-type]:mt-0 [&>_*:last-of-type]:mb-0'
-      />
-    );
+    return <div dangerouslySetInnerHTML={{ __html: html }} />;
   }
 
   const text =

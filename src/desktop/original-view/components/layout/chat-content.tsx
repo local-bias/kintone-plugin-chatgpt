@@ -4,38 +4,33 @@ export const ChatContent = styled.div`
   &:nth-of-type(2n) {
     background-color: #f9fafb;
   }
+  color: var(--🐸foreground);
 
   h1 {
     font-size: 24px;
     line-height: 2.25rem;
     font-weight: 600;
-    margin-bottom: 16px;
+    margin-bottom: calc(var(--🐸spacing) * 4);
   }
   h2 {
-    color: #1f2937;
     font-size: 20px;
     line-height: 2rem;
     font-weight: 600;
-    margin: 4rem 0 2rem;
-    padding: 0.75rem 1rem;
-    border-left: 4px solid #4a82b6;
-    position: relative;
+    margin-top: calc(var(--🐸spacing) * 8);
+    margin-bottom: calc(var(--🐸spacing) * 4);
   }
   @media (min-width: 768px) {
     h2 {
       font-size: 22px;
-      padding: 1rem 2rem;
-      margin: 4rem 0 2rem;
     }
   }
   h3 {
-    color: #1e293b;
     font-size: 18px;
     line-height: 1.75rem;
     font-weight: 600;
     margin: 2.5rem 0 1rem;
     padding-bottom: 0.5rem;
-    border-bottom: 2px solid #b2cae0;
+    border-bottom: 2px solid color-mix(in oklab, var(--🐸primary) 50%, transparent);
     position: relative;
   }
   @media (min-width: 768px) {
@@ -50,27 +45,38 @@ export const ChatContent = styled.div`
     left: 0;
     width: 33%;
     height: 2px;
-    background-color: #4a82b6;
+    background-color: var(--🐸primary);
   }
   h4 {
-    color: #1e293b;
     font-size: 1.125rem;
     line-height: 1.75rem;
     font-weight: 600;
     margin: 3.5rem 0 1rem;
   }
+  p:not(:first-child) {
+    margin-top: calc(var(--🐸spacing) * 2);
+  }
+  p:not(:last-child) {
+    margin-bottom: calc(var(--🐸spacing) * 2);
+  }
   p {
-    color: #334155;
+    color: color-mix(in oklab, var(--🐸foreground) 80%, transparent);
     line-height: 1.75rem;
-    margin-bottom: 2rem;
   }
   em {
     text-decoration-line: underline;
     text-underline-offset: 4px;
-    text-decoration-color: #94a3b8;
+    text-decoration-color: color-mix(in oklab, var(--🐸foreground) 50%, transparent);
     text-decoration-thickness: 2px;
     font-style: normal;
   }
+
+  hr {
+    border-top-width: 1px;
+    border-color: var(--🐸border);
+    margin-block: calc(var(--🐸spacing) * 8);
+  }
+
   details {
     margin-bottom: 3rem;
   }
@@ -78,6 +84,9 @@ export const ChatContent = styled.div`
   ol {
     padding: 0.5rem 1rem 0.5rem 3rem;
     margin-bottom: 14px;
+  }
+  ul {
+    list-style-type: disc;
   }
   ol {
     list-style-type: decimal;
@@ -101,31 +110,39 @@ export const ChatContent = styled.div`
     line-height: 1.25rem;
     margin-bottom: 2rem;
   }
+  thead,
+  tbody tr:not(:last-child) {
+    border-bottom: 1px solid var(--🐸border);
+  }
   th {
     white-space: nowrap;
+    text-align: left;
+    font-weight: 600;
   }
   table th,
   table td {
     padding: 0.5rem 1rem;
-    border-bottom: 1px #0002;
-  }
-  table th {
-    background-color: #334155;
-    color: #fff;
-    font-weight: 400;
-  }
-  table td:nth-of-type(2n) {
-    background-color: #f1f5f9;
   }
   pre {
-    background-color: #24292e;
-    color: #e1e4e8;
-    margin-bottom: 2rem;
-    padding: 1rem;
+    border: 1px solid var(--🐸border);
+    border-radius: calc(var(--🐸radius) - 6px);
+    background-color: var(--🐸accent);
+    color: var(--🐸accent-foreground);
+    margin-bottom: calc(var(--🐸spacing) * 8);
+    padding: calc(var(--🐸spacing) * 4);
   }
   code {
     font-size: 15px;
-    font-family: Consolas, Monaco, Andale Mono, ui-monospace, SFMono-Regular, 'Noto Sans JP',
-      'Yu Gothic Medium', YuGothic, Ubuntu Mono, monospace;
+    font-family:
+      Consolas,
+      Monaco,
+      Andale Mono,
+      ui-monospace,
+      SFMono-Regular,
+      'Noto Sans JP',
+      'Yu Gothic Medium',
+      YuGothic,
+      Ubuntu Mono,
+      monospace;
   }
 `;
