@@ -2,6 +2,10 @@ import OpenAI from 'openai';
 import { ChatModel } from 'openai/resources';
 import config from 'plugin.config.mjs';
 
+export const OPENROUTER_ENDPOINT_ROOT = 'https://openrouter.ai';
+export const OPENROUTER_CHAT_COMPLETION_ENDPOINT = `${OPENROUTER_ENDPOINT_ROOT}/api/v1/chat/completions`;
+export const OPENROUTER_ENDPOINT_MODELS = `${OPENROUTER_ENDPOINT_ROOT}/api/v1/models`;
+
 export const OPENAI_ENDPOINT_ROOT = 'https://api.openai.com';
 export const OPENAI_ENDPOINT = `${OPENAI_ENDPOINT_ROOT}/v1/chat/completions`;
 

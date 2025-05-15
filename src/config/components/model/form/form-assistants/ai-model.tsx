@@ -1,8 +1,8 @@
+import { selectableModelsAtom } from '@/config/states/ai';
 import { aiModelAtom } from '@/config/states/plugin';
-import { OPENAI_MODELS } from '@/lib/static';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { FC } from 'react';
+import { FC, Suspense } from 'react';
 
 const handleModelChangeAtom = atom(null, (_, set, __: unknown, value: string | null) => {
   if (!value) {
@@ -11,7 +11,8 @@ const handleModelChangeAtom = atom(null, (_, set, __: unknown, value: string | n
   set(aiModelAtom, value);
 });
 
-const Component: FC = () => {
+const AiModelFormComponent: FC = () => {
+  const models = useAtomValue(selectableModelsAtom);
   const aiModel = useAtomValue(aiModelAtom);
   const onModelChange = useSetAtom(handleModelChangeAtom);
 
@@ -20,7 +21,7 @@ const Component: FC = () => {
       value={aiModel}
       freeSolo
       sx={{ width: '350px' }}
-      options={OPENAI_MODELS}
+      options={models}
       getOptionLabel={(option) => option}
       onChange={onModelChange}
       renderInput={(params) => (
@@ -36,8 +37,10 @@ const Component: FC = () => {
   );
 };
 
-const Container: FC = () => {
-  return <Component />;
-};
-
-export default Container;
+export default function AiModelForm() {
+  return (
+    <Suspense fallback={<Skeleton variant='rounded' height={56} width={350} />}>
+      <AiModelFormComponent />
+    </Suspense>
+  );
+}

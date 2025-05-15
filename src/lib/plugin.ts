@@ -18,8 +18,9 @@ export const isPluginConditionMet = (condition: PluginCondition): boolean => {
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 6,
+  version: 7,
   common: {
+    providerType: 'openrouter',
     viewId: '',
     outputAppId: '',
     outputKeyFieldCode: '',
@@ -96,7 +97,17 @@ export const migrateConfig = (storage: AnyPluginConfig): PluginConfig => {
         version: 6,
       });
     }
-    case 6:
+    case 6: {
+      return migrateConfig({
+        ...storage,
+        common: {
+          ...storage.common,
+          providerType: 'openai',
+        },
+        version: 7,
+      });
+    }
+    case 7:
     default: {
       return storage;
     }

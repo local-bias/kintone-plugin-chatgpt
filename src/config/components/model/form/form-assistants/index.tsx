@@ -54,8 +54,15 @@ const Component: FC = () => {
         <PluginFormTitle>使用するAIモデル*</PluginFormTitle>
         <div>
           <PluginFormDescription>
-            OpenAIが提供しているAIモデルの設定。使用するモデルによって、発生する料金が変化します。詳細は
-            <a href='https://openai.com/pricing'>OpenAIの料金表</a>をご確認ください。
+            AIプロバイダーが提供しているAIモデルの設定。使用するモデルによって、発生する料金が変化します。詳細は
+            <a href='https://openai.com/pricing' target='_blank' rel='noopener noreferrer'>
+              OpenAIの料金表
+            </a>
+            もしくは
+            <a href='https://openrouter.ai/models' target='_blank' rel='noopener noreferrer'>
+              OpenRouterのモデル一覧
+            </a>
+            をご確認ください。
           </PluginFormDescription>
           <PluginFormDescription>
             ファインチューニングされたモデルをお持ちの場合や、選択肢にないモデルを使用されたい場合は、直接入力することで使用することができます。

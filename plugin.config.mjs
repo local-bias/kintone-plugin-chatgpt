@@ -23,7 +23,7 @@ export default /** @type { const } */ ({
   manifest: {
     base: {
       manifest_version: 1,
-      version: '4.22.1',
+      version: '5.0.0',
       type: 'APP',
       name: {
         en: 'AI Chat Plugin',

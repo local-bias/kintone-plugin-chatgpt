@@ -1,16 +1,16 @@
 import {
-  apiKeyState,
   enablesAnimationAtom,
   enablesEnterAtom,
   enablesShiftEnterAtom,
 } from '@/config/states/plugin';
-import { JotaiSwitch, JotaiText } from '@konomi-app/kintone-utilities-jotai';
+import { JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { FCX } from 'react';
+import ApiKeyForm from './form-api-key';
 import LogAppIdForm from './form-log-app-id';
 import LogContentForm from './form-log-content';
 import LogKeyForm from './form-log-key';
@@ -18,25 +18,30 @@ import OutputAppIdForm from './form-output-app-id';
 import OutputContentForm from './form-output-content';
 import OutputKeyForm from './form-output-key';
 import ViewIdState from './form-view-id';
+import AiProviderTypeForm from './provider-type';
 
 const Component: FCX = () => {
   return (
     <div className='px-4 max-w-[900px]'>
       <PluginFormSection>
-        <PluginFormTitle>ChatGPTのAPIキー*</PluginFormTitle>
+        <PluginFormTitle>APIキー*</PluginFormTitle>
         <div>
-          <PluginFormDescription>OpenAI Platformで発行したAPIキー。</PluginFormDescription>
-          <PluginFormDescription last>
-            キーの発行は<a href='https://platform.openai.com/account/api-keys'>こちらから</a>
-            可能です。
+          <PluginFormDescription>
+            プラグインで使用するAPIキーを入力してください。
           </PluginFormDescription>
-          <JotaiText
-            atom={apiKeyState}
-            variant='outlined'
-            label='APIキー'
-            placeholder='sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
-            width={510}
-          />
+          <PluginFormDescription>
+            発行手順はAIプロバイダーによって異なるため、各プロバイダーのドキュメントを参照してください。
+          </PluginFormDescription>
+          <PluginFormDescription last>
+            <div>
+              OpenAI: <a href='https://platform.openai.com/account/api-keys'>API Keys</a>
+            </div>
+            <div>
+              OpenRouter: <a href='https://openrouter.ai/settings/keys'>API Keys</a>
+            </div>
+          </PluginFormDescription>
+          <AiProviderTypeForm />
+          <ApiKeyForm />
         </div>
       </PluginFormSection>
       <PluginFormSection>

@@ -1,5 +1,5 @@
 import { kintoneApiFetch } from '@/lib/api';
-import { isProd } from '@/lib/global';
+import { isDev, isProd } from '@/lib/global';
 import {
   AnyChatHistory,
   ChatHistory,
@@ -7,7 +7,9 @@ import {
   OPENAI_ENDPOINT,
   OPENAI_MODELS,
   O1_SERIES_MODELS,
+  OPENROUTER_CHAT_COMPLETION_ENDPOINT,
 } from '@/lib/static';
+import { AiProviderType } from '@/schema/plugin-config';
 import {
   addRecord,
   getRecords,
@@ -54,10 +56,11 @@ export const fetchChatCompletion = async (params: {
   temperature: number;
   maxTokens: number;
   messages: ChatMessage[];
+  providerType?: AiProviderType;
 }) => {
-  const { model, temperature, maxTokens, messages } = params;
+  const { model, temperature, maxTokens, messages, providerType = 'openai' } = params;
 
-  process.env.NODE_ENV === 'development' && console.group("🧠 openai's API call");
+  isDev && console.group("🧠 openai's API call");
 
   let max_tokens = maxTokens === 0 ? undefined : maxTokens;
 
@@ -88,16 +91,23 @@ export const fetchChatCompletion = async (params: {
     requestBody.reasoning_effort = 'low';
   }
 
-  process.env.NODE_ENV === 'development' && console.time("openai's API call");
-  process.env.NODE_ENV === 'development' && console.log('OpenAI - APIリクエスト', requestBody);
+  isDev && console.time("openai's API call");
+  isDev && console.log('OpenAI - APIリクエスト', requestBody);
 
-  const response = await kintoneApiFetch(OPENAI_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json; charset=UTF-8',
-    },
-    body: JSON.stringify(requestBody),
-  });
+  let response: Response;
+  if (providerType === 'openai') {
+    response = await kintoneApiFetch(OPENAI_ENDPOINT, {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+    });
+  } else {
+    response = await kintoneApiFetch(OPENROUTER_CHAT_COMPLETION_ENDPOINT, {
+      method: 'POST',
+      body: JSON.stringify({
+        ...requestBody,
+      }),
+    });
+  }
 
   !isProd && console.timeEnd("openai's API call");
 
@@ -120,10 +130,9 @@ export const fetchChatCompletion = async (params: {
     );
   }
 
-  process.env.NODE_ENV === 'development' &&
-    console.log(`このやり取りで${chatCompletion.usage?.total_tokens}トークン消費しました`);
+  isDev && console.log(`このやり取りで${chatCompletion.usage?.total_tokens}トークン消費しました`);
 
-  process.env.NODE_ENV === 'development' && console.groupEnd();
+  isDev && console.groupEnd();
 
   return chatCompletion;
 };
@@ -159,7 +168,7 @@ export const logChatCompletion = async (params: {
           [keyFieldCode]: { value: chatId },
           [contentFieldCode]: { value: JSON.stringify(chatHistory) },
         },
-        debug: process.env.NODE_ENV === 'development',
+        debug: isDev,
       },
     });
   } else {
@@ -173,7 +182,7 @@ export const logChatCompletion = async (params: {
           [keyFieldCode]: { value: chatId },
           [contentFieldCode]: { value: JSON.stringify(chatHistory) },
         },
-        debug: process.env.NODE_ENV === 'development',
+        debug: isDev,
       },
     });
   }

@@ -1,7 +1,12 @@
 import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import { t } from '@/lib/i18n';
 import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
-import { OPENAI_ENDPOINT_ROOT, PLUGIN_NAME, VIEW_ROOT_ID } from '@/lib/static';
+import {
+  OPENAI_ENDPOINT_ROOT,
+  OPENROUTER_ENDPOINT_ROOT,
+  PLUGIN_NAME,
+  VIEW_ROOT_ID,
+} from '@/lib/static';
 import { handleLoadingEndAtom, handleLoadingStartAtom } from '@/lib/w-ui';
 import { PluginCommonConfig, PluginConfig } from '@/schema/plugin-config';
 import {
@@ -38,7 +43,12 @@ export const {
   enableCommonCondition: true,
 });
 
-export const apiKeyState = atomWithDefault<string>(() => {
+export const openrouterApiKeyAtom = atomWithDefault<string>(() => {
+  const proxyConfig = kintone.plugin.app.getProxyConfig(OPENROUTER_ENDPOINT_ROOT, 'POST');
+  return proxyConfig?.headers.Authorization.replace('Bearer ', '') ?? '';
+});
+
+export const openaiApiKeyAtom = atomWithDefault<string>(() => {
   const proxyConfig = kintone.plugin.app.getProxyConfig(OPENAI_ENDPOINT_ROOT, 'POST');
   return proxyConfig?.headers.Authorization.replace('Bearer ', '') ?? '';
 });
@@ -57,6 +67,7 @@ const getCommonPropertyAtom = <T extends keyof PluginCommonConfig>(property: T) 
     }
   );
 
+export const providerTypeAtom = getCommonPropertyAtom('providerType');
 export const viewIdAtom = getCommonPropertyAtom('viewId');
 export const outputAppIdAtom = getCommonPropertyAtom('outputAppId');
 export const outputAppSpaceIdAtom = getCommonPropertyAtom('outputAppSpaceId');
@@ -93,7 +104,6 @@ export const updatePluginConfig = atom(null, async (get, set, actionComponent: R
   try {
     set(handleLoadingStartAtom);
     const pluginConfig = get(pluginConfigAtom);
-    const apiKey = get(apiKeyState);
     const app = get(currentAppIdAtom);
     const { views } = await getViews({
       app,
@@ -120,12 +130,21 @@ export const updatePluginConfig = atom(null, async (get, set, actionComponent: R
     });
     storePluginConfig(pluginConfig, {
       callback: () => {
+        const openaiApiKey = get(openaiApiKeyAtom);
         kintone.plugin.app.setProxyConfig(
           OPENAI_ENDPOINT_ROOT,
           'POST',
-          { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+          { 'Content-Type': 'application/json', Authorization: `Bearer ${openaiApiKey}` },
           {},
-          () => true
+          () => false
+        );
+        const openrouterApiKey = get(openrouterApiKeyAtom);
+        kintone.plugin.app.setProxyConfig(
+          OPENROUTER_ENDPOINT_ROOT,
+          'POST',
+          { 'Content-Type': 'application/json', Authorization: `Bearer ${openrouterApiKey}` },
+          {},
+          () => false
         );
         return true;
       },

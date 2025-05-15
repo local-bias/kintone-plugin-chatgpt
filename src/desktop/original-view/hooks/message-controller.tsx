@@ -5,6 +5,7 @@ import {
   pendingRequestCountAtom,
   selectedHistoryAtom,
 } from '@/desktop/original-view/states/states';
+import { pluginCommonConfigAtom } from '@/desktop/public-state';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
 import { useChatHistory } from './use-chat-history';
@@ -19,16 +20,19 @@ export const useMessageController = () => {
       try {
         set(apiErrorMessageAtom, null);
         set(isWaitingForAIAtom, true);
+
         const chatHistory = get(selectedHistoryAtom);
         if (!chatHistory) {
           throw new Error('チャットが選択されていません');
         }
 
+        const commonConfig = get(pluginCommonConfigAtom);
         const response = await fetchChatCompletion({
           model: chatHistory.aiModel,
           temperature: chatHistory.temperature,
           maxTokens: chatHistory.maxTokens,
           messages: chatHistory.messages,
+          providerType: commonConfig.providerType,
         });
 
         const assistantMessage = response.choices[0].message;
