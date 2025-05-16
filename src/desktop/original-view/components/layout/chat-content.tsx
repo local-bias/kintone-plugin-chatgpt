@@ -12,23 +12,32 @@ export const ChatContent = styled.div`
     font-weight: 600;
     margin-bottom: calc(var(--🐸spacing) * 4);
   }
+  h2:not(:first-child) {
+    margin-top: calc(var(--🐸spacing) * 8);
+  }
+  h2:not(:last-child) {
+    margin-bottom: calc(var(--🐸spacing) * 4);
+  }
   h2 {
     font-size: 20px;
     line-height: 2rem;
     font-weight: 600;
-    margin-top: calc(var(--🐸spacing) * 8);
-    margin-bottom: calc(var(--🐸spacing) * 4);
   }
   @media (min-width: 768px) {
     h2 {
       font-size: 22px;
     }
   }
+  h3:not(:first-child) {
+    margin-top: calc(var(--🐸spacing) * 4);
+  }
+  h3:not(:last-child) {
+    margin-bottom: calc(var(--🐸spacing) * 2);
+  }
   h3 {
     font-size: 18px;
     line-height: 1.75rem;
     font-weight: 600;
-    margin: 2.5rem 0 1rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid color-mix(in oklab, var(--🐸primary) 50%, transparent);
     position: relative;
@@ -47,11 +56,16 @@ export const ChatContent = styled.div`
     height: 2px;
     background-color: var(--🐸primary);
   }
+  h4:not(:first-child) {
+    margin-top: calc(var(--🐸spacing) * 4);
+  }
+  h4:not(:last-child) {
+    margin-bottom: calc(var(--🐸spacing) * 2);
+  }
   h4 {
     font-size: 1.125rem;
     line-height: 1.75rem;
     font-weight: 600;
-    margin: 3.5rem 0 1rem;
   }
   p:not(:first-child) {
     margin-top: calc(var(--🐸spacing) * 2);
@@ -133,16 +147,7 @@ export const ChatContent = styled.div`
   }
   code {
     font-size: 15px;
-    font-family:
-      Consolas,
-      Monaco,
-      Andale Mono,
-      ui-monospace,
-      SFMono-Regular,
-      'Noto Sans JP',
-      'Yu Gothic Medium',
-      YuGothic,
-      Ubuntu Mono,
-      monospace;
+    font-family: Consolas, Monaco, Andale Mono, ui-monospace, SFMono-Regular, 'Noto Sans JP',
+      'Yu Gothic Medium', YuGothic, Ubuntu Mono, monospace;
   }
 `;

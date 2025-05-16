@@ -110,6 +110,9 @@ importers:
       react-error-boundary:
         specifier: ^6.0.0
         version: 6.0.0(react@19.1.0)
+      remeda:
+        specifier: ^2.21.5
+        version: 2.21.5
       tailwind-merge:
         specifier: ^3.3.0
         version: 3.3.0
