@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 import {
   aiIconAtom,
   allowImageUploadAtom,
@@ -7,16 +6,20 @@ import {
   maxTokensAtom,
   systemPromptAtom,
 } from '@/config/states/plugin';
-import AiModelForm from './ai-model';
-import TemperatureForm from './temperature';
-import ExamplesForm from './examples';
+import { JotaiSwitch, JotaiText } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
+import { FC } from 'react';
 import DeleteButton from './condition-delete-button';
-import { JotaiSwitch, JotaiText } from '@konomi-app/kintone-utilities-jotai';
+import ExamplesForm from './examples';
+import ReasoningEffortForm from './reasoning-effort';
+import TemperatureForm from './temperature';
+import VerbosityForm from './verbosity';
+import AiModelForm from './ai-model';
+import { isOpenSource } from '@/lib/constants';
 
 const Component: FC = () => {
   return (
@@ -50,31 +53,33 @@ const Component: FC = () => {
         />
       </PluginFormSection>
 
-      <PluginFormSection>
-        <PluginFormTitle>使用するAIモデル*</PluginFormTitle>
-        <div>
-          <PluginFormDescription>
-            AIプロバイダーが提供しているAIモデルの設定。使用するモデルによって、発生する料金が変化します。詳細は
-            <a href='https://openai.com/pricing' target='_blank' rel='noopener noreferrer'>
-              OpenAIの料金表
-            </a>
-            もしくは
-            <a href='https://openrouter.ai/models' target='_blank' rel='noopener noreferrer'>
-              OpenRouterのモデル一覧
-            </a>
-            をご確認ください。
-          </PluginFormDescription>
-          <PluginFormDescription>
-            ファインチューニングされたモデルをお持ちの場合や、選択肢にないモデルを使用されたい場合は、直接入力することで使用することができます。
-          </PluginFormDescription>
-          <PluginFormDescription last>
-            <span className='text-red-600'>
-              ご契約のプランによっては、一部のモデルを使用することができない場合があります。
-            </span>
-          </PluginFormDescription>
-          <AiModelForm />
-        </div>
-      </PluginFormSection>
+      {isOpenSource && (
+        <PluginFormSection>
+          <PluginFormTitle>使用するAIモデル*</PluginFormTitle>
+          <div>
+            <PluginFormDescription>
+              AIプロバイダーが提供しているAIモデルの設定。使用するモデルによって、発生する料金が変化します。詳細は
+              <a href='https://openai.com/pricing' target='_blank' rel='noopener noreferrer'>
+                OpenAIの料金表
+              </a>
+              もしくは
+              <a href='https://openrouter.ai/models' target='_blank' rel='noopener noreferrer'>
+                OpenRouterのモデル一覧
+              </a>
+              をご確認ください。
+            </PluginFormDescription>
+            <PluginFormDescription>
+              ファインチューニングされたモデルをお持ちの場合や、選択肢にないモデルを使用されたい場合は、直接入力することで使用することができます。
+            </PluginFormDescription>
+            <PluginFormDescription last>
+              <span className='text-red-600'>
+                ご契約のプランによっては、一部のモデルを使用することができない場合があります。
+              </span>
+            </PluginFormDescription>
+            <AiModelForm />
+          </div>
+        </PluginFormSection>
+      )}
 
       <PluginFormSection>
         <PluginFormTitle>回答のランダム性</PluginFormTitle>
@@ -82,6 +87,26 @@ const Component: FC = () => {
           数値を大きくするほど、同一の質問に対しても回答が変化します。
         </PluginFormDescription>
         <TemperatureForm />
+      </PluginFormSection>
+
+      <PluginFormSection>
+        <PluginFormTitle>推論レベル</PluginFormTitle>
+        <PluginFormDescription>AIがどれだけ深く推論を行うかを設定します。</PluginFormDescription>
+        <PluginFormDescription last>
+          <span className='text-red-600'>この設定は、一部のモデルでのみ有効です。</span>
+          対応していないモデルでは無視されます。
+        </PluginFormDescription>
+        <ReasoningEffortForm />
+      </PluginFormSection>
+
+      <PluginFormSection>
+        <PluginFormTitle>回答の詳細度</PluginFormTitle>
+        <PluginFormDescription>AIがどれだけ詳しく回答するかを設定します。</PluginFormDescription>
+        <PluginFormDescription last>
+          <span className='text-red-600'>この設定は、一部のモデルでのみ有効です。</span>
+          対応していないモデルでは無視されます。
+        </PluginFormDescription>
+        <VerbosityForm />
       </PluginFormSection>
 
       <PluginFormSection>
