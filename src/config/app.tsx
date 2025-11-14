@@ -18,32 +18,39 @@ import Form from './components/model/form';
 import Sidebar from './components/sidebar';
 
 const Component: FC = () => (
-  <Suspense fallback={<LoaderWithLabel label='画面の描画を待機しています' />}>
-    <Provider store={store}>
-      <PluginErrorBoundary>
-        <PluginConfigProvider config={config}>
-          <Notification />
-          <SnackbarProvider maxSnack={1}>
-            <Suspense fallback={<LoaderWithLabel label='設定情報を取得しています' />}>
-              <PluginLayout>
-                <PluginErrorBoundary>
-                  <Sidebar />
-                </PluginErrorBoundary>
-                <PluginContent>
+  <PluginErrorBoundary>
+    <Suspense fallback={<LoaderWithLabel label='画面の描画を待機しています' />}>
+      <Provider store={store}>
+        <PluginErrorBoundary>
+          <PluginConfigProvider config={config}>
+            <Notification />
+            <SnackbarProvider maxSnack={1}>
+              <Suspense fallback={<LoaderWithLabel label='設定情報を取得しています' />}>
+                <PluginLayout>
                   <PluginErrorBoundary>
-                    <Form />
+                    <Sidebar />
                   </PluginErrorBoundary>
-                </PluginContent>
-                <PluginBanner url={URL_BANNER} />
-                <Footer />
-              </PluginLayout>
-            </Suspense>
-          </SnackbarProvider>
-        </PluginConfigProvider>
-      </PluginErrorBoundary>
-    </Provider>
-    <iframe title='promotion' loading='lazy' src={URL_PROMOTION} className='border-0 w-full h-16' />
-  </Suspense>
+                  <PluginContent>
+                    <PluginErrorBoundary>
+                      <Form />
+                    </PluginErrorBoundary>
+                  </PluginContent>
+                  <PluginBanner url={URL_BANNER} />
+                  <Footer />
+                </PluginLayout>
+              </Suspense>
+            </SnackbarProvider>
+          </PluginConfigProvider>
+        </PluginErrorBoundary>
+      </Provider>
+      <iframe
+        title='promotion'
+        loading='lazy'
+        src={URL_PROMOTION}
+        className='border-0 w-full h-16'
+      />
+    </Suspense>
+  </PluginErrorBoundary>
 );
 
 export default Component;
