@@ -201,6 +201,50 @@ export const PluginConfigV7Schema = z.object({
   conditions: z.array(PluginConditionV7Schema),
 });
 
+export const PluginConditionV8Schema = z.object({
+  /**
+   * プラグイン設定を一意に識別するためのID
+   * 設定の並び替えに使用されます
+   */
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  aiModel: z.string(),
+  aiIcon: z.string(),
+  temperature: z.number(),
+  systemPrompt: z.string(),
+  maxTokens: z.number(),
+  examples: z.array(z.string()),
+  allowImageUpload: z.boolean(),
+  /**
+   * どれだけ推論を行うか
+   */
+  reasoningEffort: z.enum(['minimal', 'low', 'medium', 'high']),
+  /**
+   * どれだけ詳しく回答するか
+   */
+  verbosity: z.enum(['low', 'medium', 'high']),
+});
+export const PluginConfigV8Schema = z.object({
+  version: z.literal(8),
+  common: z.object({
+    providerType: AiProviderTypeV1Schema,
+    viewId: z.string(),
+    outputAppId: z.string(),
+    outputAppSpaceId: z.string().optional(),
+    outputKeyFieldCode: z.string(),
+    outputContentFieldCode: z.string(),
+    logAppId: z.string().optional(),
+    logAppSpaceId: z.string().optional(),
+    logKeyFieldCode: z.string().optional(),
+    logContentFieldCode: z.string().optional(),
+    enablesAnimation: z.boolean(),
+    enablesShiftEnter: z.boolean(),
+    enablesEnter: z.boolean(),
+  }),
+  conditions: z.array(PluginConditionV8Schema),
+});
+
 export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
   PluginConfigV1Schema,
   PluginConfigV2Schema,
@@ -209,12 +253,13 @@ export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
   PluginConfigV5Schema,
   PluginConfigV6Schema,
   PluginConfigV7Schema,
+  PluginConfigV8Schema,
 ]);
 
 /** 🔌 プラグインがアプリ単位で保存する設定情報 */
-export type PluginConfig = z.infer<typeof PluginConfigV7Schema>;
+export type PluginConfig = z.infer<typeof PluginConfigV8Schema>;
 
-export const LatestPluginConditionSchema = PluginConditionV7Schema;
+export const LatestPluginConditionSchema = PluginConditionV8Schema;
 
 /** 🔌 プラグインの共通設定 */
 export type PluginCommonConfig = PluginConfig['common'];
