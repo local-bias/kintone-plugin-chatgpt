@@ -3,8 +3,8 @@ import {
   selectedPluginConditionAtom,
 } from '@/desktop/original-view/states/states';
 import { useAtomValue } from 'jotai';
-import React, { FC } from 'react';
-import { ChatGPTIcon } from '../../ui/chatgpt-icon';
+import { FC } from 'react';
+import { IconAIDefault } from '../../ui/icon-ai-default';
 
 const Component: FC = () => {
   const selectedHistory = useAtomValue(selectedHistoryAtom);
@@ -16,7 +16,7 @@ const Component: FC = () => {
     return <img className='object-cover w-full h-full' src={src} />;
   }
 
-  return <ChatGPTIcon />;
+  return <IconAIDefault className='w-full h-full' />;
 };
 
 export default Component;

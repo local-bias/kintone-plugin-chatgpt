@@ -1,8 +1,8 @@
 import { selectedPluginConditionIdAtom } from '@/desktop/original-view/states/states';
 import { pluginConditionsAtom } from '@/desktop/public-state';
 import { useAtom, useAtomValue } from 'jotai';
-import React, { FCX } from 'react';
-import { ChatGPTIcon } from '../../ui/chatgpt-icon';
+import { FCX } from 'react';
+import { IconAIDefault } from '../../ui/icon-ai-default';
 
 const Component: FCX = () => {
   const conditions = useAtomValue(pluginConditionsAtom);
@@ -20,7 +20,7 @@ const Component: FCX = () => {
             {conditions[0].aiIcon ? (
               <img className='object-cover w-full h-full' src={conditions[0].aiIcon} />
             ) : (
-              <ChatGPTIcon />
+              <IconAIDefault className='w-full h-full' />
             )}
           </div>
           <div>{conditions[0].description}</div>
@@ -42,7 +42,7 @@ const Component: FCX = () => {
                   {condition.aiIcon ? (
                     <img className='object-cover w-full h-full' src={condition.aiIcon} />
                   ) : (
-                    <ChatGPTIcon />
+                    <IconAIDefault className='w-full h-full' />
                   )}
                 </div>
                 <div className='flex-1'>
