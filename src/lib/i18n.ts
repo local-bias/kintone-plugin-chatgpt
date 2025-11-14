@@ -3,7 +3,11 @@ import { mergeDeep } from 'remeda';
 import { LANGUAGE } from './global';
 
 const ui = mergeDeep(commonUi, {
-  ja: {},
+  ja: {
+    'common.auth.serverError': 'サーバーエラーが発生しました。管理者へお問い合わせください。',
+    'common.auth.licenseExpired': 'ライセンスの有効期限が切れています。',
+    'common.auth.licenseInvalid': 'ライセンスが無効です',
+  },
   en: {},
   es: {},
   zh: {},
