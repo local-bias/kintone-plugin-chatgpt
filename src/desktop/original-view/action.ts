@@ -4,9 +4,9 @@ import {
   AnyChatHistory,
   ChatHistory,
   ChatMessage,
+  O1_SERIES_MODELS,
   OPENAI_ENDPOINT,
   OPENAI_MODELS,
-  O1_SERIES_MODELS,
   OPENROUTER_CHAT_COMPLETION_ENDPOINT,
 } from '@/lib/static';
 import { AiProviderType } from '@/schema/plugin-config';
