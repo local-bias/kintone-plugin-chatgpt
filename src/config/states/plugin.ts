@@ -24,7 +24,10 @@ import invariant from 'tiny-invariant';
 import { currentAppIdAtom } from './kintone';
 import { usePluginAtoms } from './w-plugin';
 
-export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
+const { config: initialConfig, error: configError } = restorePluginConfig();
+
+export const pluginConfigAtom = atom<PluginConfig>(initialConfig);
+export const pluginConfigErrorAtom = atom<Error | null>(configError ?? null);
 
 export const handlePluginConfigResetAtom = atom(null, (_, set) => {
   set(pluginConfigAtom, createConfig());
@@ -90,6 +93,8 @@ export const maxTokensAtom = getConditionPropertyAtom('maxTokens');
 export const temperatureAtom = getConditionPropertyAtom('temperature');
 export const systemPromptAtom = getConditionPropertyAtom('systemPrompt');
 export const allowImageUploadAtom = getConditionPropertyAtom('allowImageUpload');
+export const reasoningEffortAtom = getConditionPropertyAtom('reasoningEffort');
+export const verbosityAtom = getConditionPropertyAtom('verbosity');
 
 export const handlePluginConditionDeleteAtom = atom(null, (get, set) => {
   const selectedConditionId = get(selectedConditionIdAtom);
@@ -130,22 +135,20 @@ export const updatePluginConfig = atom(null, async (get, set, actionComponent: R
     });
     storePluginConfig(pluginConfig, {
       callback: () => {
-        const openaiApiKey = get(openaiApiKeyAtom);
-        kintone.plugin.app.setProxyConfig(
-          OPENAI_ENDPOINT_ROOT,
-          'POST',
-          { 'Content-Type': 'application/json', Authorization: `Bearer ${openaiApiKey}` },
-          {},
-          () => false
-        );
-        const openrouterApiKey = get(openrouterApiKeyAtom);
-        kintone.plugin.app.setProxyConfig(
-          OPENROUTER_ENDPOINT_ROOT,
-          'POST',
-          { 'Content-Type': 'application/json', Authorization: `Bearer ${openrouterApiKey}` },
-          {},
-          () => false
-        );
+        const proxyConfig = [
+          { endpoint: OPENAI_ENDPOINT_ROOT, apiKey: get(openaiApiKeyAtom) },
+          { endpoint: OPENROUTER_ENDPOINT_ROOT, apiKey: get(openrouterApiKeyAtom) },
+        ];
+
+        for (const { endpoint, apiKey } of proxyConfig) {
+          kintone.plugin.app.setProxyConfig(
+            endpoint,
+            'POST',
+            { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+            {},
+            () => false
+          );
+        }
         return true;
       },
       flatProperties: ['conditions'],
