@@ -1,9 +1,10 @@
 import { useMessageController } from '@/desktop/original-view/hooks/message-controller';
 import { useChatHistory } from '@/desktop/original-view/hooks/use-chat-history';
-import { inputTextAtom } from '@/desktop/original-view/states/states';
+import { inputTextAtom, loadingAtom } from '@/desktop/original-view/states/states';
 import { pluginCommonConfigAtom } from '@/desktop/public-state';
 import { useAtom, useAtomValue } from 'jotai';
-import React, { ChangeEventHandler, FC, KeyboardEventHandler } from 'react';
+import { useAtomCallback } from 'jotai/utils';
+import { ChangeEventHandler, FC, KeyboardEventHandler, useCallback } from 'react';
 
 const Component: FC = () => {
   const commonConfig = useAtomValue(pluginCommonConfigAtom);
@@ -16,16 +17,22 @@ const Component: FC = () => {
     setInput(e.target.value);
   };
 
-  const onKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = async (event) => {
-    const isEnter = event.key === 'Enter';
-    const isShift = event.shiftKey;
+  const onKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = useAtomCallback(
+    useCallback(async (get, set, event) => {
+      const loading = get(loadingAtom);
+      if (loading) {
+        return;
+      }
+      const isEnter = event.key === 'Enter';
+      const isShift = event.shiftKey;
 
-    if ((enablesEnter && isEnter && !isShift) || (enablesShiftEnter && isEnter && isShift)) {
-      event.preventDefault();
-      await pushUserMessage();
-      await sendMessage();
-    }
-  };
+      if ((enablesEnter && isEnter && !isShift) || (enablesShiftEnter && isEnter && isShift)) {
+        event.preventDefault();
+        await pushUserMessage();
+        await sendMessage();
+      }
+    }, [])
+  );
 
   return (
     <textarea
