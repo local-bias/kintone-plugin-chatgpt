@@ -1,7 +1,7 @@
 import { AnyPluginConfig, PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-utilities';
 import { nanoid } from 'nanoid';
-import { PLUGIN_ID } from './global';
+import { isDev, PLUGIN_ID } from './global';
 import { OPENAI_MODELS } from './static';
 
 /**
@@ -18,7 +18,7 @@ export const isPluginConditionMet = (condition: PluginCondition): boolean => {
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 7,
+  version: 8,
   common: {
     providerType: 'openrouter',
     viewId: '',
@@ -107,7 +107,18 @@ export const migrateConfig = (storage: AnyPluginConfig): PluginConfig => {
         version: 7,
       });
     }
-    case 7:
+    case 7: {
+      return migrateConfig({
+        ...storage,
+        conditions: storage.conditions.map((condition) => ({
+          ...condition,
+          reasoningEffort: 'low',
+          verbosity: 'medium',
+        })),
+        version: 8,
+      });
+    }
+    case 8:
     default: {
       return storage;
     }
@@ -115,11 +126,35 @@ export const migrateConfig = (storage: AnyPluginConfig): PluginConfig => {
 };
 
 /**
- * プラグインの設定情報を復元します
+ * プラグイン設定を復元します
+ * エラーが発生した場合は、エラー情報と共にデフォルト設定を返却します
+ * @returns {config: PluginConfig, error?: Error} プラグイン設定とエラー情報
  */
-export const restorePluginConfig = (): PluginConfig => {
-  const config = primitiveRestore<AnyPluginConfig>(PLUGIN_ID) ?? createConfig();
-  return migrateConfig(config);
+export const restorePluginConfig = (): { config: PluginConfig; error?: Error } => {
+  try {
+    isDev && console.log('🔄 プラグイン設定を復元しています...');
+    const savedConfig = primitiveRestore<AnyPluginConfig>(PLUGIN_ID);
+
+    if (!savedConfig) {
+      console.warn('⚠️ 保存された設定が見つかりません。デフォルト設定を使用します。');
+      return { config: createConfig() };
+    }
+
+    const migratedConfig = migrateConfig(savedConfig);
+    return { config: migratedConfig };
+  } catch (error) {
+    console.error('❌ プラグイン設定の復元中にエラーが発生しました', error);
+    const configError =
+      error instanceof Error
+        ? error
+        : new Error(`プラグイン設定の復元に失敗しました: ${String(error)}`);
+
+    // エラーが発生してもデフォルト設定を返すことでアプリケーションは起動する
+    return {
+      config: createConfig(),
+      error: configError,
+    };
+  }
 };
 
 export const getNewCondition = (): PluginCondition => ({
@@ -133,4 +168,6 @@ export const getNewCondition = (): PluginCondition => ({
   maxTokens: 0,
   examples: [''],
   allowImageUpload: true,
+  reasoningEffort: 'low',
+  verbosity: 'medium',
 });

@@ -1,10 +1,11 @@
 import { listener } from '@/lib/listener';
-import { restorePluginConfig } from '@/lib/plugin';
+import { store } from '@/lib/store';
 import { css } from '@emotion/css';
+import { pluginConfigAtom } from '../public-state';
 
 listener.add(['app.record.index.show'], (event) => {
-  const { common } = restorePluginConfig();
-  const { viewId } = common;
+  const config = store.get(pluginConfigAtom);
+  const { viewId } = config.common;
 
   if (event.viewId !== Number(viewId)) {
     return event;

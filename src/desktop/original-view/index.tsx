@@ -1,18 +1,17 @@
 import { listener } from '@/lib/listener';
-import { restorePluginConfig } from '@/lib/plugin';
 import { URL_QUERY_CHAT_ID, VIEW_ROOT_ID } from '@/lib/static';
 import { store } from '@/lib/store';
 import { ComponentManager } from '@konomi-app/kintone-utilities-react';
-import React from 'react';
+import { nanoid } from 'nanoid';
+import { pluginConfigAtom } from '../public-state';
 import { initializeRecords } from './actions/initialize-records';
 import App from './app';
 import { selectedHistoryIdAtom } from './states/states';
-import { nanoid } from 'nanoid';
 
 const ROOT_ID = nanoid();
 
 listener.add(['app.record.index.show'], (event) => {
-  const config = restorePluginConfig();
+  const config = store.get(pluginConfigAtom);
   if (config.common.viewId !== String(event.viewId)) {
     return event;
   }
