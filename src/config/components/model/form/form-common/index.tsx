@@ -10,7 +10,6 @@ import {
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { FCX } from 'react';
-import ApiKeyForm from './form-api-key';
 import LogAppIdForm from './form-log-app-id';
 import LogContentForm from './form-log-content';
 import LogKeyForm from './form-log-key';
@@ -19,6 +18,7 @@ import OutputContentForm from './form-output-content';
 import OutputKeyForm from './form-output-key';
 import ViewIdState from './form-view-id';
 import AiProviderTypeForm from './provider-type';
+import ApiKeyForm from './form-api-key';
 
 const Component: FCX = () => {
   return (
