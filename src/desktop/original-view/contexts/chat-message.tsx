@@ -3,7 +3,7 @@ import { useAtomCallback } from 'jotai/utils';
 import React, { createContext, ReactNode, useCallback, useContext } from 'react';
 import invariant from 'tiny-invariant';
 import { useMessageController } from '../hooks/message-controller';
-import { selectedHistoryAtom } from '../states/states';
+import { aiStateAtom, selectedHistoryAtom } from '../states/states';
 
 type ChatMessageContextType = {
   message: ChatMessage;
@@ -45,21 +45,25 @@ export const useRegenerateChatMessage = () => {
   const regenerate = useAtomCallback(
     useCallback(
       async (get, set) => {
-        const messageId = message.id;
-        const chatHistory = get(selectedHistoryAtom);
-        if (!chatHistory) {
-          return;
+        try {
+          const messageId = message.id;
+          const chatHistory = get(selectedHistoryAtom);
+          if (!chatHistory) {
+            return;
+          }
+          const index = chatHistory.messages.findIndex((m) => m.id === messageId);
+          if (index === -1) {
+            return;
+          }
+
+          const newMessages = chatHistory.messages.slice(0, index);
+
+          set(selectedHistoryAtom, { ...chatHistory, messages: newMessages });
+
+          sendMessage();
+        } finally {
+          set(aiStateAtom, 'idle');
         }
-        const index = chatHistory.messages.findIndex((m) => m.id === messageId);
-        if (index === -1) {
-          return;
-        }
-
-        const newMessages = chatHistory.messages.slice(0, index);
-
-        set(selectedHistoryAtom, { ...chatHistory, messages: newMessages });
-
-        sendMessage();
       },
       [message]
     )

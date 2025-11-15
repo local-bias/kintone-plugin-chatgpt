@@ -1,15 +1,15 @@
 import { ChatMessageProvider } from '@/desktop/original-view/contexts/chat-message';
 import {
+  aiStateAtom,
   apiErrorMessageAtom,
   displayingChatMessagesAtom,
-  isWaitingForAIAtom,
 } from '@/desktop/original-view/states/states';
 import { cn } from '@/lib/utils';
 import styled from '@emotion/styled';
 import { isMobile } from '@konomi-app/kintone-utilities';
 import { Loader } from '@konomi-app/ui-react';
 import { useAtomValue } from 'jotai';
-import React, { FCX, PropsWithChildren } from 'react';
+import { FCX, PropsWithChildren } from 'react';
 import { ChatContent } from '../../layout/chat-content';
 import Commands from './commands';
 import Empty from './empty';
@@ -19,7 +19,7 @@ import MessageContainer from './message-container';
 
 const Component: FCX<PropsWithChildren> = ({ className }) => {
   const chatMessages = useAtomValue(displayingChatMessagesAtom);
-  const isWaitingForAI = useAtomValue(isWaitingForAIAtom);
+  const aiState = useAtomValue(aiStateAtom);
   const apiErrorMessage = useAtomValue(apiErrorMessageAtom);
 
   return (
@@ -41,14 +41,26 @@ const Component: FCX<PropsWithChildren> = ({ className }) => {
             </ChatContent>
           </ChatMessageProvider>
         ))}
-        {isWaitingForAI && (
+        {aiState === 'loading' && (
           <ChatContent>
             <MessageContainer role='assistant'>
-              <div className='flex gap-8 items-center'>
+              <div className='flex gap-2 items-center'>
                 <div className='flex justify-center overflow-hidden'>
-                  <Loader size={32} />
+                  <Loader size={16} />
                 </div>
-                <div className=''>回答を生成しています・・・</div>
+                <div className='text-gray-500'>考え中・・・</div>
+              </div>
+            </MessageContainer>
+          </ChatContent>
+        )}
+        {aiState === 'authorizing' && (
+          <ChatContent>
+            <MessageContainer role='assistant'>
+              <div className='flex gap-2 items-center'>
+                <div className='flex justify-center overflow-hidden'>
+                  <Loader size={16} />
+                </div>
+                <div className='text-gray-500'>認証中・・・</div>
               </div>
             </MessageContainer>
           </ChatContent>

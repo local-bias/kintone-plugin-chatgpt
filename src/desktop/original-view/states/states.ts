@@ -10,10 +10,18 @@ import { enqueueSnackbar } from 'notistack';
 
 export const pendingRequestCountAtom = atom(0);
 
-export const isWaitingForAIAtom = atom(false);
+/**
+ * AIの状態を管理するAtom
+ *
+ * "idle" - 待機中
+ * "loading" - 処理中
+ * "authorizing" - 認証中
+ * "error" - エラー発生
+ */
+export const aiStateAtom = atom<'idle' | 'loading' | 'authorizing' | 'error'>('idle');
 
 export const loadingAtom = atom(
-  (get) => get(pendingRequestCountAtom) > 0 || get(isWaitingForAIAtom)
+  (get) => get(pendingRequestCountAtom) > 0 || ['loading', 'authorizing'].includes(get(aiStateAtom))
 );
 
 export const isHistoryFabShownAtom = atom((get) => {

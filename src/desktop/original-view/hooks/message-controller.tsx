@@ -1,7 +1,7 @@
 import { fetchChatCompletion } from '@/desktop/original-view/action';
 import {
+  aiStateAtom,
   apiErrorMessageAtom,
-  isWaitingForAIAtom,
   pendingRequestCountAtom,
   selectedHistoryAtom,
 } from '@/desktop/original-view/states/states';
@@ -19,7 +19,7 @@ export const useMessageController = () => {
     useCallback(async (get, set) => {
       try {
         set(apiErrorMessageAtom, null);
-        set(isWaitingForAIAtom, true);
+        set(aiStateAtom, 'loading');
 
         const chatHistory = get(selectedHistoryAtom);
         if (!chatHistory) {
@@ -61,7 +61,7 @@ export const useMessageController = () => {
           set(apiErrorMessageAtom, error?.message ?? defaultErrorMessage);
         }
       } finally {
-        set(isWaitingForAIAtom, false);
+        set(aiStateAtom, 'idle');
       }
     }, [])
   );

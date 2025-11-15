@@ -3,7 +3,11 @@ import { restorePluginConfig } from '@/lib/plugin';
 import { getApp, getAppId, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 
-export const pluginConfigAtom = atom(restorePluginConfig());
+const { config: initialConfig, error: configError } = restorePluginConfig();
+
+export const pluginConfigAtom = atom(initialConfig);
+export const pluginConfigErrorAtom = atom(configError ?? null);
+
 export const pluginCommonConfigAtom = atom((get) => get(pluginConfigAtom).common);
 export const pluginConditionsAtom = atom((get) => get(pluginConfigAtom).conditions);
 
