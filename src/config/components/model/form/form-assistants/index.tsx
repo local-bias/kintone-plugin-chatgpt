@@ -19,7 +19,6 @@ import ReasoningEffortForm from './reasoning-effort';
 import TemperatureForm from './temperature';
 import VerbosityForm from './verbosity';
 import AiModelForm from './ai-model';
-import { isOpenSource } from '@/lib/constants';
 
 const Component: FC = () => {
   return (
@@ -53,33 +52,31 @@ const Component: FC = () => {
         />
       </PluginFormSection>
 
-      {isOpenSource && (
-        <PluginFormSection>
-          <PluginFormTitle>使用するAIモデル*</PluginFormTitle>
-          <div>
-            <PluginFormDescription>
-              AIプロバイダーが提供しているAIモデルの設定。使用するモデルによって、発生する料金が変化します。詳細は
-              <a href='https://openai.com/pricing' target='_blank' rel='noopener noreferrer'>
-                OpenAIの料金表
-              </a>
-              もしくは
-              <a href='https://openrouter.ai/models' target='_blank' rel='noopener noreferrer'>
-                OpenRouterのモデル一覧
-              </a>
-              をご確認ください。
-            </PluginFormDescription>
-            <PluginFormDescription>
-              ファインチューニングされたモデルをお持ちの場合や、選択肢にないモデルを使用されたい場合は、直接入力することで使用することができます。
-            </PluginFormDescription>
-            <PluginFormDescription last>
-              <span className='text-red-600'>
-                ご契約のプランによっては、一部のモデルを使用することができない場合があります。
-              </span>
-            </PluginFormDescription>
-            <AiModelForm />
-          </div>
-        </PluginFormSection>
-      )}
+      <PluginFormSection>
+        <PluginFormTitle>使用するAIモデル*</PluginFormTitle>
+        <div>
+          <PluginFormDescription>
+            AIプロバイダーが提供しているAIモデルの設定。使用するモデルによって、発生する料金が変化します。詳細は
+            <a href='https://openai.com/pricing' target='_blank' rel='noopener noreferrer'>
+              OpenAIの料金表
+            </a>
+            もしくは
+            <a href='https://openrouter.ai/models' target='_blank' rel='noopener noreferrer'>
+              OpenRouterのモデル一覧
+            </a>
+            をご確認ください。
+          </PluginFormDescription>
+          <PluginFormDescription>
+            ファインチューニングされたモデルをお持ちの場合や、選択肢にないモデルを使用されたい場合は、直接入力することで使用することができます。
+          </PluginFormDescription>
+          <PluginFormDescription last>
+            <span className='text-red-600'>
+              ご契約のプランによっては、一部のモデルを使用することができない場合があります。
+            </span>
+          </PluginFormDescription>
+          <AiModelForm />
+        </div>
+      </PluginFormSection>
 
       <PluginFormSection>
         <PluginFormTitle>回答のランダム性</PluginFormTitle>
