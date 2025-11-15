@@ -3,32 +3,42 @@ import { loadingAtom, selectedHistoryAtom } from '@/desktop/original-view/states
 import { Button } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import React, { FC, memo, useCallback } from 'react';
+import { RotateCw } from 'lucide-react';
+import { FC, memo, useCallback } from 'react';
 
 const Component: FC = () => {
   const { sendMessage } = useMessageController();
   const loading = useAtomValue(loadingAtom);
 
   const onClick = useAtomCallback(
-    useCallback(async (get, set) => {
-      const current = get(selectedHistoryAtom);
-      if (!current) {
-        return;
-      }
-      if (current.messages[current.messages.length - 1].role !== 'assistant') {
-        return;
-      }
-      const newValue = {
-        ...current,
-        messages: current.messages.slice(0, current.messages.length - 1),
-      };
-      set(selectedHistoryAtom, newValue);
-      await sendMessage();
-    }, [])
+    useCallback(
+      async (get, set) => {
+        const current = get(selectedHistoryAtom);
+        if (!current) {
+          return;
+        }
+        const lastMessage = current.messages[current.messages.length - 1];
+        if (lastMessage?.role === 'assistant') {
+          const newValue = {
+            ...current,
+            messages: current.messages.slice(0, current.messages.length - 1),
+          };
+          set(selectedHistoryAtom, newValue);
+        }
+        await sendMessage();
+      },
+      [sendMessage]
+    )
   );
 
   return (
-    <Button variant='outlined' color='info' onClick={onClick} disabled={loading}>
+    <Button
+      variant='outlined'
+      color='info'
+      onClick={onClick}
+      disabled={loading}
+      startIcon={<RotateCw className='w-4 h-4' />}
+    >
       再生成
     </Button>
   );
