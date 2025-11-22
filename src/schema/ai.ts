@@ -4,6 +4,25 @@ const MODALITY_TYPES = ['text', 'image', 'audio', 'video', 'file'] as const;
 
 const ModalityTypeSchema = z.enum(MODALITY_TYPES);
 
+export const REASONING_EFFORT_TYPES = [
+  'model-default',
+  'none',
+  'minimal',
+  'low',
+  'medium',
+  'high',
+] as const;
+
+export const ReasoningEffortTypeSchema = z.enum(REASONING_EFFORT_TYPES);
+
+export type ReasoningEffortType = z.infer<typeof ReasoningEffortTypeSchema>;
+
+export const VERBOSITY_TYPES = ['model-default', 'low', 'medium', 'high'] as const;
+
+export const VerbosityTypeSchema = z.enum(VERBOSITY_TYPES);
+
+export type VerbosityType = z.infer<typeof VerbosityTypeSchema>;
+
 const OpenrouterAvailableModelSchema = z.object({
   id: z.string(),
   name: z.string(),
