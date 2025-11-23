@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ReasoningEffortTypeSchema, VerbosityTypeSchema } from './ai';
 
 const AI_PROVIDER_TYPE_V1 = ['openai', 'openrouter'] as const;
 const AiProviderTypeV1Schema = z.enum(AI_PROVIDER_TYPE_V1);
@@ -219,11 +220,18 @@ export const PluginConditionV8Schema = z.object({
   /**
    * どれだけ推論を行うか
    */
-  reasoningEffort: z.enum(['minimal', 'low', 'medium', 'high']),
+  reasoningEffort: ReasoningEffortTypeSchema,
   /**
    * どれだけ詳しく回答するか
    */
-  verbosity: z.enum(['low', 'medium', 'high']),
+  verbosity: VerbosityTypeSchema,
+  /**
+   * ウェブ検索の利用を許可するかどうか
+   */ allowWebSearch: z.boolean(),
+  /**
+   * OpenAI Prompt API用のプロンプトID (任意)
+   */
+  promptId: z.string().default(''),
 });
 export const PluginConfigV8Schema = z.object({
   version: z.literal(8),
@@ -245,6 +253,33 @@ export const PluginConfigV8Schema = z.object({
   conditions: z.array(PluginConditionV8Schema),
 });
 
+export const PluginConfigV9Schema = z.object({
+  version: z.literal(9),
+  common: z.object({
+    providerType: AiProviderTypeV1Schema,
+    viewId: z.string(),
+    outputAppId: z.string(),
+    outputAppSpaceId: z.string().optional(),
+    outputKeyFieldCode: z.string(),
+    outputContentFieldCode: z.string(),
+    logAppId: z.string().optional(),
+    logAppSpaceId: z.string().optional(),
+    logKeyFieldCode: z.string().optional(),
+    logContentFieldCode: z.string().optional(),
+    // Log App バージョン選択
+    logAppVersion: z.enum(['v1', 'v2']).default('v1'),
+    // Log App V2設定
+    logAppV2SessionIdFieldCode: z.string().optional(),
+    logAppV2AssistantIdFieldCode: z.string().optional(),
+    logAppV2RoleFieldCode: z.string().optional(),
+    logAppV2ContentFieldCode: z.string().optional(),
+    enablesAnimation: z.boolean(),
+    enablesShiftEnter: z.boolean(),
+    enablesEnter: z.boolean(),
+  }),
+  conditions: z.array(PluginConditionV8Schema),
+});
+
 export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
   PluginConfigV1Schema,
   PluginConfigV2Schema,
@@ -254,10 +289,11 @@ export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
   PluginConfigV6Schema,
   PluginConfigV7Schema,
   PluginConfigV8Schema,
+  PluginConfigV9Schema,
 ]);
 
 /** 🔌 プラグインがアプリ単位で保存する設定情報 */
-export type PluginConfig = z.infer<typeof PluginConfigV8Schema>;
+export type PluginConfig = z.infer<typeof PluginConfigV9Schema>;
 
 export const LatestPluginConditionSchema = PluginConditionV8Schema;
 

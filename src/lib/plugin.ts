@@ -18,7 +18,7 @@ export const isPluginConditionMet = (condition: PluginCondition): boolean => {
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 8,
+  version: 9,
   common: {
     providerType: 'openrouter',
     viewId: '',
@@ -28,6 +28,11 @@ export const createConfig = (): PluginConfig => ({
     logAppId: '',
     logKeyFieldCode: '',
     logContentFieldCode: '',
+    logAppVersion: 'v1',
+    logAppV2SessionIdFieldCode: '',
+    logAppV2AssistantIdFieldCode: '',
+    logAppV2RoleFieldCode: '',
+    logAppV2ContentFieldCode: '',
     enablesAnimation: false,
     enablesEnter: false,
     enablesShiftEnter: false,
@@ -112,13 +117,29 @@ export const migrateConfig = (storage: AnyPluginConfig): PluginConfig => {
         ...storage,
         conditions: storage.conditions.map((condition) => ({
           ...condition,
-          reasoningEffort: 'low',
-          verbosity: 'medium',
+          reasoningEffort: 'model-default',
+          verbosity: 'model-default',
+          allowWebSearch: false,
+          promptId: '',
         })),
         version: 8,
       });
     }
-    case 8:
+    case 8: {
+      return migrateConfig({
+        ...storage,
+        common: {
+          ...storage.common,
+          logAppVersion: 'v1',
+          logAppV2SessionIdFieldCode: '',
+          logAppV2AssistantIdFieldCode: '',
+          logAppV2RoleFieldCode: '',
+          logAppV2ContentFieldCode: '',
+        },
+        version: 9,
+      });
+    }
+    case 9:
     default: {
       return storage;
     }
@@ -168,6 +189,8 @@ export const getNewCondition = (): PluginCondition => ({
   maxTokens: 0,
   examples: [''],
   allowImageUpload: true,
-  reasoningEffort: 'low',
-  verbosity: 'medium',
+  reasoningEffort: 'model-default',
+  verbosity: 'model-default',
+  allowWebSearch: false,
+  promptId: '',
 });

@@ -6,7 +6,7 @@ import { nanoid } from 'nanoid';
 import { pluginConfigAtom } from '../public-state';
 import { initializeRecords } from './actions/initialize-records';
 import App from './app';
-import { selectedHistoryIdAtom } from './states/states';
+import { handleHistoryIdSelectAtom } from './states/states';
 
 const ROOT_ID = nanoid();
 
@@ -21,7 +21,9 @@ listener.add(['app.record.index.show'], (event) => {
   // urlからchat_idを取得
   const url = new URL(location.href);
   const chatId = url.searchParams.get(URL_QUERY_CHAT_ID);
-  store.set(selectedHistoryIdAtom, chatId);
+  if (chatId) {
+    store.set(handleHistoryIdSelectAtom, chatId);
+  }
 
   const componentManager = ComponentManager.getInstance();
 

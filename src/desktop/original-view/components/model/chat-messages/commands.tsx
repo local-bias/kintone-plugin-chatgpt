@@ -2,20 +2,20 @@ import {
   useChatMessage,
   useRegenerateChatMessage,
 } from '@/desktop/original-view/contexts/chat-message';
+import { ChatTextContentPart } from '@/lib/static';
 import { Tooltip } from '@mui/material';
-import { Check, Clipboard, Pencil, X, RotateCw } from 'lucide-react';
-import OpenAI from 'openai';
+import { Check, ChevronDown, ChevronUp, Clipboard, Pencil, RotateCw, X } from 'lucide-react';
 import React, { forwardRef, HTMLAttributes, useEffect, type FC } from 'react';
 
 const IconWrapper = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>((props, ref) => (
   <div
     {...props}
     ref={ref}
-    className='bg-white/70 opacity-0 pointer-events-none group-hover/message:opacity-100 group-hover/message:pointer-events-auto cursor-pointer transition-all grid place-items-center sticky top-16 z-10 w-8 h-8 rounded shadow hover:shadow-md text-gray-400 hover:text-blue-500'
+    className='rad:bg-white/70 rad:opacity-0 rad:pointer-events-none rad:group-hover/message:opacity-100 rad:group-hover/message:pointer-events-auto rad:cursor-pointer rad:transition-all rad:grid rad:place-items-center rad:sticky rad:top-16 rad:z-10 rad:w-8 rad:h-8 rad:rounded rad:shadow rad:hover:shadow-md rad:text-gray-400 rad:hover:text-blue-500'
   />
 ));
 
-const Copy: FC = () => {
+function Copy() {
   const { message } = useChatMessage();
   const [copied, setCopied] = React.useState(false);
 
@@ -25,9 +25,7 @@ const Copy: FC = () => {
       return;
     }
     if (typeof text !== 'string') {
-      const foundText = text.find((m) => m.type === 'text') as
-        | OpenAI.ChatCompletionContentPartText
-        | undefined;
+      const foundText = text.find((m) => m.type === 'text') as ChatTextContentPart | undefined;
       if (!foundText) {
         return;
       }
@@ -51,14 +49,18 @@ const Copy: FC = () => {
     <>
       <Tooltip title={copied ? 'コピーしました！' : 'クリップボードにコピー'}>
         <IconWrapper onClick={onCopyButtonClick}>
-          {copied ? <Check className='w-4 h-4' /> : <Clipboard className='w-4 h-4' />}
+          {copied ? (
+            <Check className='rad:w-4 rad:h-4' />
+          ) : (
+            <Clipboard className='rad:w-4 rad:h-4' />
+          )}
         </IconWrapper>
       </Tooltip>
     </>
   );
-};
+}
 
-const Edit: FC = () => {
+function Edit() {
   const { message, isEditing, toggleIsEditing } = useChatMessage();
 
   if (message.role !== 'user') {
@@ -69,14 +71,14 @@ const Edit: FC = () => {
     <>
       <Tooltip title={isEditing ? '編集を中断する' : 'このメッセージからやり直す'}>
         <IconWrapper onClick={toggleIsEditing}>
-          {isEditing ? <X className='w-4 h-4' /> : <Pencil className='w-4 h-4' />}
+          {isEditing ? <X className='rad:w-4 rad:h-4' /> : <Pencil className='rad:w-4 rad:h-4' />}
         </IconWrapper>
       </Tooltip>
     </>
   );
-};
+}
 
-const Regenerate: FC = () => {
+function Regenerate() {
   const { message } = useChatMessage();
   const { regenerate } = useRegenerateChatMessage();
 
@@ -88,21 +90,42 @@ const Regenerate: FC = () => {
     <>
       <Tooltip title='このメッセージを再生成'>
         <IconWrapper onClick={regenerate}>
-          <RotateCw className='w-4 h-4' />
+          <RotateCw className='rad:w-4 rad:h-4' />
         </IconWrapper>
       </Tooltip>
     </>
   );
-};
+}
 
-const Component: FC = () => (
-  <div className='p-4'>
-    <div className='hidden lg:flex gap-2'>
-      <Edit />
-      <Regenerate />
-      <Copy />
+function ToggleFold() {
+  const { isCollapsed, isCollapsible, toggleIsCollapsed } = useChatMessage();
+
+  if (!isCollapsible) {
+    return null;
+  }
+
+  return (
+    <Tooltip title={isCollapsed ? '全文を表示' : 'メッセージを折りたたむ'}>
+      <IconWrapper onClick={toggleIsCollapsed}>
+        {isCollapsed ? (
+          <ChevronDown className='rad:w-4 rad:h-4' />
+        ) : (
+          <ChevronUp className='rad:w-4 rad:h-4' />
+        )}
+      </IconWrapper>
+    </Tooltip>
+  );
+}
+
+export default function ChatCommands() {
+  return (
+    <div className='rad:p-4!'>
+      <div className='rad:hidden rad:lg:flex rad:gap-2'>
+        <ToggleFold />
+        <Edit />
+        <Regenerate />
+        <Copy />
+      </div>
     </div>
-  </div>
-);
-
-export default Component;
+  );
+}

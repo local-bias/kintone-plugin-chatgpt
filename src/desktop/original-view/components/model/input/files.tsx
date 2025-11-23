@@ -1,9 +1,8 @@
 import { inputFilesAtom } from '@/desktop/original-view/states/states';
 import { Chip } from '@mui/material';
 import { useAtom } from 'jotai';
-import React, { FC } from 'react';
 
-const Component: FC = () => {
+export default function InputFiles() {
   const [files, setFiles] = useAtom(inputFilesAtom);
 
   const onFileDelete = (index: number) => {
@@ -15,12 +14,10 @@ const Component: FC = () => {
   }
 
   return (
-    <div className='p-2 flex flex-wrap gap-2'>
+    <div className='rad:p-2! rad:flex rad:flex-wrap rad:gap-2'>
       {files.map((file, i) => (
         <Chip key={i} label={file.name} onDelete={() => onFileDelete(i)} />
       ))}
     </div>
   );
-};
-
-export default Component;
+}

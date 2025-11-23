@@ -3,13 +3,13 @@ import { viewIdAtom } from '@/config/states/plugin';
 import styled from '@emotion/styled';
 import { MenuItem, Skeleton, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { ChangeEvent, FC, FCX, memo, Suspense } from 'react';
+import { ChangeEvent, Suspense } from 'react';
 
 const handleViewIdChangeAtom = atom(null, (_, set, event: ChangeEvent<HTMLInputElement>) => {
   set(viewIdAtom, event.target.value);
 });
 
-const Input: FC = () => {
+function Input() {
   const views = useAtomValue(customViewsState);
   const viewId = useAtomValue(viewIdAtom);
   const onChange = useSetAtom(handleViewIdChangeAtom);
@@ -23,9 +23,9 @@ const Input: FC = () => {
       ))}
     </TextField>
   );
-};
+}
 
-const Component: FCX = ({ className }) => {
+function FormViewIdComponent({ className }: { className?: string }) {
   return (
     <div {...{ className }}>
       <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
@@ -33,9 +33,9 @@ const Component: FCX = ({ className }) => {
       </Suspense>
     </div>
   );
-};
+}
 
-const StyledComponent = styled(Component)`
+const StyledFormViewId = styled(FormViewIdComponent)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -46,12 +46,10 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: FC = () => {
+export default function FormViewId() {
   return (
     <Suspense fallback={<Skeleton width={250} height={56} />}>
-      <StyledComponent />
+      <StyledFormViewId />
     </Suspense>
   );
-};
-
-export default memo(Container);
+}

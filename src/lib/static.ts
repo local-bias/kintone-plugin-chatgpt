@@ -1,4 +1,4 @@
-import OpenAI from 'openai';
+import { ReasoningEffortType, VerbosityType } from '@/schema/ai';
 import { ChatModel } from 'openai/resources';
 import config from 'plugin.config.mjs';
 
@@ -7,7 +7,7 @@ export const OPENROUTER_CHAT_COMPLETION_ENDPOINT = `${OPENROUTER_ENDPOINT_ROOT}/
 export const OPENROUTER_ENDPOINT_MODELS = `${OPENROUTER_ENDPOINT_ROOT}/api/v1/models`;
 
 export const OPENAI_ENDPOINT_ROOT = 'https://api.openai.com';
-export const OPENAI_ENDPOINT = `${OPENAI_ENDPOINT_ROOT}/v1/chat/completions`;
+export const OPENAI_ENDPOINT = `${OPENAI_ENDPOINT_ROOT}/v1/responses`;
 
 export const PLUGIN_NAME = config.manifest.base.name.ja;
 
@@ -32,18 +32,54 @@ export const O1_SERIES_MODELS = ['o1', 'o1-preview', 'o3-mini', 'o4-mini'] satis
 
 export const URL_QUERY_CHAT_ID = 'chat_id';
 
+export type ChatImageContentPart = {
+  type: 'image_url';
+  image_url: {
+    url: string;
+  };
+};
+
+export type ChatTextContentPart = {
+  type: 'text';
+  text: string;
+};
+
+export type ChatMessageContentPart = ChatTextContentPart | ChatImageContentPart;
+
+export type ChatMessageContent = string | ChatMessageContentPart[];
+
+export type ChatMessage = {
+  id: string;
+  role: 'system' | 'user' | 'assistant';
+  content: ChatMessageContent;
+};
+
 export type AnyChatHistory =
   | ChatHistoryV1
   | ChatHistoryV2
   | ChatHistoryV3
   | ChatHistoryV4
-  | ChatHistoryV5;
+  | ChatHistoryV5
+  | ChatHistoryV6
+  | ChatHistoryV7;
 
-export type ChatHistory = ChatHistoryV5;
+type ChatHistoryV7 = Omit<
+  ChatHistoryV6,
+  'version' | 'aiModel' | 'temperature' | 'maxTokens' | 'iconUrl' | 'verbosity' | 'reasoningEffort'
+> & {
+  version: 7;
+  assistantId: string;
+};
+
+export type ChatHistory = ChatHistoryV7;
 
 export type ChatMessageRole = ChatHistory['messages'][number]['role'];
 
-export type ChatMessage = ChatHistory['messages'][number];
+type ChatHistoryV6 = Omit<ChatHistoryV5, 'version'> & {
+  version: 6;
+  verbosity: VerbosityType;
+  reasoningEffort: ReasoningEffortType;
+};
 
 type ChatHistoryV5 = Omit<ChatHistoryV4, 'version' | 'messages'> & {
   version: 5;
@@ -52,11 +88,7 @@ type ChatHistoryV5 = Omit<ChatHistoryV4, 'version' | 'messages'> & {
 
 type ChatHistoryV4 = Omit<ChatHistoryV3, 'version' | 'messages'> & {
   version: 4;
-  messages: (
-    | OpenAI.ChatCompletionSystemMessageParam
-    | OpenAI.ChatCompletionUserMessageParam
-    | OpenAI.ChatCompletionAssistantMessageParam
-  )[];
+  messages: (Omit<ChatMessage, 'id'> & { id?: string })[];
 };
 
 type ChatHistoryV3 = Omit<ChatHistoryV2, 'version'> & {
@@ -64,11 +96,6 @@ type ChatHistoryV3 = Omit<ChatHistoryV2, 'version'> & {
   aiModel: string;
   temperature: number;
   maxTokens: number;
-};
-
-type ChatHistoryV2 = Omit<ChatHistoryV1, 'version'> & {
-  version: 2;
-  iconUrl: string;
 };
 
 type ChatHistoryV1 = {
@@ -79,4 +106,9 @@ type ChatHistoryV1 = {
     role: 'system' | 'user' | 'assistant';
     content: string;
   }[];
+};
+
+type ChatHistoryV2 = Omit<ChatHistoryV1, 'version'> & {
+  version: 2;
+  iconUrl: string;
 };

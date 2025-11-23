@@ -1,21 +1,21 @@
-import React, { FC, PropsWithChildren } from 'react';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { PropsWithChildren } from 'react';
 import RegenerateButton from '../input/regenerate-button';
 
-const Component: FC<PropsWithChildren> = ({ children }) => (
-  <div className='bg-red-50 py-6 px-4'>
-    <div className='max-w-content mx-auto grid grid-cols-message gap-6'>
-      <div className='icon h-[30px] grid place-items-center rounded bg-red-500 text-white'>
-        <ErrorOutlineIcon />
-      </div>
-      <div className='content'>
-        <div>{children}</div>
-        <div className='mt-8'>
-          <RegenerateButton />
+export default function ChatErrorMessage({ children }: PropsWithChildren) {
+  return (
+    <div className='rad:bg-red-50 rad:py-6! rad:px-4!'>
+      <div className='rad:max-w-[900px] rad:mx-auto! rad:grid rad:grid-cols-[30px_1fr] rad:gap-6'>
+        <div className='icon rad:h-[30px] rad:grid rad:place-items-center rad:rounded rad:bg-red-500 rad:text-white'>
+          <ErrorOutlineIcon />
+        </div>
+        <div className='content'>
+          <div>{children}</div>
+          <div className='rad:mt-8!'>
+            <RegenerateButton />
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
-
-export default Component;
+  );
+}

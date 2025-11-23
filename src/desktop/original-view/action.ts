@@ -1,14 +1,9 @@
+import { createEndpointAdapter } from '@/lib/adapters';
 import { kintoneApiFetch } from '@/lib/api';
+import type { ChatCompletionRequest } from '@/lib/endpoint-adapter';
 import { isDev, isProd } from '@/lib/global';
-import {
-  AnyChatHistory,
-  ChatHistory,
-  ChatMessage,
-  O1_SERIES_MODELS,
-  OPENAI_ENDPOINT,
-  OPENAI_MODELS,
-  OPENROUTER_CHAT_COMPLETION_ENDPOINT,
-} from '@/lib/static';
+import { AnyChatHistory, ChatHistory, ChatMessage, OPENAI_MODELS } from '@/lib/static';
+import { ReasoningEffortType, VerbosityType } from '@/schema/ai';
 import { AiProviderType } from '@/schema/plugin-config';
 import {
   addRecord,
@@ -18,7 +13,6 @@ import {
 } from '@konomi-app/kintone-utilities';
 import { marked } from 'marked';
 import { nanoid } from 'nanoid';
-import { OpenAI } from 'openai';
 
 export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => {
   switch (chatHistory.version) {
@@ -42,13 +36,28 @@ export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => 
         messages: chatHistory.messages.map((m) => ({ ...m, id: nanoid() })),
       });
     case 5:
+      return migrateChatHistory({
+        ...chatHistory,
+        version: 6,
+        verbosity: 'medium',
+        reasoningEffort: 'low',
+      });
+    case 6:
+      const { aiModel, temperature, maxTokens, iconUrl, verbosity, reasoningEffort, ...rest } =
+        chatHistory;
+      return migrateChatHistory({
+        ...rest,
+        version: 7,
+        assistantId: '',
+      });
+    case 7:
     default:
       return chatHistory;
   }
 };
 
 export const createNewChatHistory = (params: Omit<ChatHistory, 'version'>): ChatHistory => {
-  return { version: 5, ...params };
+  return { version: 7, ...params };
 };
 
 export const fetchChatCompletion = async (params: {
@@ -56,85 +65,81 @@ export const fetchChatCompletion = async (params: {
   temperature: number;
   maxTokens: number;
   messages: ChatMessage[];
+  systemPrompt?: string;
   providerType?: AiProviderType;
+  verbosity?: VerbosityType;
+  reasoningEffort?: ReasoningEffortType;
+  webSearchEnabled?: boolean;
+  promptId?: string;
 }) => {
-  const { model, temperature, maxTokens, messages, providerType = 'openai' } = params;
-
-  isDev && console.group("🧠 openai's API call");
-
-  let max_tokens = maxTokens === 0 ? undefined : maxTokens;
-
-  // 画像が含まれている場合はmax_tokensの指定が必須
-  if (
-    !max_tokens &&
-    messages.some((m) => Array.isArray(m.content) && m.content.some((c) => c.type === 'image_url'))
-  ) {
-    max_tokens = 2048;
-  }
-  const sendingMessages = messages.map<OpenAI.Chat.Completions.ChatCompletionMessageParam>((m) => {
-    // 一部のリクエストでは、idを含めているとエラーになるため、idを削除する
-    const { id, ...rest } = m;
-    return rest;
-  });
-
-  const requestBody: OpenAI.Chat.ChatCompletionCreateParamsNonStreaming = {
+  const {
     model,
     temperature,
-    max_completion_tokens: max_tokens,
-    messages: sendingMessages,
-    response_format: {
-      type: 'text',
-    },
-  };
-  if (O1_SERIES_MODELS.includes(model as any)) {
-    delete requestBody.temperature;
-    requestBody.reasoning_effort = 'low';
-  }
+    maxTokens,
+    messages,
+    systemPrompt,
+    providerType = 'openai',
+    verbosity = 'medium',
+    reasoningEffort = 'low',
+    webSearchEnabled = false,
+    promptId,
+  } = params;
 
+  isDev && console.group("🧠 openai's API call");
   isDev && console.time("openai's API call");
-  isDev && console.log('OpenAI - APIリクエスト', requestBody);
 
-  let response: Response;
-  if (providerType === 'openai') {
-    response = await kintoneApiFetch(OPENAI_ENDPOINT, {
-      method: 'POST',
-      body: JSON.stringify(requestBody),
+  // アダプタの生成
+  const adapter = createEndpointAdapter(providerType);
+
+  // リクエストパラメータの構築
+  const request: ChatCompletionRequest = {
+    model,
+    temperature,
+    maxTokens,
+    messages,
+    systemPrompt,
+    verbosity,
+    reasoningEffort,
+    webSearchEnabled,
+    promptId,
+  };
+
+  // リクエストペイロードの構築（アダプタに委譲）
+  const payload = adapter.buildRequestPayload(request);
+
+  isDev &&
+    console.log('API Request', {
+      endpoint: adapter.endpoint,
+      providerType,
+      payload,
     });
-  } else {
-    response = await kintoneApiFetch(OPENROUTER_CHAT_COMPLETION_ENDPOINT, {
-      method: 'POST',
-      body: JSON.stringify({
-        ...requestBody,
-      }),
-    });
-  }
+
+  // API呼び出し
+  const response = await kintoneApiFetch(adapter.endpoint, {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
 
   !isProd && console.timeEnd("openai's API call");
 
-  const chatCompletion: OpenAI.Chat.ChatCompletion = await response.json();
+  const apiResponse: any = await response.json();
 
   !isProd &&
-    console.log('OpenAI - APIレスポンス', {
-      responseBody: chatCompletion,
+    console.log('API Response', {
+      responseBody: apiResponse,
       responseCode: response.status,
       responseHeader: response.headers,
     });
 
-  if (response.status !== 200) {
-    const errorResponse = chatCompletion as any;
-    if (errorResponse?.error?.message) {
-      throw new Error(errorResponse.error.message);
-    }
-    throw new Error(
-      'APIの呼び出しに失敗しました。再度実行しても失敗する場合は、管理者にお問い合わせください。'
-    );
-  }
+  // レスポンスのパース（アダプタに委譲）
+  const result = await adapter.parseResponse(response, apiResponse);
 
-  isDev && console.log(`このやり取りで${chatCompletion.usage?.total_tokens}トークン消費しました`);
+  isDev &&
+    console.log(`このやり取りで${apiResponse?.usage?.total_tokens ?? '不明'}トークン消費しました`);
 
   isDev && console.groupEnd();
 
-  return chatCompletion;
+  return result;
 };
 
 export const getHTMLfromMarkdown = (markdown: string): string => {

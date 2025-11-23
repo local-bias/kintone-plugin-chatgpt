@@ -1,17 +1,15 @@
-import { useMessageController } from '@/desktop/original-view/hooks/message-controller';
-import { useChatHistory } from '@/desktop/original-view/hooks/use-chat-history';
+import { handlePushUserMessageAtom } from '@/desktop/original-view/states/chat-history';
+import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
 import { inputTextAtom, loadingAtom } from '@/desktop/original-view/states/states';
 import { pluginCommonConfigAtom } from '@/desktop/public-state';
 import { useAtom, useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import { ChangeEventHandler, FC, KeyboardEventHandler, useCallback } from 'react';
+import { ChangeEventHandler, KeyboardEventHandler, useCallback } from 'react';
 
-const Component: FC = () => {
+export default function ChatInput() {
   const commonConfig = useAtomValue(pluginCommonConfigAtom);
   const [input, setInput] = useAtom(inputTextAtom);
   const { enablesEnter, enablesShiftEnter } = commonConfig;
-  const { sendMessage } = useMessageController();
-  const { pushUserMessage } = useChatHistory();
 
   const onChange: ChangeEventHandler<HTMLTextAreaElement> = (e) => {
     setInput(e.target.value);
@@ -28,22 +26,22 @@ const Component: FC = () => {
 
       if ((enablesEnter && isEnter && !isShift) || (enablesShiftEnter && isEnter && isShift)) {
         event.preventDefault();
-        await pushUserMessage();
-        await sendMessage();
+        await set(handlePushUserMessageAtom);
+        await set(handleSendMessageAtom);
       }
     }, [])
   );
 
+  const presumedRows = Math.max(input.split('\n').length, Math.ceil(input.length / 84));
+
   return (
     <textarea
-      style={{ height: input.split('\n').length * 24 }}
-      className='flex-1 min-h-[60px] resize-none border-0 p-4 placeholder:text-gray-400'
+      className='rad:flex-1 rad:resize-none rad:border-0 rad:placeholder:text-gray-400'
       value={input}
       onChange={onChange}
       onKeyDown={onKeyDown}
+      rows={Math.max(3, Math.min(10, presumedRows))}
       placeholder='ここにメッセージを入力'
     />
   );
-};
-
-export default Component;
+}

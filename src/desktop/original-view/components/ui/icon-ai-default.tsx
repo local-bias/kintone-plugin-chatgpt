@@ -7,7 +7,7 @@ export function IconAIDefault(props: ComponentProps<typeof Bot>) {
   return (
     <div
       className={cn(
-        'bg-gray-100 text-gray-600 p-[10%] box-border grid place-items-center',
+        'rad:bg-muted rad:text-muted-foreground rad:p-[10%] rad:box-border rad:grid rad:place-items-center',
         className
       )}
     >

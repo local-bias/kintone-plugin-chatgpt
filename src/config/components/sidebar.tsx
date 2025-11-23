@@ -4,9 +4,9 @@ import { PluginCondition } from '@/schema/plugin-config';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
 import { useAtom } from 'jotai';
 import { useSnackbar } from 'notistack';
-import { FC, useCallback } from 'react';
+import { useCallback } from 'react';
 
-const Sidebar: FC = () => {
+export default function ConfigSidebar() {
   const { enqueueSnackbar } = useSnackbar();
   const [conditions, setConditions] = useAtom(pluginConditionsAtom);
   const [selectedConditionId, setSelectedConditionId] = useAtom(selectedConditionIdAtom);
@@ -15,7 +15,9 @@ const Sidebar: FC = () => {
     return (
       <div>
         <div className='text-[11px] leading-4 text-gray-400'>{`アシスタント${index + 1}`}</div>
-        <div className='text-sm text-gray-600'>{`${condition.name ? condition.name : '未設定'}`}</div>
+        <div className='text-sm text-gray-600'>{`${
+          condition.name ? condition.name : '未設定'
+        }`}</div>
       </div>
     );
   }, []);
@@ -53,6 +55,4 @@ const Sidebar: FC = () => {
       }}
     />
   );
-};
-
-export default Sidebar;
+}

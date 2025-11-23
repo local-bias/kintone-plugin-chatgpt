@@ -1,7 +1,6 @@
 import { temperatureAtom } from '@/config/states/plugin';
 import { Slider } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { FC } from 'react';
 
 const marks = [
   {
@@ -9,7 +8,7 @@ const marks = [
     label: 'より厳格',
   },
   {
-    value: 1,
+    value: 2,
     label: 'より創造的',
   },
 ];
@@ -22,7 +21,7 @@ const handleTemperatureChangeAtom = atom(null, (_, set, __: unknown, value: numb
   set(temperatureAtom, value[0]);
 });
 
-const Component: FC = () => {
+function TemperatureComponent() {
   const temperature = useAtomValue(temperatureAtom);
   const onTemperatureChange = useSetAtom(handleTemperatureChangeAtom);
 
@@ -32,16 +31,14 @@ const Component: FC = () => {
         value={temperature}
         onChange={onTemperatureChange}
         step={0.1}
-        max={1}
+        max={2}
         marks={marks}
         valueLabelDisplay='on'
       />
     </div>
   );
-};
+}
 
-const Container: FC = () => {
-  return <Component />;
-};
-
-export default Container;
+export default function Temperature() {
+  return <TemperatureComponent />;
+}

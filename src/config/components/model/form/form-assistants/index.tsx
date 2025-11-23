@@ -4,25 +4,27 @@ import {
   assistantDescriptionAtom,
   assistantNameAtom,
   maxTokensAtom,
+  promptIdAtom,
   systemPromptAtom,
 } from '@/config/states/plugin';
+import { isOpenSource } from '@/lib/constants';
 import { JotaiSwitch, JotaiText } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { FC } from 'react';
+import AiModelForm from './ai-model';
 import DeleteButton from './condition-delete-button';
 import ExamplesForm from './examples';
 import ReasoningEffortForm from './reasoning-effort';
 import TemperatureForm from './temperature';
 import VerbosityForm from './verbosity';
-import AiModelForm from './ai-model';
+import WebSearchSwitch from './web-search';
 
-const Component: FC = () => {
+export default function FormAssistants() {
   return (
-    <div className='px-4 max-w-content'>
+    <div className='px-4 max-w-[900px]'>
       <PluginFormSection>
         <PluginFormTitle>アシスタント名</PluginFormTitle>
         <PluginFormDescription>画面上に表示するアシスタントの名前</PluginFormDescription>
@@ -79,35 +81,7 @@ const Component: FC = () => {
       </PluginFormSection>
 
       <PluginFormSection>
-        <PluginFormTitle>回答のランダム性</PluginFormTitle>
-        <PluginFormDescription last>
-          数値を大きくするほど、同一の質問に対しても回答が変化します。
-        </PluginFormDescription>
-        <TemperatureForm />
-      </PluginFormSection>
-
-      <PluginFormSection>
-        <PluginFormTitle>推論レベル</PluginFormTitle>
-        <PluginFormDescription>AIがどれだけ深く推論を行うかを設定します。</PluginFormDescription>
-        <PluginFormDescription last>
-          <span className='text-red-600'>この設定は、一部のモデルでのみ有効です。</span>
-          対応していないモデルでは無視されます。
-        </PluginFormDescription>
-        <ReasoningEffortForm />
-      </PluginFormSection>
-
-      <PluginFormSection>
-        <PluginFormTitle>回答の詳細度</PluginFormTitle>
-        <PluginFormDescription>AIがどれだけ詳しく回答するかを設定します。</PluginFormDescription>
-        <PluginFormDescription last>
-          <span className='text-red-600'>この設定は、一部のモデルでのみ有効です。</span>
-          対応していないモデルでは無視されます。
-        </PluginFormDescription>
-        <VerbosityForm />
-      </PluginFormSection>
-
-      <PluginFormSection>
-        <PluginFormTitle>AIの役割の設定</PluginFormTitle>
+        <PluginFormTitle>AIの役割の設定 (システムプロンプト)</PluginFormTitle>
         <PluginFormDescription last>
           このアプリで使用するAIに、予め設定された役割を割り当てることができます。
         </PluginFormDescription>
@@ -120,6 +94,50 @@ const Component: FC = () => {
           label='AIの役割'
           placeholder='あなたはITコンサルタントです。質問に対して、ITサービスを活用して適切に解決方法を提案してください。口調はあまり固すぎない敬語で話してください。'
         />
+      </PluginFormSection>
+
+      <PluginFormSection>
+        <PluginFormTitle>プロンプトID (Chat prompts)</PluginFormTitle>
+        <PluginFormDescription>
+          OpenAIのダッシュボードで作成したプロンプトIDを設定します(任意)。
+        </PluginFormDescription>
+        <PluginFormDescription last>
+          AIプロバイダーがOpenAIの場合のみ有効です。プロンプトIDは「pmpt_」から始まります。
+        </PluginFormDescription>
+        <JotaiText
+          atom={promptIdAtom}
+          label='プロンプトID'
+          placeholder='pmpt_xxxxxxxxxxxxxxxxxxxxx'
+          width={520}
+        />
+      </PluginFormSection>
+
+      <PluginFormSection>
+        <PluginFormTitle>回答のランダム性</PluginFormTitle>
+        <PluginFormDescription last>
+          数値を大きくするほど、同一の質問に対しても回答が変化します。
+        </PluginFormDescription>
+        <TemperatureForm />
+      </PluginFormSection>
+
+      <PluginFormSection>
+        <PluginFormTitle>推論レベル</PluginFormTitle>
+        <PluginFormDescription>AIがどれだけ深く推論を行うかを設定します。</PluginFormDescription>
+        <PluginFormDescription last>
+          <span className='text-red-600'>この設定は、一部のモデルでのみ有効です。</span>
+          AIモデルが対応していないパラメータを設定した場合、エラーになる可能性があります。
+        </PluginFormDescription>
+        <ReasoningEffortForm />
+      </PluginFormSection>
+
+      <PluginFormSection>
+        <PluginFormTitle>回答の詳細度</PluginFormTitle>
+        <PluginFormDescription>AIがどれだけ詳しく回答するかを設定します。</PluginFormDescription>
+        <PluginFormDescription last>
+          <span className='text-red-600'>この設定は、一部のモデルでのみ有効です。</span>
+          AIモデルが対応していないパラメータを設定した場合、エラーになる可能性があります。
+        </PluginFormDescription>
+        <VerbosityForm />
       </PluginFormSection>
 
       <PluginFormSection>
@@ -150,6 +168,10 @@ const Component: FC = () => {
           をご確認ください。
         </PluginFormDescription>
         <JotaiSwitch atom={allowImageUploadAtom} label='画像の読み込みを有効にする' />
+      </PluginFormSection>
+
+      <PluginFormSection>
+        <WebSearchSwitch />
       </PluginFormSection>
 
       <PluginFormSection>
@@ -186,6 +208,4 @@ const Component: FC = () => {
       <DeleteButton />
     </div>
   );
-};
-
-export default Component;
+}

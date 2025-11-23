@@ -1,8 +1,7 @@
 import { pluginCommonConfigAtom } from '@/desktop/public-state';
 import { useAtomValue } from 'jotai';
-import React, { FC, memo } from 'react';
 
-const Component: FC = () => {
+export default function SendingOption() {
   const commonConfig = useAtomValue(pluginCommonConfigAtom);
   const { enablesEnter, enablesShiftEnter } = commonConfig;
 
@@ -15,6 +14,4 @@ const Component: FC = () => {
   }
 
   return null;
-};
-
-export default memo(Component);
+}

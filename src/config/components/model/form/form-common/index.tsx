@@ -3,6 +3,7 @@ import {
   enablesEnterAtom,
   enablesShiftEnterAtom,
 } from '@/config/states/plugin';
+import { isOpenSource } from '@/lib/constants';
 import { JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
@@ -10,17 +11,18 @@ import {
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { FCX } from 'react';
+import ApiKeyForm from './form-api-key';
 import LogAppIdForm from './form-log-app-id';
-import LogContentForm from './form-log-content';
-import LogKeyForm from './form-log-key';
+import LogV1FieldsForm from './form-log-v1-fields';
+import LogV2FieldsForm from './form-log-v2-fields';
+import LogVersionForm from './form-log-version';
 import OutputAppIdForm from './form-output-app-id';
 import OutputContentForm from './form-output-content';
 import OutputKeyForm from './form-output-key';
 import ViewIdState from './form-view-id';
 import AiProviderTypeForm from './provider-type';
-import ApiKeyForm from './form-api-key';
 
-const Component: FCX = () => {
+export default function FormCommon() {
   return (
     <div className='px-4 max-w-[900px]'>
       <PluginFormSection>
@@ -86,15 +88,11 @@ const Component: FCX = () => {
         <div className='mb-4'>
           <LogAppIdForm />
         </div>
-        <PluginFormDescription last>
-          ログを円滑に更新するために、チャットとログを紐づけるキー情報を格納するフィールドが必要になります。
-        </PluginFormDescription>
         <div className='mb-4'>
-          <LogKeyForm />
+          <LogVersionForm />
         </div>
-        <div>
-          <LogContentForm />
-        </div>
+        <LogV1FieldsForm />
+        <LogV2FieldsForm />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>送信オプション</PluginFormTitle>
@@ -115,6 +113,4 @@ const Component: FCX = () => {
       </PluginFormSection>
     </div>
   );
-};
-
-export default Component;
+}

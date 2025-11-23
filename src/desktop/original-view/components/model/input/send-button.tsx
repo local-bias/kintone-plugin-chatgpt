@@ -1,34 +1,28 @@
-import { useMessageController } from '@/desktop/original-view/hooks/message-controller';
-import { useChatHistory } from '@/desktop/original-view/hooks/use-chat-history';
-import { inputFilesAtom, inputTextAtom, loadingAtom } from '@/desktop/original-view/states/states';
+import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
+import { handlePushUserMessageAtom } from '@/desktop/original-view/states/chat-history';
+import { isSendButtonDisabledAtom } from '@/desktop/original-view/states/states';
 import SendIcon from '@mui/icons-material/Send';
 import { Button } from '@mui/material';
-import { useAtomValue } from 'jotai';
-import React, { FC, useCallback } from 'react';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 
-const Component: FC = () => {
-  const input = useAtomValue(inputTextAtom);
-  const files = useAtomValue(inputFilesAtom);
-  const loading = useAtomValue(loadingAtom);
-  const { sendMessage } = useMessageController();
-  const { pushUserMessage } = useChatHistory();
+const handleButtonClickAtom = atom(null, async (_, set) => {
+  await set(handlePushUserMessageAtom);
+  await set(handleSendMessageAtom);
+});
 
-  const onClick = useCallback(async () => {
-    await pushUserMessage();
-    await sendMessage();
-  }, []);
+export default function SendButton() {
+  const disabled = useAtomValue(isSendButtonDisabledAtom);
+  const onClick = useSetAtom(handleButtonClickAtom);
 
   return (
     <Button
       variant='contained'
       color='primary'
       startIcon={<SendIcon />}
-      disabled={loading || (input === '' && files.length === 0)}
+      disabled={disabled}
       onClick={onClick}
     >
       送信
     </Button>
   );
-};
-
-export default Component;
+}

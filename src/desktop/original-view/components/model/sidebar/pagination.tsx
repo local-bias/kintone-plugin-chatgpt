@@ -6,7 +6,7 @@ import { Pagination } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
 import React, { FC } from 'react';
 
-const Component: FC = () => {
+export default function HistoryPagination() {
   const [paginationIndex, setPaginationIndex] = useAtom(chatHistoriesPaginationIndexAtom);
   const paginationMax = useAtomValue(chatHistoriesPaginationMaxAtom);
 
@@ -15,8 +15,8 @@ const Component: FC = () => {
   };
 
   return (
-    <div className='p-2'>
-      <div className='w-full grid place-items-center'>
+    <div className='rad:p-2!'>
+      <div className='rad:w-full rad:grid rad:place-items-center'>
         <Pagination
           count={paginationMax}
           page={paginationIndex}
@@ -26,6 +26,4 @@ const Component: FC = () => {
       </div>
     </div>
   );
-};
-
-export default Component;
+}

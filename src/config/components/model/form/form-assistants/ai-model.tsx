@@ -2,7 +2,7 @@ import { selectableModelsAtom } from '@/config/states/ai';
 import { aiModelAtom } from '@/config/states/plugin';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { FC, Suspense } from 'react';
+import { Suspense } from 'react';
 
 const handleModelChangeAtom = atom(null, (_, set, __: unknown, value: string | null) => {
   if (!value) {
@@ -11,7 +11,7 @@ const handleModelChangeAtom = atom(null, (_, set, __: unknown, value: string | n
   set(aiModelAtom, value);
 });
 
-const AiModelFormComponent: FC = () => {
+function AiModelFormComponent() {
   const models = useAtomValue(selectableModelsAtom);
   const aiModel = useAtomValue(aiModelAtom);
   const onModelChange = useSetAtom(handleModelChangeAtom);
@@ -35,7 +35,7 @@ const AiModelFormComponent: FC = () => {
       )}
     />
   );
-};
+}
 
 export default function AiModelForm() {
   return (

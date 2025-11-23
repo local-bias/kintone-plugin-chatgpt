@@ -7,12 +7,11 @@ import { isMobile } from '@konomi-app/kintone-utilities';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import { Drawer, Fab } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
-import React, { FC } from 'react';
 import NewChatButton from '../new-chat';
 import Histories from './histories';
 import Pagination from './pagination';
 
-const Component: FC = () => {
+export default function Sidebar() {
   const isHistoryFabShown = useAtomValue(isHistoryFabShownAtom);
   const [isHistoryDrawerOpen, setHistoryDrawerOpen] = useAtom(isHistoryDrawerOpenAtom);
 
@@ -23,9 +22,9 @@ const Component: FC = () => {
   return (
     <>
       <div
-        className={cn('fixed left-8 z-50', {
-          '-top-2 left-[calc(50%-50dvw-8px)]': isMobile(),
-          'bottom-8': !isMobile(),
+        className={cn('rad:fixed rad:left-8 rad:z-50', {
+          'rad:-top-2 rad:left-[calc(50%-50dvw-8px)]': isMobile(),
+          'rad:bottom-8': !isMobile(),
         })}
       >
         {isHistoryFabShown && (
@@ -35,8 +34,8 @@ const Component: FC = () => {
         )}
       </div>
       <Drawer anchor='left' open={isHistoryDrawerOpen} onClose={onClose} className='🐸'>
-        <div className='w-[400px] max-w-[80vw] grid grid-rows-[auto_1fr] h-screen'>
-          <div className='p-4'>
+        <div className='rad:w-[400px] rad:max-w-[80vw] rad:grid rad:grid-rows-[auto_1fr] rad:h-screen'>
+          <div className='rad:p-4!'>
             <NewChatButton />
           </div>
           <Histories />
@@ -45,6 +44,4 @@ const Component: FC = () => {
       </Drawer>
     </>
   );
-};
-
-export default Component;
+}

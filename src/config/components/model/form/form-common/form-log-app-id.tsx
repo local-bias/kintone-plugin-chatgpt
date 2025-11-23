@@ -3,7 +3,7 @@ import { logAppIdAtom, logAppSpaceIdAtom } from '@/config/states/plugin';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { FC, memo, Suspense } from 'react';
+import { Suspense } from 'react';
 
 const handleAppChangeAtom = atom(null, (_, set, app: kintoneAPI.App | null) => {
   if (!app) {
@@ -13,7 +13,7 @@ const handleAppChangeAtom = atom(null, (_, set, app: kintoneAPI.App | null) => {
   set(logAppSpaceIdAtom, app.spaceId ?? undefined);
 });
 
-const Component: FC = () => {
+function FormLogAppIdComponent() {
   const allApps = useAtomValue(allKintoneAppsState);
   const appId = useAtomValue(logAppIdAtom);
   const onAppChange = useSetAtom(handleAppChangeAtom);
@@ -31,14 +31,12 @@ const Component: FC = () => {
       )}
     />
   );
-};
+}
 
-const Container: FC = () => {
+export default function FormLogAppId() {
   return (
     <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
-      <Component />
+      <FormLogAppIdComponent />
     </Suspense>
   );
-};
-
-export default memo(Container);
+}

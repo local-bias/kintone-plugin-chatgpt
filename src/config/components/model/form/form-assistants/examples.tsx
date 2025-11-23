@@ -33,7 +33,7 @@ const handleExampleDeleteAtom = atom(null, (_, set, index: number) => {
   );
 });
 
-const Component: FC = () => {
+export default function AssistantExamples() {
   const examples = useAtomValue(assistantExamplesAtom);
   const onChange = useSetAtom(handleExampleChangeAtom);
   const addRow = useSetAtom(handleExampleAddAtom);
@@ -68,6 +68,4 @@ const Component: FC = () => {
       ))}
     </div>
   );
-};
-
-export default Component;
+}

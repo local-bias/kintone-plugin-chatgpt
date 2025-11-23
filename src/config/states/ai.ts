@@ -1,9 +1,9 @@
 import { isDev } from '@/lib/global';
-import { atom } from 'jotai';
-import { providerTypeAtom } from './plugin';
 import { OPENAI_MODELS, OPENROUTER_ENDPOINT_MODELS } from '@/lib/static';
 import { OpenrouterAvailableModelsResponseSchema } from '@/schema/ai';
+import { atom } from 'jotai';
 import { derive } from 'jotai-derive';
+import { providerTypeAtom } from './plugin';
 
 export const openrouterListAvailableModelsAtom = atom(async () => {
   const response = await fetch(OPENROUTER_ENDPOINT_MODELS);

@@ -1,11 +1,6 @@
-import OpenAI from 'openai';
+import { ChatMessageContent } from './static';
 
-type Message =
-  | OpenAI.Chat.Completions.ChatCompletionSystemMessageParam
-  | OpenAI.Chat.Completions.ChatCompletionUserMessageParam
-  | OpenAI.Chat.Completions.ChatCompletionAssistantMessageParam;
-
-export const getTextFromMessageContent = (content: Message['content']): string => {
+export const getTextFromMessageContent = (content: ChatMessageContent): string => {
   if (!content) {
     return '';
   }

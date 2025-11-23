@@ -3,11 +3,22 @@ import {
   inputTextAtom,
   selectedPluginConditionAtom,
 } from '@/desktop/original-view/states/states';
-import { ChatBubbleOvalLeftEllipsisIcon } from '@heroicons/react/24/solid';
+import styled from '@emotion/styled';
 import { useAtomValue, useSetAtom } from 'jotai';
-import React, { FC } from 'react';
 
-const Component: FC = () => {
+const ExampleMessage = styled.div`
+  padding: calc(var(--🐸spacing) * 3);
+  border: 1px solid color-mix(in oklab, var(--🐸primary) 20%, transparent);
+  background-color: color-mix(in oklab, var(--🐸primary) 5%, transparent);
+  cursor: pointer;
+  border-radius: var(--🐸radius);
+
+  &:hover {
+    background-color: color-mix(in oklab, var(--🐸primary) 10%, transparent);
+  }
+`;
+
+function Examples() {
   const condition = useAtomValue(selectedPluginConditionAtom);
   const setInput = useSetAtom(inputTextAtom);
 
@@ -22,33 +33,24 @@ const Component: FC = () => {
   }
 
   return (
-    <div className='hidden md:flex gap-6'>
-      <div className='basis-8 text-blue-700'>
-        <ChatBubbleOvalLeftEllipsisIcon />
-      </div>
-      <div className='flex-1 grid grid-cols-1 md:grid-cols-2 gap-3 text-sm'>
+    <div className='rad:hidden rad:md:flex rad:gap-6'>
+      <div className='rad:flex-1 rad:grid rad:grid-cols-1 rad:md:grid-cols-2 rad:gap-3 rad:text-sm'>
         {examples.map((example, index) => (
-          <div
-            key={index}
-            className='p-3 rounded-md border transition-all border-solid border-blue-700 hover:bg-blue-50 text-blue-700 bg-opacity-80 cursor-pointer'
-            onClick={() => onClick(example)}
-          >
+          <ExampleMessage key={index} onClick={() => onClick(example)}>
             {example}
-          </div>
+          </ExampleMessage>
         ))}
       </div>
     </div>
   );
-};
+}
 
-const Container: FC = () => {
+export default function InputExamples() {
   const messages = useAtomValue(displayingChatMessagesAtom);
 
   if (messages.length) {
     return null;
   }
 
-  return <Component />;
-};
-
-export default Container;
+  return <Examples />;
+}

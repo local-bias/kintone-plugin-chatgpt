@@ -1,8 +1,9 @@
 import styled from '@emotion/styled';
 
 export const ChatContent = styled.div`
-  &:nth-of-type(2n) {
+  &:has(div[data-role='user']) {
     background-color: #f9fafb;
+    font-size: 15px;
   }
   color: var(--🐸foreground);
 

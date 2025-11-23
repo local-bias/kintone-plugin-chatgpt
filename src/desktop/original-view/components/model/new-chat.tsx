@@ -1,16 +1,15 @@
 import { loadingAtom, selectedHistoryIdAtom } from '@/desktop/original-view/states/states';
 import AddIcon from '@mui/icons-material/Add';
 import { Button } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
-import React, { FC } from 'react';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 
-const Component: FC = () => {
+const handleButtonClickAtom = atom(null, async (_, set) => {
+  set(selectedHistoryIdAtom, null);
+});
+
+export default function NewChatButton() {
   const loading = useAtomValue(loadingAtom);
-  const setHistoryId = useSetAtom(selectedHistoryIdAtom);
-
-  const onClick = () => {
-    setHistoryId(null);
-  };
+  const onClick = useSetAtom(handleButtonClickAtom);
 
   return (
     <Button
@@ -24,6 +23,4 @@ const Component: FC = () => {
       新しいチャット
     </Button>
   );
-};
-
-export default Component;
+}

@@ -1,16 +1,16 @@
 import { getHTMLfromMarkdown } from '@/desktop/original-view/action';
 import { useChatMessage } from '@/desktop/original-view/contexts/chat-message';
-import { useMessageController } from '@/desktop/original-view/hooks/message-controller';
+import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
 import { loadingAtom, selectedHistoryAtom } from '@/desktop/original-view/states/states';
 import { getTextFromMessageContent } from '@/lib/chatgpt';
-import { ChatHistory, ChatMessage } from '@/lib/static';
+import { ChatHistory, ChatImageContentPart, ChatMessage, ChatTextContentPart } from '@/lib/static';
 import SendIcon from '@mui/icons-material/Send';
 import { Button, TextField } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import OpenAI from 'openai';
-import React, { FC, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { buildCollapsedPreview } from './utils';
 
 type Props = {
   message: ChatMessage['content'];
@@ -18,11 +18,10 @@ type Props = {
   className?: string;
 };
 
-const EditMode: FC<Props> = () => {
+function EditMode() {
   const loading = useAtomValue(loadingAtom);
   const { message, toggleIsEditing } = useChatMessage();
   const [text, setText] = useState(getTextFromMessageContent(message.content));
-  const { sendMessage } = useMessageController();
   const { enqueueSnackbar } = useSnackbar();
 
   const onTextChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -47,7 +46,7 @@ const EditMode: FC<Props> = () => {
         ];
 
         set(selectedHistoryAtom, { ...history, messages: newMessages });
-        sendMessage();
+        set(handleSendMessageAtom);
 
         toggleIsEditing();
       },
@@ -58,7 +57,7 @@ const EditMode: FC<Props> = () => {
   return (
     <div>
       <TextField multiline value={text} onChange={onTextChange} fullWidth />
-      <div className='flex justify-end items-center py-2'>
+      <div className='rad:flex rad:justify-end rad:items-center rad:py-2!'>
         <Button
           variant='contained'
           color='primary'
@@ -71,51 +70,55 @@ const EditMode: FC<Props> = () => {
       </div>
     </div>
   );
-};
+}
 
-const Component: FC<Props> = ({ message }) => {
+function ChatMessageComponent({ message }: Props) {
+  const { isCollapsed, isCollapsible } = useChatMessage();
+  const shouldShowCollapsed = isCollapsible && isCollapsed;
+
   if (!message) {
     return null;
   }
 
   if (typeof message === 'string') {
-    const html = getHTMLfromMarkdown(message);
+    const html = getHTMLfromMarkdown(
+      shouldShowCollapsed ? buildCollapsedPreview(message) : message
+    );
     return <div dangerouslySetInnerHTML={{ __html: html }} />;
   }
 
   const text =
-    (message.find((m) => m.type === 'text') as OpenAI.ChatCompletionContentPartText | undefined)
-      ?.text || '';
-  const images = message.filter(
-    (m) => m.type === 'image_url'
-  ) as OpenAI.ChatCompletionContentPartImage[];
+    (message.find((m) => m.type === 'text') as ChatTextContentPart | undefined)?.text || '';
+  const images = message.filter((m) => m.type === 'image_url') as ChatImageContentPart[];
+  const displayText = shouldShowCollapsed ? buildCollapsedPreview(text) : text;
 
   return (
     <div>
       <div
-        dangerouslySetInnerHTML={{ __html: getHTMLfromMarkdown(text) }}
-        className='[&>_*:first-of-type]:mt-0 [&>_*:last-of-type]:mb-0'
+        dangerouslySetInnerHTML={{ __html: getHTMLfromMarkdown(displayText) }}
+        className='rad:[&>_*:first-of-type]:mt-0 rad:[&>_*:last-of-type]:mb-0'
       />
-      {!!images.length && (
-        <div className='flex flex-wrap gap-2 mt-4'>
+      {!shouldShowCollapsed && !!images.length && (
+        <div className='rad:flex rad:flex-wrap rad:gap-2 rad:mt-4!'>
           {images.map((image, i) => (
-            <div key={i} className='w-32 h-32 overflow-hidden'>
-              <img src={image.image_url.url ?? ''} className='w-full h-full object-cover' />
+            <div key={i} className='rad:w-32 rad:h-32 rad:overflow-hidden'>
+              <img
+                src={image.image_url.url ?? ''}
+                className='rad:w-full rad:h-full rad:object-cover'
+              />
             </div>
           ))}
         </div>
       )}
     </div>
   );
-};
+}
 
-const Container: FC<Props> = (props) => {
+export default function ChatMessage(props: Props) {
   const { isEditing } = useChatMessage();
 
   if (isEditing) {
-    return <EditMode {...props} />;
+    return <EditMode />;
   }
-  return <Component {...props} />;
-};
-
-export default Container;
+  return <ChatMessageComponent {...props} />;
+}
